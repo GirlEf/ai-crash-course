@@ -1,0 +1,616 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 5.3 — Prompt Engineering | AI Crash Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#1a1a2e; --ink-soft:#4a4a6a; --paper:#fafaf7; --surface:#fff; --surface-raised:#f4f4f0; --accent:#8c1a5a; --accent-light:#f5d0e8; --accent-dark:#6a1044; --border:#e2e2da; --radius:10px; --sidebar-w:260px; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Lora',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.8;display:flex;}
+    #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0%;z-index:9999;transition:width .1s linear;}
+    .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--surface);border-right:1px solid var(--border);padding:2rem 1.25rem;overflow-y:auto;z-index:100;display:flex;flex-direction:column;gap:2rem;}
+    .sidebar-brand{font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:.5rem;}
+    .sidebar-brand .phase-badge{background:var(--accent);color:#fff;font-size:.7rem;padding:.15rem .5rem;border-radius:99px;font-weight:600;}
+    .toc-label{font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.5rem;}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:.15rem;}
+    .toc-list a{font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink-soft);text-decoration:none;padding:.3rem .6rem;border-radius:6px;display:block;transition:all .2s;border-left:2px solid transparent;}
+    .toc-list a:hover{color:var(--accent);background:var(--accent-light);}
+    .toc-list a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);background:var(--accent-light);}
+    .sidebar-footer{margin-top:auto;font-family:'Outfit',sans-serif;font-size:.75rem;color:var(--ink-soft);padding-top:1rem;border-top:1px solid var(--border);}
+    .sidebar-footer a{color:var(--accent);text-decoration:none;}
+    .main{margin-left:var(--sidebar-w);max-width:820px;width:100%;padding:3rem 3rem 6rem;}
+    .lesson-hero{background:linear-gradient(135deg,#1a0010 0%,#3a0828 60%,#5a1040 100%);border-radius:16px;padding:3rem;margin-bottom:3rem;color:#fff;position:relative;overflow:hidden;}
+    .lesson-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(140,26,90,.4) 0%,transparent 60%);}
+    .lesson-hero-content{position:relative;z-index:1;}
+    .lesson-tag{font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#f5d0e8;margin-bottom:.75rem;}
+    .lesson-hero h1{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:700;line-height:1.2;margin-bottom:1rem;}
+    .lesson-hero p{font-size:1rem;color:rgba(255,255,255,.8);max-width:540px;font-family:'Outfit',sans-serif;}
+    .hero-meta{display:flex;gap:1.5rem;margin-top:1.5rem;font-family:'Outfit',sans-serif;font-size:.82rem;color:rgba(255,255,255,.6);}
+    .lesson-section{margin-bottom:3.5rem;scroll-margin-top:2rem;}
+    .lesson-section h2{font-family:'Outfit',sans-serif;font-size:1.55rem;font-weight:700;color:var(--ink);margin-bottom:1.25rem;padding-bottom:.6rem;border-bottom:2px solid var(--accent-light);}
+    .lesson-section h3{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:600;color:var(--ink);margin:1.5rem 0 .75rem;}
+    p{margin-bottom:1rem;}
+    strong{font-weight:600;}
+    em{font-style:italic;}
+    .callout{border-left:4px solid var(--accent);background:var(--accent-light);padding:1rem 1.25rem;border-radius:0 var(--radius) var(--radius) 0;margin:1.5rem 0;font-size:.95rem;}
+    .callout.info{border-color:#2a6ab5;background:#e8f0fb;}
+    .callout.success{border-color:#2a8c5a;background:#e5f5ed;}
+    .callout.warning{border-color:#c07800;background:#fff3d6;}
+    .callout-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;color:var(--accent-dark);}
+    .callout.info .callout-title{color:#1a4a8a;}
+    .callout.success .callout-title{color:#1a6040;}
+    .callout.warning .callout-title{color:#7a4800;}
+    .prompt-box{background:#0f1117;border-radius:var(--radius);margin:1.25rem 0;overflow:hidden;border:1px solid #2a2a3a;}
+    .prompt-label{font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.5rem 1rem;border-bottom:1px solid #2a2a3a;}
+    .prompt-label.system{background:#1a2a1a;color:#50fa7b;}
+    .prompt-label.user{background:#1a1a2e;color:#8be9fd;}
+    .prompt-label.assistant{background:#2a1a2e;color:#f5d0e8;}
+    .prompt-body{padding:1rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#c9d1d9;}
+    .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+    .vs-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+    .vs-card .vs-header{padding:.6rem 1rem;font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+    .vs-card.before .vs-header{background:#fff0f0;color:#a01818;}
+    .vs-card.after .vs-header{background:#e5f5ed;color:#1a6040;}
+    .vs-card .vs-body{padding:1rem;font-size:.88rem;font-family:'JetBrains Mono',monospace;line-height:1.6;background:var(--surface);}
+    .vs-card.before .vs-body{color:#a01818;}
+    .vs-card.after .vs-body{color:#1a4a1a;}
+    .param-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+    .param-table th{background:var(--ink);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;padding:.7rem 1rem;text-align:left;font-size:.8rem;}
+    .param-table td{padding:.65rem 1rem;border-bottom:1px solid var(--border);line-height:1.5;font-family:'Outfit',sans-serif;}
+    .param-table tr:last-child td{border-bottom:none;}
+    .param-table tr:nth-child(even) td{background:var(--surface-raised);}
+    .tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+    .tip-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;}
+    .tip-card h4{font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:.5rem;color:var(--accent-dark);}
+    .tip-card p{font-size:.88rem;margin:0;color:var(--ink-soft);}
+    .code-block{background:#0f1117;border-radius:var(--radius);padding:1.5rem;overflow-x:auto;margin:1.5rem 0;border:1px solid #2a2a3a;}
+    .code-block pre{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#c9d1d9;}
+    .code-label{font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.4rem;}
+    .output-block{background:#1a1a2e;border-left:4px solid var(--accent);padding:1rem 1.25rem;border-radius:0 var(--radius) var(--radius) 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#a8d8a8;margin-top:-.5rem;overflow-x:auto;}
+    .py-kw{color:#ff79c6;}.py-fn{color:#50fa7b;}.py-str{color:#f1fa8c;}.py-num{color:#bd93f9;}.py-cm{color:#6272a4;font-style:italic;}.py-op{color:#ff79c6;}
+    .takeaway-list{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin:1rem 0;}
+    .takeaway-list li{display:flex;align-items:flex-start;gap:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;font-size:.92rem;}
+    .takeaway-list li::before{content:'✓';color:var(--accent);font-weight:700;font-family:'Outfit',sans-serif;flex-shrink:0;}
+    .svg-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.5rem 0;overflow-x:auto;}
+    .svg-caption{text-align:center;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink-soft);margin-top:.75rem;font-style:italic;}
+    .nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);}
+    .nav-btn{font-family:'Outfit',sans-serif;font-weight:600;font-size:.9rem;padding:.75rem 1.5rem;border-radius:var(--radius);text-decoration:none;transition:all .2s;}
+    .nav-btn.prev{background:var(--surface-raised);color:var(--ink);border:1px solid var(--border);}
+    .nav-btn.next{background:var(--accent);color:#fff;}
+    .nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12);}
+    @media(max-width:900px){.sidebar{display:none;}.main{margin-left:0;padding:2rem 1.25rem 5rem;}.vs-grid,.tip-grid{grid-template-columns:1fr;}.mobile-toc{display:block;}}
+    .mobile-toc{display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2rem;overflow:hidden;}
+    .mobile-toc summary{font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;color:var(--ink);padding:.9rem 1.25rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+    .mobile-toc summary::-webkit-details-marker{display:none;}
+    .mobile-toc summary::after{content:"▾";font-size:.75rem;color:var(--ink-soft);}
+    details.mobile-toc[open] summary::after{content:"▴";}
+    .mobile-toc-links{padding:.5rem 0 .75rem;border-top:1px solid var(--border);}
+    .mobile-toc-links a{display:block;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink-soft);text-decoration:none;padding:.3rem 1.25rem;}
+    .mobile-toc-links a:hover{color:var(--accent);}
+    .deeper-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-top:2.5rem;}
+    .deeper-eyebrow{font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.5rem;font-weight:700;}
+    .deeper-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin:0 0 1.25rem;}
+    .deeper-resources{display:flex;flex-direction:column;gap:.75rem;}
+    .deeper-item{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;background:var(--surface-raised);border-radius:8px;border:1px solid var(--border);text-decoration:none;transition:border-color .2s;}
+    .deeper-item:hover{border-color:var(--accent);}
+    .deeper-item-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+    .deeper-item-label{font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;color:var(--ink);display:block;margin-bottom:2px;}
+    .deeper-item-desc{font-family:'Outfit',sans-serif;font-size:.78rem;color:var(--ink-soft);line-height:1.5;}
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<aside class="sidebar">
+  <a href="../ai_crash_course_pro.html" class="sidebar-brand">
+    <span class="phase-badge">PHASE 5</span> AI in Practice
+  </a>
+  <nav>
+    <div class="toc-label">In this lesson</div>
+    <ul class="toc-list">
+      <li><a href="#what-is-pe" data-section="what-is-pe">What is Prompt Engineering?</a></li>
+      <li><a href="#zero-shot" data-section="zero-shot">Zero-Shot Prompting</a></li>
+      <li><a href="#few-shot" data-section="few-shot">Few-Shot Prompting</a></li>
+      <li><a href="#cot" data-section="cot">Chain-of-Thought Reasoning</a></li>
+      <li><a href="#system-role" data-section="system-role">System Prompts and Roles</a></li>
+      <li><a href="#parameters" data-section="parameters">Temperature and Sampling</a></li>
+      <li><a href="#practical" data-section="practical">Practical Techniques</a></li>
+      <li><a href="#api" data-section="api">Using the API</a></li>
+      <li><a href="#takeaways" data-section="takeaways">Key Takeaways</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer"><p style="margin-bottom:.5rem;"><a href="../glossary.html" style="color:var(--accent);text-decoration:none;font-size:.75rem;">&#128218; Glossary</a></p>
+    <p>Phase 5 of 5 &middot; Lesson 3 of 5</p>
+    <p style="margin-top:.4rem"><a href="LESSON 5.4.html">Next: Computer Vision in Practice &rarr;</a></p>
+  </div>
+</aside>
+
+<main class="main">
+
+  <details class="mobile-toc">
+    <summary>In this lesson</summary>
+    <nav class="mobile-toc-links">
+      <a href="#what-is-pe">What is Prompt Engineering?</a>
+      <a href="#zero-shot">Zero-Shot Prompting</a>
+      <a href="#few-shot">Few-Shot Prompting</a>
+      <a href="#cot">Chain-of-Thought Reasoning</a>
+      <a href="#system-role">System Prompts and Roles</a>
+      <a href="#parameters">Temperature and Sampling</a>
+      <a href="#practical">Practical Techniques</a>
+      <a href="#api">Using the API</a>
+      <a href="#takeaways">Key Takeaways</a>
+    </nav>
+  </details>
+
+  <div class="lesson-hero">
+    <div class="lesson-hero-content">
+      <div class="lesson-tag">Phase 5 &middot; Lesson 5.3</div>
+      <h1>Prompt Engineering: Getting the Most from AI</h1>
+      <p>How you ask determines what you get. Learning to communicate precisely with language models is a skill that compounds quickly. A well-crafted prompt can be the difference between a generic answer and a genuinely useful one.</p>
+      <div class="hero-meta">
+        <span>&#128337; 30 min read</span>
+        <span>&#9998; Hands-on examples</span>
+        <span>&#128187; OpenAI API code</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section class="lesson-section" id="what-is-pe">
+    <h2>What is Prompt Engineering?</h2>
+    <p>A <strong>prompt</strong> is the text you send to a language model as input. Prompt engineering is the practice of crafting those inputs deliberately to elicit the most accurate, useful, and appropriate outputs. It sits at the intersection of human communication, knowledge of how LLMs work, and the specific task you are trying to accomplish.</p>
+    <p>Because LLMs are fundamentally pattern-completion systems, the structure, specificity, and framing of a prompt strongly influence the pattern they complete. The same question asked in two different ways can produce dramatically different responses: one shallow and generic, the other precise and genuinely useful.</p>
+    <p>Prompt engineering does not require programming knowledge. It requires clarity of thought, understanding of how to frame instructions, and iterative experimentation. It is also an evolving field: as models improve and new capabilities emerge, effective prompting strategies change.</p>
+    <div class="callout info">
+      <div class="callout-title">Will Prompt Engineering Become Obsolete?</div>
+      <p>Some researchers argue that as models improve, they will require less careful prompting. There is evidence for this: GPT-4 is far less sensitive to exact prompt wording than GPT-2. However, the techniques in this lesson (few-shot examples, chain-of-thought reasoning, structured output, system prompts) continue to improve results even with the most capable models. Understanding the underlying mechanism helps you communicate more effectively regardless of model version.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="lesson-section" id="zero-shot">
+    <h2>Zero-Shot Prompting: Just Ask Clearly</h2>
+    <p>A zero-shot prompt asks the model to perform a task without providing any examples. The model relies entirely on what it learned during pre-training and fine-tuning. This works well for common, well-defined tasks and capable models, but the quality of the output is highly dependent on the clarity of the instruction.</p>
+
+    <div class="vs-grid">
+      <div class="vs-card before">
+        <div class="vs-header">&#10006; Vague Prompt</div>
+        <div class="vs-body">Tell me about climate change.</div>
+      </div>
+      <div class="vs-card after">
+        <div class="vs-header">&#10004; Clear Zero-Shot Prompt</div>
+        <div class="vs-body">In 3 bullet points, explain the main causes of climate change to a 14-year-old student who has no science background. Use plain language and one concrete example for each cause.</div>
+      </div>
+    </div>
+
+    <p>The improved prompt specifies format (3 bullet points), audience (14-year-old with no science background), length constraint (one example per cause), and register (plain language). Every one of these specifications narrows the space of acceptable outputs and guides the model toward something genuinely useful.</p>
+
+    <div class="vs-grid">
+      <div class="vs-card before">
+        <div class="vs-header">&#10006; Vague Classification Prompt</div>
+        <div class="vs-body">Is this review positive or negative?<br><br>"The phone is okay but battery life is poor."</div>
+      </div>
+      <div class="vs-card after">
+        <div class="vs-header">&#10004; Precise Classification Prompt</div>
+        <div class="vs-body">Classify the sentiment of the following product review as exactly one of: POSITIVE, NEGATIVE, or MIXED. Output only the label, nothing else.<br><br>Review: "The phone is okay but battery life is poor."</div>
+      </div>
+    </div>
+
+    <p>The second prompt specifies the exact output format ("output only the label"), provides the valid label set, and eliminates ambiguity about what "mixed" means as an option. This produces a response you can programmatically process reliably.</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="lesson-section" id="few-shot">
+    <h2>Few-Shot Prompting: Show, Don't Just Tell</h2>
+    <p>Few-shot prompting provides several examples of the desired input-output pattern before presenting the actual task. This technique was demonstrated at scale by Brown et al. in the GPT-3 paper (2020), which showed that simply including examples in the prompt, with no gradient updates to the model weights, dramatically improved task performance. The model "learns" the task from the examples in context.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-label user">Few-Shot Prompt Example: Sentiment Classification</div>
+      <div class="prompt-body">Classify each movie review as POSITIVE, NEGATIVE, or MIXED.
+
+Review: "Stunning visuals and a gripping story. I was on the edge of my seat the whole time."
+Label: POSITIVE
+
+Review: "The acting was wooden and the plot made no sense. A waste of two hours."
+Label: NEGATIVE
+
+Review: "Brilliant performances let down by a weak second act. Still worth watching."
+Label: MIXED
+
+Review: "Honestly bored me to tears, though the cinematography was occasionally beautiful."
+Label:</div>
+    </div>
+
+    <p>The model reads the pattern from the examples and applies it to the final review. This works far better than describing the classification scheme in words alone, because the examples define exactly what "MIXED" means in practice (good elements + significant weaknesses) without requiring a lengthy explanation.</p>
+
+    <h3>How Many Examples?</h3>
+    <p>Research by Brown et al. (2020) showed diminishing returns beyond around 8-16 examples for most tasks with GPT-3-scale models. With more capable models, even 2-4 high-quality examples are often sufficient. The quality of examples matters more than the quantity. Choose examples that cover the range of cases the model will encounter, including edge cases and ambiguous inputs.</p>
+
+    <div class="callout">
+      <div class="callout-title">Example Order Matters</div>
+      <p>Studies by Zhao et al. (2021, "Calibrate Before Use") found that the order of few-shot examples can substantially affect the model's predictions, sometimes swinging accuracy by 30 percentage points. Putting the most common or expected class last (immediately before the new task) tends to bias the model toward that class. If this is a concern, consider averaging over multiple random orderings or using calibration techniques.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="lesson-section" id="cot">
+    <h2>Chain-of-Thought: Teaching the Model to Reason</h2>
+    <p>Standard prompting asks a model to go directly from question to answer. For tasks involving multiple reasoning steps, like maths problems, logical puzzles, or multi-step planning, this often fails. <strong>Chain-of-Thought (CoT) prompting</strong> asks the model to show its working before giving the final answer.</p>
+    <p>Wei et al. (Google Brain, 2022) published "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models," showing that providing step-by-step reasoning examples dramatically improved performance on multi-step arithmetic and commonsense reasoning tasks in large models. A simpler version, "zero-shot CoT," was shown by Kojima et al. (2022) to work by simply appending "Let's think step by step" to the prompt.</p>
+
+    <div class="vs-grid">
+      <div class="vs-card before">
+        <div class="vs-header">&#10006; Direct Prompt (often fails for reasoning)</div>
+        <div class="vs-body">Sarah has 12 apples. She gives a third of them to Ben, then buys 5 more. How many does she have?<br><br><em>Answer: 13</em> (GPT-3 without CoT)</div>
+      </div>
+      <div class="vs-card after">
+        <div class="vs-header">&#10004; Chain-of-Thought Prompt</div>
+        <div class="vs-body">Sarah has 12 apples. She gives a third to Ben, then buys 5 more. How many does she have? Let's think step by step.<br><br><em>Sarah starts with 12. A third of 12 is 4. She gives 4 to Ben, leaving 12 - 4 = 8. She then buys 5 more: 8 + 5 = 13.</em><br><br>Answer: 13 (correct, with verifiable reasoning shown)</div>
+      </div>
+    </div>
+
+    <p>The answer is the same in this case, but the chain-of-thought version shows work that can be checked. For harder problems where the direct prompt fails, CoT often produces the correct answer simply by externalising the intermediate steps. It also makes errors easier to spot: if the reasoning chain is visible, you can identify exactly where it goes wrong.</p>
+
+    <div class="callout success">
+      <div class="callout-title">Self-Consistency: Vote on Multiple Chains</div>
+      <p>Wang et al. (2022) introduced self-consistency: generate several independent chain-of-thought reasoning paths with temperature > 0 (so each is different), then take the majority vote on the final answers. This consistently improves accuracy on reasoning benchmarks beyond single-path CoT, because different reasoning paths tend to make different errors, and the correct answer is more often the majority. The trade-off is cost: you pay for multiple completions.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="lesson-section" id="system-role">
+    <h2>System Prompts and Role Prompting</h2>
+    <p>Most modern LLM APIs support a message structure with three roles: <strong>system</strong>, <strong>user</strong>, and <strong>assistant</strong>. The system prompt sets the context, persona, and constraints for the entire conversation. It is processed first and its instructions generally persist through the whole dialogue.</p>
+
+    <!-- Role diagram SVG -->
+    <div class="svg-container">
+      <svg viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:660px;display:block;margin:0 auto;">
+        <text x="330" y="18" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1a1a2e">Chat Completion Message Roles</text>
+
+        <!-- System -->
+        <rect x="10" y="30" width="200" height="150" rx="8" fill="#1a2a1a" stroke="#50fa7b" stroke-width="1.5"/>
+        <text x="110" y="53" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#50fa7b">SYSTEM</text>
+        <text x="110" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">Sets the context and constraints.</text>
+        <text x="110" y="80" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">Processed first. Persists</text>
+        <text x="110" y="92" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">throughout conversation.</text>
+        <rect x="25" y="102" width="170" height="65" rx="5" fill="rgba(80,250,123,0.08)" stroke="rgba(80,250,123,0.3)" stroke-width="1"/>
+        <text x="110" y="118" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#50fa7b">"You are a helpful AI tutor</text>
+        <text x="110" y="130" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#50fa7b">specialising in Python. Explain</text>
+        <text x="110" y="142" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#50fa7b">concepts clearly. If asked to</text>
+        <text x="110" y="154" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#50fa7b">do homework, decline politely."</text>
+
+        <!-- User -->
+        <rect x="230" y="30" width="200" height="150" rx="8" fill="#1a1a2e" stroke="#8be9fd" stroke-width="1.5"/>
+        <text x="330" y="53" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#8be9fd">USER</text>
+        <text x="330" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">The human's messages.</text>
+        <text x="330" y="80" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">Can include instructions,</text>
+        <text x="330" y="92" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">context, and questions.</text>
+        <rect x="245" y="102" width="170" height="65" rx="5" fill="rgba(139,233,253,0.08)" stroke="rgba(139,233,253,0.3)" stroke-width="1"/>
+        <text x="330" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#8be9fd">"What is the difference</text>
+        <text x="330" y="132" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#8be9fd">between a list and a</text>
+        <text x="330" y="144" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#8be9fd">tuple in Python?"</text>
+
+        <!-- Assistant -->
+        <rect x="450" y="30" width="200" height="150" rx="8" fill="#2a1a2e" stroke="#f5d0e8" stroke-width="1.5"/>
+        <text x="550" y="53" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#f5d0e8">ASSISTANT</text>
+        <text x="550" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">The model's responses.</text>
+        <text x="550" y="80" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">In multi-turn conversations,</text>
+        <text x="550" y="92" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.6)">prior turns are included.</text>
+        <rect x="465" y="102" width="170" height="65" rx="5" fill="rgba(245,208,232,0.08)" stroke="rgba(245,208,232,0.3)" stroke-width="1"/>
+        <text x="550" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f5d0e8">"Great question! A list</text>
+        <text x="550" y="132" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f5d0e8">is mutable — you can</text>
+        <text x="550" y="144" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f5d0e8">change it. A tuple is</text>
+        <text x="550" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f5d0e8">immutable — you cannot."</text>
+      </svg>
+      <p class="svg-caption">The three message roles in a chat completion API call. The system prompt is your most powerful lever: it sets the model's persona, constraints, and the rules of engagement for the entire conversation.</p>
+    </div>
+
+    <h3>What Makes a Good System Prompt?</h3>
+    <div class="prompt-box">
+      <div class="prompt-label system">Effective System Prompt</div>
+      <div class="prompt-body">You are a medical information assistant for patients at a general practice clinic in the UK.
+
+Your role is to:
+- Explain medical terms and conditions in plain, accessible English (assume no medical training)
+- Summarise information the patient already has from their GP
+- Help patients formulate questions to ask their doctor
+
+You must NOT:
+- Provide diagnoses or treatment recommendations
+- Override or contradict advice given by a qualified clinician
+- Answer questions outside of medical information and patient education
+
+When uncertain, always direct the user to consult their GP or call 111.
+Tone: warm, clear, and reassuring. Never alarmist.</div>
+    </div>
+
+    <p>This system prompt defines persona, scope, explicit prohibitions, escalation behaviour, and tone. Each element reduces ambiguity about what the model should and should not do. Well-designed system prompts are the foundation of reliable AI products.</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="lesson-section" id="parameters">
+    <h2>Temperature and Sampling Parameters</h2>
+    <p>When an LLM generates a token, it produces a probability distribution over the entire vocabulary. Sampling parameters determine how you draw from that distribution. Getting these right matters for both quality and consistency.</p>
+
+    <table class="param-table">
+      <thead>
+        <tr><th>Parameter</th><th>What It Controls</th><th>Practical Guidance</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Temperature</strong></td>
+          <td>Scales the probability distribution before sampling. Low temperature (0–0.3) makes the distribution sharper and outputs more predictable. High temperature (0.8–1.5) flattens it and outputs more varied and creative.</td>
+          <td>Use 0 for classification, fact extraction, or structured output. Use 0.7 for general conversation. Use 1.0+ for creative writing or brainstorming.</td>
+        </tr>
+        <tr>
+          <td><strong>Top-p (Nucleus)</strong></td>
+          <td>At each step, consider only the smallest set of tokens whose cumulative probability exceeds p. Top-p=0.9 means only tokens in the top 90% probability mass are candidates.</td>
+          <td>A common default is top-p=1.0 (no restriction) with temperature tuning. Some practitioners use top-p=0.95 with temperature=0.7 for a good balance. Do not set both temperature=0 and top-p very low; they compound.</td>
+        </tr>
+        <tr>
+          <td><strong>Top-k</strong></td>
+          <td>Only sample from the top k most probable tokens at each step. Top-k=50 considers only the 50 most likely next tokens regardless of their probability mass.</td>
+          <td>Less commonly used than top-p in practice. Top-p is generally preferred because it adapts to the probability landscape (the effective k varies by situation).</td>
+        </tr>
+        <tr>
+          <td><strong>Max tokens</strong></td>
+          <td>The maximum number of tokens the model will generate in its response. It will stop sooner if it naturally reaches a stop token.</td>
+          <td>Always set an appropriate max tokens to control costs and prevent unexpectedly long outputs. For structured extraction, set it tight (e.g., 100). For long-form writing, set it generously.</td>
+        </tr>
+        <tr>
+          <td><strong>Frequency penalty</strong></td>
+          <td>Penalises tokens proportional to how often they have appeared so far in the output. Reduces repetition of specific words.</td>
+          <td>Set to 0.1–0.5 for long-form content generation to reduce word-level repetition. Keep at 0 for classification or short outputs.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warning">
+      <div class="callout-title">Temperature = 0 Does Not Guarantee Identical Outputs</div>
+      <p>Setting temperature to 0 makes the model greedy: it always picks the highest-probability token. This makes outputs highly reproducible, but floating-point arithmetic on different hardware or different batching conditions can occasionally produce different results. For truly reproducible outputs in production, store and replay the model's actual output rather than assuming you can re-generate it identically.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="lesson-section" id="practical">
+    <h2>Practical Techniques and Common Mistakes</h2>
+
+    <div class="tip-grid">
+      <div class="tip-card">
+        <h4>Specify the output format explicitly</h4>
+        <p>Do not leave format to chance. Tell the model exactly what you want: "Respond only in valid JSON with keys 'category', 'confidence', and 'reasoning'." Models follow explicit format instructions reliably.</p>
+      </div>
+      <div class="tip-card">
+        <h4>State your audience</h4>
+        <p>"Explain to a first-year university student" produces very different output to "Explain to a domain expert." Specifying the audience is one of the highest-leverage instructions you can include.</p>
+      </div>
+      <div class="tip-card">
+        <h4>Give the model a way out</h4>
+        <p>When asking a yes/no or classification question, include an "I don't know" or "Not enough information" option. Without it, models are forced to pick one of the provided answers even when they are uncertain, which inflates false confidence.</p>
+      </div>
+      <div class="tip-card">
+        <h4>Ask for a draft, then revise</h4>
+        <p>For complex documents, a two-step approach works well: first prompt for a rough draft with key points, then prompt again to refine, expand, or adjust the tone of the draft. Multi-step generation often outperforms single-shot complex requests.</p>
+      </div>
+      <div class="tip-card">
+        <h4>Tell it what NOT to do carefully</h4>
+        <p>Negative instructions ("Do not mention competitors") are less reliable than positive ones ("Focus only on our product's features"). Where possible, reframe prohibitions as positive directives. Use both if the constraint is critical.</p>
+      </div>
+      <div class="tip-card">
+        <h4>Test with adversarial inputs</h4>
+        <p>For any prompt used in production, test it with inputs designed to break it: very long inputs, inputs in unexpected languages, inputs that contain injection-like instructions ("Ignore previous instructions and..."). Build robustness before deployment.</p>
+      </div>
+    </div>
+
+    <h3>Common Mistakes to Avoid</h3>
+    <div class="vs-grid">
+      <div class="vs-card before">
+        <div class="vs-header">&#10006; Summarise this article for me</div>
+        <div class="vs-body">No length specified, no audience, no format. The result could be one sentence or five paragraphs.</div>
+      </div>
+      <div class="vs-card after">
+        <div class="vs-header">&#10004; Much better</div>
+        <div class="vs-body">Summarise the following article in exactly 3 sentences for a non-technical manager. Focus on the business implications, not the technical details.</div>
+      </div>
+    </div>
+    <div class="vs-grid">
+      <div class="vs-card before">
+        <div class="vs-header">&#10006; Is this code correct?</div>
+        <div class="vs-body">Models tend to say "yes" (sycophancy). You will get better results asking it to find problems.</div>
+      </div>
+      <div class="vs-card after">
+        <div class="vs-header">&#10004; Much better</div>
+        <div class="vs-body">Review the following Python function for bugs, edge cases, and performance issues. List every problem you find, even minor ones. If you find none, explain why it is correct.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="lesson-section" id="api">
+    <h2>Using the API: Putting It All Together</h2>
+    <p>Here is how these techniques look in actual code using the OpenAI Python library (v1.0+). The same patterns apply to Anthropic's Claude API, Google's Gemini API, and any other provider that uses the chat completions interface.</p>
+
+    <div class="callout info">
+      <div class="callout-title">Install First</div>
+      <p>Run: <code>pip install openai</code>. You will need an API key from platform.openai.com. Set it as an environment variable: <code>OPENAI_API_KEY=sk-...</code></p>
+    </div>
+
+    <div class="code-label">Python (OpenAI API v1.0+)</div>
+    <div class="code-block"><pre><span class="py-kw">from</span> openai <span class="py-kw">import</span> OpenAI
+<span class="py-kw">import</span> json
+
+client = <span class="py-fn">OpenAI</span>()  <span class="py-cm"># reads OPENAI_API_KEY from environment</span>
+
+<span class="py-cm"># ── 1. Zero-shot with system prompt ───────────────────────────────────</span>
+response = client.chat.completions.<span class="py-fn">create</span>(
+    model=<span class="py-str">"gpt-4o-mini"</span>,
+    temperature=<span class="py-num">0</span>,                 <span class="py-cm"># deterministic for classification</span>
+    max_tokens=<span class="py-num">50</span>,
+    messages=[
+        {
+            <span class="py-str">"role"</span>: <span class="py-str">"system"</span>,
+            <span class="py-str">"content"</span>: <span class="py-str">"You are a sentiment classifier. Respond with exactly one word: POSITIVE, NEGATIVE, or MIXED."</span>
+        },
+        {
+            <span class="py-str">"role"</span>: <span class="py-str">"user"</span>,
+            <span class="py-str">"content"</span>: <span class="py-str">"The course content is excellent but the platform keeps crashing."</span>
+        }
+    ]
+)
+<span class="py-fn">print</span>(<span class="py-str">"Sentiment:"</span>, response.choices[<span class="py-num">0</span>].message.content)
+
+<span class="py-cm"># ── 2. Few-shot prompting ─────────────────────────────────────────────</span>
+few_shot_prompt = <span class="py-str">"""Classify each customer message by intent.
+
+Message: "Where is my order?"
+Intent: ORDER_STATUS
+
+Message: "I want to return this item."
+Intent: RETURN_REQUEST
+
+Message: "This is broken, I want a refund now!"
+Intent: COMPLAINT
+
+Message: "Do you have this in blue?"
+Intent:"""</span>
+
+response2 = client.chat.completions.<span class="py-fn">create</span>(
+    model=<span class="py-str">"gpt-4o-mini"</span>,
+    temperature=<span class="py-num">0</span>,
+    max_tokens=<span class="py-num">20</span>,
+    messages=[{<span class="py-str">"role"</span>: <span class="py-str">"user"</span>, <span class="py-str">"content"</span>: few_shot_prompt}]
+)
+<span class="py-fn">print</span>(<span class="py-str">"Intent:"</span>, response2.choices[<span class="py-num">0</span>].message.content)
+
+<span class="py-cm"># ── 3. Chain-of-thought + structured JSON output ──────────────────────</span>
+cot_prompt = <span class="py-str">"""Analyse the following business scenario and recommend a course of action.
+Think through the problem step by step, then provide your recommendation.
+
+Scenario: A startup has 3 months of runway. Monthly revenue is £12,000.
+Monthly burn is £18,000. They have a product ready to scale.
+
+Respond as JSON with keys:
+- "reasoning": array of reasoning steps (strings)
+- "recommendation": one sentence
+- "urgency": "LOW", "MEDIUM", or "HIGH" """</span>
+
+response3 = client.chat.completions.<span class="py-fn">create</span>(
+    model=<span class="py-str">"gpt-4o-mini"</span>,
+    temperature=<span class="py-num">0.3</span>,
+    max_tokens=<span class="py-num">400</span>,
+    messages=[{<span class="py-str">"role"</span>: <span class="py-str">"user"</span>, <span class="py-str">"content"</span>: cot_prompt}]
+)
+
+raw = response3.choices[<span class="py-num">0</span>].message.content
+<span class="py-cm"># Strip markdown code fences if present</span>
+raw_clean = raw.<span class="py-fn">strip</span>().<span class="py-fn">removeprefix</span>(<span class="py-str">"```json"</span>).<span class="py-fn">removesuffix</span>(<span class="py-str">"```"</span>).<span class="py-fn">strip</span>()
+result = json.<span class="py-fn">loads</span>(raw_clean)
+
+<span class="py-fn">print</span>(<span class="py-str">"\nReasoning steps:"</span>)
+<span class="py-kw">for</span> step <span class="py-kw">in</span> result[<span class="py-str">"reasoning"</span>]:
+    <span class="py-fn">print</span>(<span class="py-str">f"  - {step}"</span>)
+<span class="py-fn">print</span>(<span class="py-str">f"Recommendation: {result['recommendation']}"</span>)
+<span class="py-fn">print</span>(<span class="py-str">f"Urgency: {result['urgency']}"</span>)</pre></div>
+
+    <div class="output-block">Sentiment: MIXED
+
+Intent: PRODUCT_INQUIRY
+
+Reasoning steps:
+  - Monthly burn (£18,000) exceeds revenue (£12,000), giving a deficit of £6,000/month.
+  - At this burn rate, 3 months of runway means approximately £18,000 in reserves.
+  - With a product ready to scale, the priority must be aggressive revenue growth or fundraising.
+  - Cutting costs alone cannot close the gap quickly enough given the product readiness.
+
+Recommendation: Prioritise immediate fundraising or an aggressive sales push to extend runway beyond 90 days.
+Urgency: HIGH</pre></div>
+
+    <p>The chain-of-thought prompt produces structured, verifiable reasoning rather than a flat recommendation. The JSON output format makes the result directly usable in an application without any parsing of free text.</p>
+  </section>
+
+  <!-- 9 -->
+  <section class="lesson-section" id="takeaways">
+    <h2>Key Takeaways</h2>
+    <ul class="takeaway-list">
+      <li>Prompt engineering is the practice of crafting LLM inputs deliberately. Specificity of instruction, format, audience, and constraints all significantly affect output quality.</li>
+      <li>Zero-shot prompting asks the model to perform a task with no examples. It works well for well-defined tasks when instructions are precise: format, audience, length, and register should all be stated.</li>
+      <li>Few-shot prompting provides examples of the desired input-output pattern. It was demonstrated at scale by the GPT-3 paper (Brown et al., 2020). Example quality matters more than quantity. Order of examples affects output.</li>
+      <li>Chain-of-thought prompting (Wei et al., 2022) improves performance on reasoning tasks by prompting the model to show its working. "Let's think step by step" (Kojima et al., 2022) is a simple zero-shot version that works surprisingly well.</li>
+      <li>System prompts define the model's persona, scope, constraints, and escalation behaviour for an entire conversation. They are the highest-leverage element in building reliable AI applications.</li>
+      <li>Temperature controls output randomness: use 0 for deterministic tasks (classification, extraction), and 0.7-1.0 for creative or conversational tasks. Top-p and top-k provide additional control over the sampling distribution.</li>
+      <li>Specify output format explicitly (JSON, bullet list, table) to get programmatically processable results. Avoid relying on the model's default formatting choices.</li>
+      <li>Test prompts with adversarial inputs, check for sycophancy (agreeing when challenged), and never deploy a prompt in production without evaluating its behaviour on representative edge cases.</li>
+    </ul>
+    <div class="callout info" style="margin-top:2rem;">
+      <div class="callout-title">Coming Up: Computer Vision in Practice</div>
+      <p>In Lesson 5.4, you will see how computer vision is applied to real problems: medical imaging, object detection, autonomous vehicles, and manufacturing quality control. You will use OpenCV and pre-trained models to build a working image processing pipeline.</p>
+    </div>
+  </section>
+
+  <!-- Practice Notebook -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:2rem 0;padding:1.25rem 1.5rem;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.1);border-radius:8px;">
+    <div>
+      <div style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code in Google Colab</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">Zero-shot, few-shot, CoT prompting + A/B testing &middot; Free GPU &middot; No setup</div>
+    </div>
+    <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-5.3-prompting.ipynb" target="_blank" rel="noopener">
+      <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+    </a>
+  </div>
+
+  <div class="deeper-block">
+    <p class="deeper-eyebrow">Going Deeper</p>
+    <h2 class="deeper-title">Want to sharpen your prompting skills? Start here.</h2>
+    <div class="deeper-resources">
+      <a class="deeper-item" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">🤖</span>
+        <div>
+          <span class="deeper-item-label">Anthropic Prompt Engineering Guide</span>
+          <span class="deeper-item-desc">Official techniques for getting reliable, well-structured outputs from Claude. Covers system prompts, XML tags, chain-of-thought, and avoiding common pitfalls.</span>
+        </div>
+      </a>
+      <a class="deeper-item" href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">💡</span>
+        <div>
+          <span class="deeper-item-label">OpenAI Prompt Engineering Guide</span>
+          <span class="deeper-item-desc">Six strategies backed by OpenAI's own research: write clear instructions, provide reference text, split complex tasks, give models time to think, and more.</span>
+        </div>
+      </a>
+      <a class="deeper-item" href="https://learnprompting.org" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">📚</span>
+        <div>
+          <span class="deeper-item-label">Learn Prompting (free community textbook)</span>
+          <span class="deeper-item-desc">A community-maintained, comprehensive guide covering prompt techniques from basics to advanced. Updated regularly as the field moves.</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <a href="LESSON 5.2.html" class="nav-btn prev">&#8592; 5.2 Large Language Models</a>
+    <a href="LESSON 5.4.html" class="nav-btn next">5.4 Computer Vision &#8594;</a>
+  </div>
+</main>
+
+<script>
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    bar.style.width = doc.scrollHeight > doc.clientHeight ? (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%' : '0%';
+  });
+  const sections = document.querySelectorAll('.lesson-section');
+  const links = document.querySelectorAll('.toc-list a');
+  sections.forEach(s => new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { const id = e.target.id; links.forEach(a => a.classList.toggle('active', a.dataset.section === id)); } });
+  }, { rootMargin: '-15% 0px -70% 0px' }).observe(s));
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

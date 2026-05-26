@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Use — AI Crash Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0a0908;
+    --paper: #f5f0e8;
+    --paper2: #ede8df;
+    --muted: #7a746a;
+    --border: rgba(10,9,8,0.1);
+    --accent: #c8401a;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(20px, 5vw, 60px);
+    height: 52px;
+  }
+  .topbar-brand {
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #fff; text-decoration: none;
+  }
+  .topbar-back {
+    font-family: var(--mono); font-size: 11px;
+    color: rgba(255,255,255,0.6); text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: color 0.15s;
+  }
+  .topbar-back:hover { color: #fff; }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 860px; margin: 0 auto;
+    padding: 64px clamp(20px,5vw,40px) 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700; line-height: 1.2;
+    color: var(--ink); margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 860px; margin: 0 auto;
+    padding: 48px clamp(20px,5vw,40px) 80px;
+  }
+  .section { margin-bottom: 48px; }
+  .section-number {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 17px; font-weight: 700;
+    color: var(--ink); margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section p {
+    font-size: 14px; color: #3a3530;
+    line-height: 1.75; margin-bottom: 12px;
+  }
+  .section p:last-child { margin-bottom: 0; }
+  .section ul {
+    margin: 12px 0 12px 20px;
+    font-size: 14px; color: #3a3530; line-height: 1.75;
+  }
+  .section ul li { margin-bottom: 6px; }
+  .highlight {
+    background: var(--paper2);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px; color: #3a3530; line-height: 1.7;
+  }
+  .contact-box {
+    background: var(--ink); color: #fff;
+    padding: 24px 28px; margin-top: 48px;
+  }
+  .contact-box .label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5); margin-bottom: 8px;
+  }
+  .contact-box p {
+    font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6;
+  }
+  .contact-box a { color: #fff; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: rgba(255,255,255,0.4);
+    text-align: center; padding: 24px 40px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+  footer a:hover { color: #fff; }
+  @media (max-width: 600px) { footer { flex-direction: column; text-align: center; } }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="ai_crash_course_pro.html" class="topbar-brand">AI Crash Course</a>
+  <a href="ai_crash_course_pro.html" class="topbar-back">&#8592; Back to Course</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">Legal</div>
+  <h1 class="hero-title">Terms of Use</h1>
+  <p class="hero-sub">Last updated: May 2026 &middot; Please read these terms before using the course.</p>
+</header>
+
+<main class="content">
+
+  <div class="highlight">
+    By accessing or using AI Crash Course, you agree to these Terms of Use. If you do not agree, please do not use this course.
+  </div>
+
+  <div class="section">
+    <div class="section-number">01</div>
+    <div class="section-title">Ownership and Copyright</div>
+    <p>AI Crash Course, including all lesson content, quiz questions, course structure, text, and design, is the original work of <strong>Abena Fosuaa Gyasi</strong> and is protected by copyright law.</p>
+    <p>&copy; 2026 Abena Fosuaa Gyasi. All rights reserved.</p>
+    <p>Unauthorised reproduction, distribution, or commercial use of any part of this course is strictly prohibited.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-number">02</div>
+    <div class="section-title">What You Can Do</div>
+    <p>You are welcome to:</p>
+    <ul>
+      <li>Access and use the course for your own personal learning</li>
+      <li>Take notes and complete the activities for your own use</li>
+      <li>Share the link to this course with others who may benefit</li>
+      <li>Reference this course in your own work with proper attribution</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-number">03</div>
+    <div class="section-title">What You Cannot Do</div>
+    <p>You may not:</p>
+    <ul>
+      <li>Copy, reproduce, or republish any lesson content without written permission</li>
+      <li>Sell, rent, or commercially exploit any part of this course</li>
+      <li>Present any part of this course as your own work</li>
+      <li>Use course content to create a competing product or service</li>
+      <li>Remove or alter any copyright notices within the course</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-number">04</div>
+    <div class="section-title">No Warranty</div>
+    <p>This course is provided for educational purposes and is offered free of charge. While every effort has been made to ensure accuracy, the content is provided "as is" without warranty of any kind.</p>
+    <p>Abena Fosuaa Gyasi accepts no liability for any errors, omissions, or outcomes resulting from use of this course.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-number">05</div>
+    <div class="section-title">External Links and Notebooks</div>
+    <p>This course links to third-party tools including Google Colab and external resources. These are provided for convenience and are not under the control of AI Crash Course. Abena Fosuaa Gyasi is not responsible for the content or availability of any external sites.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-number">06</div>
+    <div class="section-title">Changes to These Terms</div>
+    <p>These terms may be updated from time to time. Continued use of the course after any changes constitutes your acceptance of the updated terms. The date at the top of this page reflects the most recent revision.</p>
+  </div>
+
+  <div class="contact-box">
+    <div class="label">Questions or Permissions</div>
+    <p>If you would like to use any part of this course beyond what is permitted above, or if you have any questions about these terms, please get in touch at <a href="mailto:abenafosuaagyasi111@gmail.com">abenafosuaagyasi111@gmail.com</a>.</p>
+  </div>
+
+</main>
+
+<footer>
+  <span>&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</span>
+  <a href="ai_crash_course_pro.html">Back to Course</a>
+</footer>
+
+</body>
+</html>

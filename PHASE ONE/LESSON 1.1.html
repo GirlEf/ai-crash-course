@@ -1,0 +1,1009 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1.1: The Story of AI — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #b83c12;
+  --accent-soft: rgba(184,60,18,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.85;
+  min-height: 100vh;
+}
+
+/* TOP BAR */
+.topbar {
+  background: var(--ink);
+  padding: 14px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.course-name {
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+.read-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.06em;
+}
+
+/* PROGRESS */
+.reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 200;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* LESSON HEADER */
+.lesson-header {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 72px 40px 56px;
+  border-bottom: 1px solid var(--border);
+}
+.lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.phase-tag {
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(184,60,18,0.2);
+  padding: 5px 12px;
+}
+.lesson-num-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.lesson-title {
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+.lesson-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+.lesson-intro {
+  font-size: 19px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 600px;
+  font-family: var(--ui);
+  font-weight: 300;
+}
+
+/* WHAT YOU WILL LEARN */
+.objectives-bar {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 40px;
+  background: var(--paper2);
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.obj-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  padding-top: 3px;
+  white-space: nowrap;
+}
+.obj-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.obj-item {
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--border2);
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.obj-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* MAIN CONTENT */
+.content-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--max) 1fr;
+  gap: 0;
+  padding: 0 40px;
+  align-items: start;
+}
+
+.article {
+  padding: 64px 56px 64px 0;
+  border-right: 1px solid var(--border);
+}
+
+/* Typography */
+.article h2 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 56px 0 20px;
+  line-height: 1.25;
+}
+.article h2:first-child { margin-top: 0; }
+
+.article h3 {
+  font-family: var(--ui);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 40px 0 14px;
+}
+
+.article p {
+  margin-bottom: 24px;
+  color: var(--ink);
+}
+
+.article p:last-child { margin-bottom: 0; }
+
+.article strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.article em {
+  font-style: italic;
+}
+
+/* Pull quote */
+.pullquote {
+  border-left: 3px solid var(--accent);
+  margin: 40px 0;
+  padding: 4px 0 4px 28px;
+}
+.pullquote p {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.pullquote cite {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted2);
+  font-style: normal;
+}
+
+/* Callout box */
+.callout {
+  background: var(--gold-soft);
+  border: 1px solid rgba(154,122,46,0.25);
+  padding: 24px 28px;
+  margin: 36px 0;
+}
+.callout-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.callout p {
+  font-family: var(--ui);
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+/* Timeline */
+.timeline {
+  margin: 40px 0;
+  position: relative;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--border2);
+}
+.tl-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+  position: relative;
+}
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--accent);
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+}
+.tl-year {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.tl-title {
+  font-family: var(--ui);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.tl-desc {
+  font-family: var(--ui);
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Concept card grid */
+.concept-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 32px 0;
+}
+.concept-card {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  padding: 20px 20px;
+}
+.concept-card-head {
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.concept-icon {
+  width: 28px; height: 28px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(184,60,18,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.concept-card p {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Analogy highlight */
+.analogy {
+  background: var(--paper2);
+  border-top: 3px solid var(--ink);
+  padding: 24px 28px;
+  margin: 36px 0;
+}
+.analogy-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 10px;
+}
+.analogy p {
+  font-family: var(--ui);
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  padding: 64px 0 64px 40px;
+  position: sticky;
+  top: 60px;
+}
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 14px;
+}
+.toc-list { list-style: none; }
+.toc-item {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--muted);
+  padding: 5px 0;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  padding-left: 12px;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+.book-card {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.book-title {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.book-author {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted2);
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+.book-note {
+  font-family: var(--ui);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term {
+  padding: 10px 14px;
+  background: var(--paper2);
+  border: 1px solid var(--border);
+}
+.term-word {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+}
+.term-def {
+  font-family: var(--ui);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ACTIVITY SECTION */
+.activity-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 56px 40px;
+  border-top: 1px solid var(--border);
+}
+.activity-inner {
+  background: var(--ink);
+  padding: 40px 44px;
+  color: var(--paper);
+}
+.act-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+.act-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.act-body {
+  font-family: var(--ui);
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.8;
+  margin-bottom: 28px;
+  max-width: 540px;
+}
+.act-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.act-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.step-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  min-width: 24px;
+  padding-top: 2px;
+  letter-spacing: 0.04em;
+}
+.step-text {
+  font-family: var(--ui);
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.65;
+}
+
+/* NEXT LESSON */
+.next-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+.next-card {
+  border: 1px solid var(--border2);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  cursor: pointer;
+  transition: background 0.15s;
+  background: var(--paper);
+  text-decoration: none;
+  color: inherit;
+}
+.next-card:hover { background: var(--paper2); }
+.next-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 6px;
+}
+.next-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.next-arrow {
+  font-size: 28px;
+  color: var(--accent);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.next-card:hover .next-arrow { transform: translateX(5px); }
+
+/* FOOTER */
+footer {
+  background: var(--paper2);
+  border-top: 1px solid var(--border);
+  padding: 28px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.footer-course {
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted2);
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.lesson-header { animation: fadeUp 0.5s 0.05s both; }
+.objectives-bar { animation: fadeUp 0.5s 0.15s both; }
+.content-wrap { animation: fadeUp 0.5s 0.25s both; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .content-wrap {
+    grid-template-columns: 1fr;
+    padding: 0 28px;
+  }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .next-section, footer { padding-left: 28px; padding-right: 28px; }
+  .concept-grid { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--ui); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reflect-subtitle { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.reflect-list { display: flex; flex-direction: column; gap: 8px; }
+.reflect-list details { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; }
+.reflect-list summary { font-family: var(--ui); font-size: 15px; font-weight: 500; color: var(--ink); padding: 14px 18px 14px 48px; cursor: pointer; list-style: none; position: relative; }
+.reflect-list summary::-webkit-details-marker { display: none; }
+.reflect-list summary::before { content: '?'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.3); width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; }
+.reflect-list details[open] summary::before { content: '!'; color: var(--accent); background: var(--accent-soft); border-color: rgba(184,60,18,0.3); }
+.reflect-hint { font-family: var(--ui); font-size: 14px; color: var(--muted); padding: 0 18px 14px 48px; line-height: 1.65; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<!-- TOP BAR -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 1.1</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">12 min read</span>
+</nav>
+
+<!-- LESSON HEADER -->
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 1: The Big Picture</span>
+    <span class="lesson-num-tag">Lesson 1 of 4</span>
+  </div>
+  <h1 class="lesson-title">The Story of AI:<br><em>From Turing to Today</em></h1>
+  <p class="lesson-intro">Before we write a single line of code or touch any data, you need to understand where AI came from, why it matters right now, and why you are not late to this.</p>
+</header>
+
+<!-- OBJECTIVES -->
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>Where AI began and why it stalled</div>
+    <div class="obj-item"><div class="obj-dot"></div>The 10 milestones that shaped AI</div>
+    <div class="obj-item"><div class="obj-dot"></div>Why AI exploded in the last 10 years</div>
+    <div class="obj-item"><div class="obj-dot"></div>How to place yourself in this story</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>Let us start with an honest question</h2>
+
+    <p>When most people hear the words "Artificial Intelligence," they picture one of two things: a robot with glowing eyes trying to take over the world, or a futuristic technology so complex that only computer scientists at top universities could ever understand it.</p>
+
+    <p>Neither of those pictures is accurate. And that gap between what people imagine and what AI actually is, right now, is exactly where we are going to begin.</p>
+
+    <p>AI is not magic. It is not science fiction. It is a set of ideas that humans have been developing, failing at, picking back up, and slowly perfecting since the 1950s. Once you understand that story, everything else in this course will make much more sense.</p>
+
+    <div class="pullquote">
+      <p>"A computer would deserve to be called intelligent if it could deceive a human into believing it was human."</p>
+      <cite>Alan Turing, 1950</cite>
+    </div>
+
+    <h2>It started with one question</h2>
+
+    <p>In 1950, a British mathematician named Alan Turing published a paper that asked a question nobody had seriously asked before: can machines think?</p>
+
+    <p>Turing did not try to answer that question philosophically. Instead, he proposed a test. Put a human in one room and a machine in another. A judge communicates with both through text only, without knowing which is which. If the judge cannot reliably tell which is the human, the machine has passed the test.</p>
+
+    <p>This was the moment the field of AI was born, not with a computer, not with data, but with a question.</p>
+
+    <div class="callout">
+      <div class="callout-label">Worth knowing</div>
+      <p>Turing never got to see where his question led. He died in 1954 at the age of 41. The field he inspired would go on to spend the next 70 years trying to answer it, and we are still not entirely done.</p>
+    </div>
+
+    <h2>Ten moments that built the world you live in</h2>
+
+    <p>AI history is not a straight line upward. It is more like a heartbeat, periods of enormous excitement followed by disappointment, followed by a new breakthrough that restarts the whole cycle. Here are the ten moments you need to know.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">1950</div>
+          <div class="tl-title">The Turing Test</div>
+          <div class="tl-desc">Alan Turing publishes "Computing Machinery and Intelligence." The question of whether machines can think enters serious scientific discussion for the first time.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">1956</div>
+          <div class="tl-title">The birth of AI as a field</div>
+          <div class="tl-desc">A summer workshop at Dartmouth College coins the term "Artificial Intelligence." Researchers predict machines will be as smart as humans within 20 years. They were off by quite a bit.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">1974</div>
+          <div class="tl-title">The first AI winter</div>
+          <div class="tl-desc">Funding dries up. Computers are too slow. Data is too scarce. The early promises were not delivered. Governments and universities lose interest, and AI nearly disappears as a field.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">1997</div>
+          <div class="tl-title">Deep Blue beats a chess world champion</div>
+          <div class="tl-desc">IBM's Deep Blue defeats Garry Kasparov, the reigning world chess champion. It is a landmark moment, though critics point out the machine cannot do anything except play chess.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2006</div>
+          <div class="tl-title">Deep learning is reborn</div>
+          <div class="tl-desc">Geoffrey Hinton and colleagues publish research that makes training deep neural networks practical. Most people in the field ignore it. A small group does not.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2012</div>
+          <div class="tl-title">AlexNet changes everything</div>
+          <div class="tl-desc">A deep learning model wins an image recognition competition by such a large margin that every serious AI researcher stops and takes notice. The modern AI era begins here.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2016</div>
+          <div class="tl-title">AlphaGo beats the world Go champion</div>
+          <div class="tl-desc">Google DeepMind's AlphaGo defeats Lee Sedol at Go, a game so complex that experts said machines would never crack it. The AI beats him four games to one.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2017</div>
+          <div class="tl-title">The transformer architecture</div>
+          <div class="tl-desc">Google researchers publish "Attention Is All You Need," introducing the transformer. Almost every powerful AI system you use today, including ChatGPT and Claude, is built on this architecture.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2022</div>
+          <div class="tl-title">ChatGPT reaches 100 million users in 2 months</div>
+          <div class="tl-desc">OpenAI releases ChatGPT to the public. It becomes the fastest-growing consumer application in history. AI stops being a specialist topic and becomes everyone's conversation.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">Now</div>
+          <div class="tl-title">You are here</div>
+          <div class="tl-desc">AI is being built into every industry, every job, every device. The people who understand it will shape how it develops. That is why you are taking this course.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Why did it take so long?</h2>
+
+    <p>If the ideas behind AI are 70 years old, why did it only explode in the last decade? Three things had to come together at the same time, and for most of AI history, at least one of them was missing.</p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">💾</div>
+          Data
+        </div>
+        <p>AI learns from examples. The more examples, the better it learns. The internet created an ocean of data that simply did not exist before the 2000s.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">⚡</div>
+          Computing power
+        </div>
+        <p>Training AI models requires enormous amounts of calculation. GPUs, originally built for video games, turned out to be perfect for the job. They got cheap and powerful at just the right time.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">🧠</div>
+          Better algorithms
+        </div>
+        <p>The core ideas of deep learning existed in the 1980s but did not work well in practice. Decades of refinement turned a promising idea into something that actually worked.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">☁️</div>
+          Cloud infrastructure
+        </div>
+        <p>Amazon, Google and Microsoft built global computing infrastructure that made it possible to train huge models without owning a supercomputer. Overnight, AI became accessible.</p>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-label">Think of it this way</div>
+      <p>Imagine a recipe that has existed for 70 years but nobody could make it properly because one essential ingredient was not available in shops yet. The recipe did not change. The knowledge did not change. The ingredient finally arrived, and suddenly every restaurant in the world started serving the dish.</p>
+    </div>
+
+    <h2>Why this matters for you specifically</h2>
+
+    <p>Here is something worth sitting with. Most of the people building and deploying AI systems today are not the people who invented the underlying mathematics. They are engineers, product designers, analysts and educators who learned how to use the tools that the researchers built.</p>
+
+    <p>You do not need to have been there in 1956. You do not need a PhD. What you need is a clear understanding of how these tools work, where they come from, and how to apply them to real problems. That is exactly what this course will give you.</p>
+
+    <p>The story of AI is still being written. The next chapter will be written by people who took the time to understand it properly. You are now one of those people.</p>
+
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item" onclick="scrollTo('q1')">An honest question</li>
+        <li class="toc-item" onclick="scrollTo('q2')">It started with one question</li>
+        <li class="toc-item" onclick="scrollTo('q3')">Ten key moments</li>
+        <li class="toc-item" onclick="scrollTo('q4')">Why it took so long</li>
+        <li class="toc-item" onclick="scrollTo('q5')">Why this matters for you</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Human Compatible</div>
+        <div class="book-author">Stuart Russell · 2019</div>
+        <div class="book-note">A brilliant, readable overview of what AI is, where it is going, and why the stakes are real.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">The Alignment Problem</div>
+        <div class="book-author">Brian Christian · 2020</div>
+        <div class="book-note">Reads like a thriller. Covers the history and the serious challenges of making AI behave as intended.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Turing Test</div>
+          <div class="term-def">A test of a machine's ability to exhibit intelligent behaviour indistinguishable from a human.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">AI Winter</div>
+          <div class="term-def">A period of reduced funding and interest in AI research, usually following a wave of overpromising.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Deep Learning</div>
+          <div class="term-def">A type of machine learning using layered neural networks. The engine behind almost all modern AI.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Transformer</div>
+          <div class="term-def">An architecture introduced in 2017 that became the foundation of GPT, Claude, BERT and most modern AI.</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ACTIVITY -->
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Lesson Activity · No tools needed</div>
+    <div class="act-title">The AI Audit</div>
+    <div class="act-body">Before our next session, we want you to start noticing AI in your everyday life. Not the dramatic sci-fi version. The real version that is already running quietly around you.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Pick 10 apps or services you used in the last 48 hours. Your phone, your music, your email, maps, shopping, anything.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">For each one, ask yourself: where might AI be involved here? What decisions is the app making automatically on your behalf?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Write down your list and your guesses. Bring it to the live session. There are no wrong answers. The goal is to start seeing what was always there.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-1-1';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<!-- REFLECT -->
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <div class="reflect-eyebrow">Pause &amp; Reflect</div>
+    <h3 class="reflect-title">Check your understanding</h3>
+    <p class="reflect-subtitle">Click any question to reveal a thinking prompt. There are no wrong answers.</p>
+    <div class="reflect-list">
+      <details>
+        <summary>The first AI winter happened because researchers over-promised results. Can you think of a modern AI trend that might face the same problem?</summary>
+        <p class="reflect-hint">Think about large language models, self-driving cars, or AI in medicine. What promises have been made publicly? What would "failure to deliver" look like, and how might that affect funding and public trust?</p>
+      </details>
+      <details>
+        <summary>Why did AI progress so dramatically after 2012? Name at least two factors.</summary>
+        <p class="reflect-hint">Consider: the availability of large labelled datasets, the rise of GPU computing, breakthroughs in deep learning architectures (like AlexNet), and the growth of the internet generating vast amounts of training data.</p>
+      </details>
+      <details>
+        <summary>If Alan Turing came back today, which modern AI achievement do you think would surprise him most — and which would he say he predicted?</summary>
+        <p class="reflect-hint">Turing proposed his "imitation game" as a test for machine intelligence. Consider whether chatbots pass that test, and what he might say about AI that plays games, generates art, or writes code.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT LESSON -->
+<section class="next-section">
+  <a class="next-card" href="LESSON 1.2.html">
+    <div>
+      <div class="next-label">Up next: Lesson 1.2</div>
+      <div class="next-title">AI vs Machine Learning vs Deep Learning</div>
+    </div>
+    <span class="next-arrow">→</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 1</span>
+  <span class="footer-copy">Lesson 1.1 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+
+// TOC active state
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Your Instructor — Abena Fosuaa Gyasi | AI Crash Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --ink-soft: #4a4a6a;
+      --paper: #fafaf7;
+      --surface: #ffffff;
+      --surface-raised: #f4f4f0;
+      --accent: #b5820a;
+      --accent-light: #f0e0b0;
+      --accent-dark: #8a6008;
+      --border: #e2e2da;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.8;
+    }
+
+    /* ── Top nav ── */
+    .topnav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topnav-brand {
+      font-family: 'Outfit', sans-serif; font-weight: 800;
+      font-size: 1rem; color: var(--ink); text-decoration: none;
+    }
+    .topnav-brand span { color: var(--accent); }
+    .topnav-back {
+      font-family: 'Outfit', sans-serif; font-size: 0.85rem;
+      color: var(--ink-soft); text-decoration: none; font-weight: 600;
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      transition: all 0.2s;
+    }
+    .topnav-back:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(160deg, #0e0e1a 0%, #1a1a2e 50%, #2c2000 100%);
+      padding: 5rem 2rem 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 60% 100%, rgba(181,130,10,0.25) 0%, transparent 60%);
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 340px;
+      gap: 4rem; align-items: center;
+      position: relative; z-index: 1;
+      padding-bottom: 4rem;
+    }
+    .hero-text { padding-bottom: 0; }
+    .hero-eyebrow {
+      font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent-light); margin-bottom: 1.25rem;
+    }
+    .hero-text h1 {
+      font-family: 'Outfit', sans-serif; font-size: 3rem;
+      font-weight: 800; color: #fff; line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    .hero-text h1 em {
+      color: var(--accent-light); font-style: normal;
+    }
+    .hero-tagline {
+      font-family: 'Outfit', sans-serif; font-size: 1.1rem;
+      color: rgba(255,255,255,0.65); margin-bottom: 2rem; font-weight: 300;
+    }
+    .hero-chips {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem;
+    }
+    .chip {
+      font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600;
+      padding: 0.35rem 0.9rem; border-radius: 99px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.85);
+    }
+    .chip.gold { background: rgba(181,130,10,0.25); border-color: rgba(181,130,10,0.5); color: var(--accent-light); }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: #fff;
+      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem;
+      padding: 0.85rem 2rem; border-radius: var(--radius);
+      text-decoration: none; transition: all 0.2s;
+    }
+    .hero-cta:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(181,130,10,0.35); }
+
+    /* Instructor photo */
+    .hero-photo-wrap {
+      display: flex; justify-content: center; align-items: center;
+    }
+    .hero-photo-ring {
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(135deg, rgba(181,130,10,0.9) 0%, rgba(181,130,10,0.3) 50%, rgba(181,130,10,0.8) 100%);
+      box-shadow: 0 0 0 1px rgba(181,130,10,0.2), 0 20px 60px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+    .hero-photo {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+      background: #2c2000;
+    }
+    /* Placeholder if photo not yet added */
+    .hero-photo-placeholder {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(160deg, #2c2000, #4a3800);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.75rem;
+    }
+    .hero-photo-placeholder .icon { font-size: 2.5rem; opacity: 0.4; }
+    .hero-photo-placeholder p {
+      font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+      color: rgba(255,255,255,0.4); text-align: center;
+      max-width: 160px; line-height: 1.5;
+    }
+
+    /* ── Main content ── */
+    .page-body {
+      max-width: 900px; margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* ── Section headers ── */
+    .section-header {
+      font-family: 'Outfit', sans-serif; font-size: 0.7rem;
+      font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.25rem;
+    }
+
+    /* ── Bio block ── */
+    .bio-block {
+      margin-bottom: 3.5rem;
+    }
+    .bio-block h2 {
+      font-family: 'Outfit', sans-serif; font-size: 1.75rem;
+      font-weight: 700; color: var(--ink); margin-bottom: 1.25rem;
+    }
+    .bio-block p { margin-bottom: 1.1rem; font-size: 1.02rem; }
+    .bio-block p:last-child { margin-bottom: 0; }
+    .bio-block .highlight {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-style: italic; margin: 1.5rem 0;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem 1.25rem;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-family: 'Outfit', sans-serif; font-size: 2rem;
+      font-weight: 800; color: var(--accent); display: block;
+    }
+    .stat-card .label {
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem;
+      color: var(--ink-soft); margin-top: 0.25rem;
+    }
+
+    /* ── Credentials grid ── */
+    .credentials {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin: 2rem 0;
+    }
+    .cred-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .cred-icon {
+      font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .cred-content {}
+    .cred-title {
+      font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: 0.95rem; color: var(--ink); margin-bottom: 0.25rem;
+    }
+    .cred-sub {
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem;
+      color: var(--ink-soft); line-height: 1.4;
+    }
+
+    /* ── Skills strip ── */
+    .skills-strip {
+      background: var(--ink); border-radius: var(--radius);
+      padding: 1.75rem 2rem; margin: 2rem 0;
+    }
+    .skills-strip h3 {
+      font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent-light); margin-bottom: 1rem;
+    }
+    .skills-tags {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .skill-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      background: rgba(255,255,255,0.08); color: #c9d1d9;
+      padding: 0.3rem 0.75rem; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .skill-tag.accent { background: rgba(181,130,10,0.2); color: var(--accent-light); border-color: rgba(181,130,10,0.3); }
+
+    /* ── Course overview ── */
+    .course-phases {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem; margin: 2rem 0;
+    }
+    .phase-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 0.75rem;
+      text-align: center;
+    }
+    .phase-pill .num {
+      font-family: 'Outfit', sans-serif; font-size: 1.2rem;
+      font-weight: 800; color: var(--accent); display: block;
+      margin-bottom: 0.4rem;
+    }
+    .phase-pill .name {
+      font-family: 'Outfit', sans-serif; font-size: 0.72rem;
+      font-weight: 600; color: var(--ink); line-height: 1.3;
+    }
+    .phase-pill .sub {
+      font-family: 'Outfit', sans-serif; font-size: 0.68rem;
+      color: var(--ink-soft); margin-top: 0.25rem;
+    }
+
+    /* ── Message card ── */
+    .message-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2c2000 100%);
+      border-radius: 16px; padding: 2.5rem;
+      margin: 3rem 0; color: #fff; position: relative; overflow: hidden;
+    }
+    .message-card::before {
+      content: '\201C';
+      position: absolute; top: -0.5rem; left: 1.5rem;
+      font-size: 8rem; font-family: Georgia, serif;
+      color: rgba(181,130,10,0.2); line-height: 1;
+    }
+    .message-card blockquote {
+      position: relative; z-index: 1;
+      font-size: 1.1rem; line-height: 1.8;
+      color: rgba(255,255,255,0.88);
+      font-style: italic;
+    }
+    .message-card .sig {
+      margin-top: 1.25rem; position: relative; z-index: 1;
+      font-family: 'Outfit', sans-serif; font-weight: 600;
+      color: var(--accent-light); font-style: normal; font-size: 0.95rem;
+    }
+    .message-card .sig span {
+      display: block; font-size: 0.8rem; font-weight: 400;
+      color: rgba(255,255,255,0.5); margin-top: 0.2rem;
+    }
+
+    /* ── CTA at bottom ── */
+    .bottom-cta {
+      text-align: center; margin-top: 3rem;
+    }
+    .bottom-cta h3 {
+      font-family: 'Outfit', sans-serif; font-size: 1.5rem;
+      font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .bottom-cta p {
+      color: var(--ink-soft); margin-bottom: 1.5rem; font-size: 0.95rem;
+    }
+    .btn-primary {
+      display: inline-block; background: var(--accent); color: #fff;
+      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem;
+      padding: 0.9rem 2.5rem; border-radius: var(--radius);
+      text-decoration: none; transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(181,130,10,0.3); }
+
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; padding-bottom: 2.5rem; }
+      .hero-photo-wrap { justify-content: center; margin-bottom: 1.5rem; order: -1; }
+      .hero-photo-ring { width: 220px; height: 220px; }
+      .hero-chips { justify-content: center; }
+      .hero-text { padding-bottom: 0; }
+      .hero-text h1 { font-size: 2rem; }
+      .stats-row { grid-template-columns: 1fr 1fr 1fr; }
+      .credentials { grid-template-columns: 1fr; }
+      .course-phases { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .course-phases { grid-template-columns: 1fr 1fr; }
+      .hero-text h1 { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top nav -->
+  <nav class="topnav">
+    <a href="ai_crash_course_pro.html" class="topnav-brand">AI <span>Crash</span> Course</a>
+    <a href="ai_crash_course_pro.html" class="topnav-back">&#8592; Back to Course</a>
+  </nav>
+
+  <!-- ════════════════════════════ HERO ════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <!-- Left: text -->
+      <div class="hero-text">
+        <div class="hero-eyebrow">Meet Your Instructor</div>
+        <h1>Hi, I'm <em>Abena</em><br>Fosuaa Gyasi.</h1>
+        <p class="hero-tagline">AI Specialist &middot; MSc Artificial Intelligence &middot; Loughborough University</p>
+        <div class="hero-chips">
+          <span class="chip gold">PyTorch &amp; TensorFlow</span>
+          <span class="chip gold">Computer Vision</span>
+          <span class="chip gold">Healthcare AI</span>
+          <span class="chip">Deep Learning</span>
+          <span class="chip">NLP</span>
+          <span class="chip">Research</span>
+          <span class="chip">Loughborough University</span>
+        </div>
+        <a href="ai_crash_course_pro.html" class="hero-cta">
+          Start Learning &rarr;
+        </a>
+      </div>
+
+      <!-- Right: photo -->
+      <div class="hero-photo-wrap">
+        <div class="hero-photo-ring">
+          <img src="instructor.jpg"
+               alt="Abena Fosuaa Gyasi"
+               class="hero-photo"
+               id="instructor-photo"
+               onerror="document.getElementById('instructor-photo').style.display='none'; document.getElementById('photo-placeholder').style.display='flex';" />
+          <div class="hero-photo-placeholder" id="photo-placeholder" style="display:none;">
+            <div class="icon">&#128100;</div>
+            <p>Save photo as<br><strong>instructor.jpg</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ BODY ════════════════════════════ -->
+  <div class="page-body">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="num">2+</span>
+        <div class="label">Years building ML solutions</div>
+      </div>
+      <div class="stat-card">
+        <span class="num">1K+</span>
+        <div class="label">Daily predictions served in production</div>
+      </div>
+      <div class="stat-card">
+        <span class="num">10K+</span>
+        <div class="label">People impacted through NIHR research</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Bio -->
+    <div class="bio-block">
+      <div class="section-header">About Me</div>
+      <h2>From Ghana to Loughborough, Building AI That Matters</h2>
+
+      <p>I am an AI Specialist and MSc Artificial Intelligence student at Loughborough University in the United Kingdom, originally from Ghana. I completed my BSc in Computer Engineering at the University of Energy and Natural Resources, and today I work as an AI Research Assistant at Loughborough University on projects funded by the National Institute for Health Research (NIHR). My work sits at the intersection of machine learning, healthcare, and accessibility.</p>
+
+      <p>In my research, I have built multi-modal AI pipelines that integrate clinical imaging data and electronic records, improving retinal disease diagnostic accuracy by 15%. I have deployed a production melanoma classification system that processes over 1,000 medical image predictions every single day through a REST API. Earlier in my career, I developed an industrial IoT anomaly detection system that prevented over 12 critical infrastructure failures through unsupervised learning techniques.</p>
+
+      <div class="highlight">
+        "I built this course because AI felt intimidating when I started out, and I wanted to create the resource I wish had existed. Clear, honest, grounded in real applications, and free of unnecessary jargon."
+      </div>
+
+      <p>My technical foundation covers Python, PyTorch, TensorFlow, OpenCV, and Keras, with deep specialisations in computer vision, natural language processing, healthcare AI, and multi-modal learning. But the skill I am most proud of is this: the ability to take something genuinely complex and explain it in a way that actually makes sense to a human being.</p>
+
+      <p>I created this AI Crash Course to bring that same clarity to anyone who is curious about artificial intelligence. Whether you are a student, a professional exploring a career change, or someone who simply wants to understand the technology shaping our world, these 25 lessons are for you.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Credentials -->
+    <div class="section-header">Credentials and Experience</div>
+    <div class="credentials">
+      <div class="cred-card">
+        <div class="cred-icon">&#127979;</div>
+        <div class="cred-content">
+          <div class="cred-title">MSc Artificial Intelligence</div>
+          <div class="cred-sub">Loughborough University, UK &middot; Sep 2024 &ndash; Present<br>Deep Learning, Computer Vision, NLP, Healthcare AI, Robotics, Neural Networks</div>
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">&#127979;</div>
+        <div class="cred-content">
+          <div class="cred-title">BSc Computer Engineering</div>
+          <div class="cred-sub">University of Energy and Natural Resources, Ghana &middot; 2018 &ndash; 2022<br>Capstone: IoT Device Fingerprinting using ML and network traffic analysis</div>
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">&#128300;</div>
+        <div class="cred-content">
+          <div class="cred-title">AI Research Assistant</div>
+          <div class="cred-sub">Loughborough University &middot; Jul &ndash; Dec 2024<br>NIHR-funded accessible healthcare AI; 92% user satisfaction; impacted 10,000+ individuals</div>
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">&#9889;</div>
+        <div class="cred-content">
+          <div class="cred-title">Graduate Trainee, Technical Operations</div>
+          <div class="cred-sub">Electricity Company of Ghana &middot; 2022 &ndash; 2023<br>IoT smart meter deployment; digital payment API serving 50,000+ monthly users</div>
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">&#127942;</div>
+        <div class="cred-content">
+          <div class="cred-title">Ghana Scholarship Secretariat Award</div>
+          <div class="cred-sub">Beneficiary, August 2024<br>Awarded by the Ghana Scholarship Secretariat to support postgraduate study in the UK</div>
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">&#128203;</div>
+        <div class="cred-content">
+          <div class="cred-title">Huawei Routing &amp; Switching</div>
+          <div class="cred-sub">Professional Certification &middot; May 2022<br>Also: Advanced Robotics Certification, UENR &middot; January 2021</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Technical Skills -->
+    <div class="skills-strip">
+      <h3>Technical Toolkit</h3>
+      <div class="skills-tags">
+        <span class="skill-tag accent">Python</span>
+        <span class="skill-tag accent">PyTorch</span>
+        <span class="skill-tag accent">TensorFlow</span>
+        <span class="skill-tag accent">Keras</span>
+        <span class="skill-tag accent">OpenCV</span>
+        <span class="skill-tag">Scikit-learn</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">MATLAB</span>
+        <span class="skill-tag">Computer Vision</span>
+        <span class="skill-tag">NLP</span>
+        <span class="skill-tag">Multi-Modal Learning</span>
+        <span class="skill-tag">Transfer Learning</span>
+        <span class="skill-tag">Self-Supervised Learning</span>
+        <span class="skill-tag">CNNs</span>
+        <span class="skill-tag">Transformer Architectures</span>
+        <span class="skill-tag">Healthcare AI</span>
+        <span class="skill-tag">DICOM Processing</span>
+        <span class="skill-tag">Medical Image Analysis</span>
+        <span class="skill-tag">REST API</span>
+        <span class="skill-tag">Model Deployment</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">Anomaly Detection</span>
+        <span class="skill-tag">DBSCAN</span>
+        <span class="skill-tag">Feature Engineering</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Course overview -->
+    <div class="section-header">What This Course Covers</div>
+    <p style="margin-bottom:1.5rem; color:var(--ink-soft); font-size:0.95rem;">25 lessons across 5 phases, taking you from zero to a genuine understanding of modern AI.</p>
+    <div class="course-phases">
+      <div class="phase-pill">
+        <span class="num">1</span>
+        <div class="name">Foundations</div>
+        <div class="sub">What AI really is</div>
+      </div>
+      <div class="phase-pill">
+        <span class="num">2</span>
+        <div class="name">Data &amp; Stats</div>
+        <div class="sub">How AI thinks in numbers</div>
+      </div>
+      <div class="phase-pill">
+        <span class="num">3</span>
+        <div class="name">Machine Learning</div>
+        <div class="sub">Learning from examples</div>
+      </div>
+      <div class="phase-pill">
+        <span class="num">4</span>
+        <div class="name">Neural Networks</div>
+        <div class="sub">Deep learning and beyond</div>
+      </div>
+      <div class="phase-pill">
+        <span class="num">5</span>
+        <div class="name">AI in Practice</div>
+        <div class="sub">Ethics, LLMs, the future</div>
+      </div>
+    </div>
+
+    <!-- Personal message -->
+    <div class="message-card">
+      <blockquote>
+        Learning AI changed the trajectory of my life. It opened doors I did not know existed and gave me tools to solve problems that genuinely matter to people. I built this course so that the same door is open to you, regardless of your background, regardless of where you are starting from.<br><br>
+        Every lesson in here represents something I care about deeply: accuracy, clarity, and respect for the learner. You will not find vague hand-waving here. You will find real explanations, real code, and a real understanding of how this technology works.<br><br>
+        I am proud of this course. I hope you enjoy it.
+      </blockquote>
+      <div class="sig">
+        Abena Fosuaa Gyasi
+        <span>AI Specialist &middot; MSc Artificial Intelligence &middot; Loughborough University</span>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <h3>Ready to begin?</h3>
+      <p>Start with Phase 1 and work through at your own pace. Every lesson builds on the last.</p>
+      <a href="ai_crash_course_pro.html" class="btn-primary">Go to the Course &#8594;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

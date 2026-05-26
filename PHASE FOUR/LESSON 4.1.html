@@ -1,0 +1,681 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.1: Neural Networks - AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #b5820a;
+  --accent-soft: rgba(181,130,10,0.08);
+  --accent-border: rgba(181,130,10,0.25);
+  --green: #2a8c5a;
+  --blue: #1a6bc8;
+  --red: #b83c12;
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-border); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: rgba(181,130,10,0.07); border: 1px solid var(--accent-border); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* SINGLE NEURON DIAGRAM */
+.neuron-diagram {
+  margin: 36px 0;
+  background: var(--ink);
+  padding: 28px;
+}
+.neuron-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.neuron-caption { font-family: var(--ui); font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 14px; line-height: 1.65; }
+
+/* ACTIVATION FUNCTIONS */
+.activation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 32px 0; }
+.act-card { border: 1px solid var(--border); overflow: hidden; }
+.act-head { padding: 12px 16px; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.04em; background: var(--ink); color: var(--accent); }
+.act-body { padding: 14px 16px; background: var(--paper2); }
+.act-formula { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.04em; }
+.act-range { font-family: var(--mono); font-size: 11px; color: var(--muted2); margin-bottom: 8px; }
+.act-desc { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.6; }
+.act-use { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 8px; }
+
+/* NETWORK DIAGRAM */
+.network-visual { margin: 36px 0; background: var(--ink); padding: 28px; }
+.net-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.net-caption { font-family: var(--ui); font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 14px; line-height: 1.65; }
+
+/* FORWARD PASS STEPS */
+.forward-steps { display: flex; flex-direction: column; gap: 0; margin: 32px 0; border: 1px solid var(--border); overflow: hidden; }
+.fwd-step { display: grid; grid-template-columns: 36px 1fr; gap: 0; }
+.fwd-step:not(:last-child) { border-bottom: 1px solid var(--border); }
+.fwd-num { background: var(--accent); color: #fff; font-family: var(--mono); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 16px 0; }
+.fwd-body { padding: 14px 20px; background: var(--paper2); }
+.fwd-title { font-family: var(--ui); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.fwd-desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* CODE BLOCK */
+.code-block { background: #1e1e2e; margin: 28px 0; overflow: hidden; }
+.code-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.code-tag { font-family: var(--mono); font-size: 10px; color: rgba(181,130,10,0.9); letter-spacing: 0.06em; }
+.code-body { padding: 20px 18px; overflow-x: auto; }
+.code-body pre { font-family: var(--mono); font-size: 13px; line-height: 1.75; color: #cdd6f4; white-space: pre; }
+.py-kw { color: #cba6f7; }
+.py-fn { color: #89b4fa; }
+.py-str { color: #a6e3a1; }
+.py-num { color: #fab387; }
+.py-cm { color: #6c7086; }
+.py-op { color: #89dceb; }
+
+/* OUTPUT */
+.output-block { background: var(--paper3); border-left: 3px solid var(--accent); padding: 14px 18px; margin: -8px 0 28px; font-family: var(--mono); font-size: 13px; color: var(--ink); line-height: 1.7; }
+.output-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-family: var(--mono); }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .activation-grid { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 4.1</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">14 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 4: Neural Networks</span>
+    <span class="lesson-num-tag">Lesson 1 of 5</span>
+  </div>
+  <h1 class="lesson-title">Neural Networks:<br><em>The Building Blocks</em></h1>
+  <p class="lesson-intro">Everything in modern AI, from image recognition to the chatbots you use today, is built on one architecture: the neural network. This lesson explains exactly how it works from the ground up, one neuron at a time.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>What an artificial neuron actually computes</div>
+    <div class="obj-item"><div class="obj-dot"></div>What activation functions do and why they matter</div>
+    <div class="obj-item"><div class="obj-dot"></div>How layers of neurons form a network</div>
+    <div class="obj-item"><div class="obj-dot"></div>How data flows forward through a network</div>
+    <div class="obj-item"><div class="obj-dot"></div>Building your first network in Keras</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2 id="the-inspiration">Loosely inspired by the brain</h2>
+
+    <p>The term "neural network" comes from neuroscience. In 1943, Warren McCulloch and Walter Pitts published a mathematical model of how biological neurons might compute. In 1958, Frank Rosenblatt built on this to create the <strong>perceptron</strong>, the first trainable artificial neuron. These are the historical roots of modern deep learning.</p>
+
+    <p>That said, an important clarification for anyone who wants to be accurate: artificial neural networks are only loosely inspired by biology. A real biological neuron is enormously complex, with thousands of chemical signals, temporal dynamics, and structural properties that no artificial model comes close to replicating. When researchers say "inspired by the brain," they mean the basic idea of connected units that signal each other, not a faithful simulation of neuroscience.</p>
+
+    <p>So set aside the biology. An artificial neuron is a mathematical function. Understand it as maths and everything will make sense.</p>
+
+    <div class="pullquote">
+      <p>"Deep learning is a class of machine learning algorithms that use multiple layers to progressively extract higher-level features from raw input."</p>
+      <cite>LeCun, Bengio and Hinton, Nature 2015 — the paper that defined the field for a generation</cite>
+    </div>
+
+    <h2 id="one-neuron">What one artificial neuron actually does</h2>
+
+    <p>A single artificial neuron takes a set of inputs, multiplies each one by a weight, adds them all together along with a constant called the bias, and then passes the result through an activation function. That is the complete description of a neuron's computation.</p>
+
+    <div class="neuron-diagram">
+      <div class="neuron-label">A single artificial neuron: inputs, weights, sum, and activation</div>
+      <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Outfit',sans-serif;">
+        <!-- Input lines with weights -->
+        <line x1="30" y1="50" x2="210" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <line x1="30" y1="100" x2="210" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <line x1="30" y1="150" x2="210" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+
+        <!-- Input nodes -->
+        <circle cx="30" cy="50" r="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <text x="30" y="55" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.8)" font-family="JetBrains Mono,monospace">x₁</text>
+        <circle cx="30" cy="100" r="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <text x="30" y="105" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.8)" font-family="JetBrains Mono,monospace">x₂</text>
+        <circle cx="30" cy="150" r="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <text x="30" y="155" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.8)" font-family="JetBrains Mono,monospace">x₃</text>
+
+        <!-- Weight labels on lines -->
+        <text x="100" y="68" text-anchor="middle" font-size="11" fill="rgba(181,130,10,0.9)" font-family="JetBrains Mono,monospace">w₁</text>
+        <text x="100" y="93" text-anchor="middle" font-size="11" fill="rgba(181,130,10,0.9)" font-family="JetBrains Mono,monospace">w₂</text>
+        <text x="100" y="135" text-anchor="middle" font-size="11" fill="rgba(181,130,10,0.9)" font-family="JetBrains Mono,monospace">w₃</text>
+
+        <!-- Bias input -->
+        <circle cx="120" cy="20" r="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="120" y="24" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono,monospace">+b</text>
+        <line x1="120" y1="34" x2="200" y2="88" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- Sigma node -->
+        <circle cx="220" cy="100" r="28" fill="rgba(181,130,10,0.15)" stroke="rgba(181,130,10,0.6)" stroke-width="2"/>
+        <text x="220" y="105" text-anchor="middle" font-size="16" fill="rgba(181,130,10,0.9)" font-family="JetBrains Mono,monospace">Σ</text>
+
+        <!-- Arrow to activation -->
+        <line x1="248" y1="100" x2="298" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arrowW)"/>
+        <defs><marker id="arrowW" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(255,255,255,0.3)"/></marker></defs>
+
+        <!-- Activation function box -->
+        <rect x="298" y="76" width="88" height="48" rx="3" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <text x="342" y="97" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.5)" font-family="Outfit,sans-serif">activation</text>
+        <text x="342" y="113" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.8)" font-family="JetBrains Mono,monospace">f(z)</text>
+
+        <!-- Arrow to output -->
+        <line x1="386" y1="100" x2="440" y2="100" stroke="rgba(181,130,10,0.7)" stroke-width="2" marker-end="url(#arrowG)"/>
+        <defs><marker id="arrowG" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(181,130,10,0.7)"/></marker></defs>
+
+        <!-- Output -->
+        <circle cx="456" cy="100" r="16" fill="rgba(181,130,10,0.15)" stroke="rgba(181,130,10,0.6)" stroke-width="1.5"/>
+        <text x="456" y="105" text-anchor="middle" font-size="11" fill="rgba(181,130,10,0.9)" font-family="JetBrains Mono,monospace">y</text>
+
+        <!-- Formula at bottom -->
+        <text x="250" y="178" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono,monospace">z = w₁x₁ + w₂x₂ + w₃x₃ + b</text>
+        <text x="250" y="194" text-anchor="middle" font-size="11" fill="rgba(181,130,10,0.7)" font-family="JetBrains Mono,monospace">output y = f(z)</text>
+      </svg>
+      <p class="neuron-caption">The neuron computes z (the weighted sum plus bias), then applies the activation function f to get the output. Without the activation function, you could collapse any number of layers into a single multiplication and the network would have no more power than a basic linear model.</p>
+    </div>
+
+    <p>The <strong>weights</strong> determine how much each input contributes. A large positive weight means "when this input is high, the output should be high." A negative weight means "when this input is high, the output should be low." The <strong>bias</strong> is an offset that lets the neuron fire even when all inputs are zero, making the model more flexible.</p>
+
+    <p>These weights and the bias are the parameters of the neuron. Before training they are random. After training, they encode the pattern the network learned.</p>
+
+    <h2 id="activation-functions">Activation functions: introducing non-linearity</h2>
+
+    <p>The activation function is what makes neural networks powerful. Without it, stacking multiple layers of neurons would be mathematically identical to having just one layer. No matter how deep your network, it could only learn linear relationships, which would make it no better than linear regression.</p>
+
+    <p>By applying a non-linear function after each summation, you allow the network to learn curved, complex, non-linear relationships between inputs and outputs. This is the key insight.</p>
+
+    <div class="activation-grid">
+      <div class="act-card">
+        <div class="act-head">Sigmoid</div>
+        <div class="act-body">
+          <div class="act-formula">f(z) = 1 / (1 + e⁻ᶻ)</div>
+          <div class="act-range">Output range: (0, 1)</div>
+          <div class="act-desc">Squashes any input to a value between 0 and 1. Historically the default choice, but has largely been replaced in hidden layers because it causes the vanishing gradient problem in deep networks.</div>
+          <div class="act-use">Used in: binary output layers</div>
+        </div>
+      </div>
+      <div class="act-card">
+        <div class="act-head">ReLU</div>
+        <div class="act-body">
+          <div class="act-formula">f(z) = max(0, z)</div>
+          <div class="act-range">Output range: [0, +∞)</div>
+          <div class="act-desc">Returns the input if positive, otherwise returns zero. Simple, fast, and very effective. The default choice for hidden layers in most modern networks since 2012. Avoids the vanishing gradient problem that plagues sigmoid in deep networks.</div>
+          <div class="act-use">Used in: most hidden layers</div>
+        </div>
+      </div>
+      <div class="act-card">
+        <div class="act-head">Softmax</div>
+        <div class="act-body">
+          <div class="act-formula">f(zᵢ) = eᶻⁱ / Σeᶻʲ</div>
+          <div class="act-range">Output range: (0, 1), sums to 1</div>
+          <div class="act-desc">Converts a vector of numbers into a probability distribution. If you have 10 output classes, softmax ensures all 10 outputs are positive and sum to exactly 1.0, making them interpretable as probabilities.</div>
+          <div class="act-use">Used in: multi-class output layers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Why ReLU became the standard</div>
+      <p>Before ReLU, networks used sigmoid and tanh activations throughout. These functions both "squash" large values, which means gradients (the signals used for learning) become extremely small as they flow back through many layers. The network stops learning effectively. ReLU avoids this because for positive inputs, the gradient is always exactly 1, so signals can flow freely through many layers. The widespread shift to ReLU around 2012 was a major reason why very deep networks became trainable for the first time.</p>
+    </div>
+
+    <h2 id="layers">Layers: organising neurons into a network</h2>
+
+    <p>One neuron is not very useful on its own. The power comes from connecting many neurons together in layers, with the output of one layer feeding into the input of the next. This creates a <strong>feedforward neural network</strong>, also called a multilayer perceptron (MLP).</p>
+
+    <div class="network-visual">
+      <div class="net-label">A feedforward neural network: input layer, two hidden layers, output layer</div>
+      <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+        <!-- Layer column labels -->
+        <text x="55" y="22" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.35)" font-family="JetBrains Mono,monospace">INPUT</text>
+        <text x="185" y="22" text-anchor="middle" font-size="9" fill="rgba(181,130,10,0.6)" font-family="JetBrains Mono,monospace">HIDDEN 1</text>
+        <text x="315" y="22" text-anchor="middle" font-size="9" fill="rgba(181,130,10,0.6)" font-family="JetBrains Mono,monospace">HIDDEN 2</text>
+        <text x="445" y="22" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.35)" font-family="JetBrains Mono,monospace">OUTPUT</text>
+
+        <!-- Input layer: 3 neurons -->
+        <circle cx="55" cy="70" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <circle cx="55" cy="130" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <circle cx="55" cy="190" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <text x="55" y="75" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono,monospace">x₁</text>
+        <text x="55" y="135" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono,monospace">x₂</text>
+        <text x="55" y="195" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono,monospace">x₃</text>
+
+        <!-- Hidden layer 1: 4 neurons -->
+        <circle cx="185" cy="52" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+        <circle cx="185" cy="104" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+        <circle cx="185" cy="156" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+        <circle cx="185" cy="208" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+
+        <!-- Hidden layer 2: 4 neurons -->
+        <circle cx="315" cy="52" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+        <circle cx="315" cy="104" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+        <circle cx="315" cy="156" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+        <circle cx="315" cy="208" r="18" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.5)" stroke-width="1.5"/>
+
+        <!-- Output layer: 2 neurons -->
+        <circle cx="445" cy="104" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <circle cx="445" cy="156" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <text x="445" y="109" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-family="JetBrains Mono,monospace">y₁</text>
+        <text x="445" y="161" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-family="JetBrains Mono,monospace">y₂</text>
+
+        <!-- Connections: input to hidden1 (just draw key lines for readability) -->
+        <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+          <line x1="73" y1="70" x2="167" y2="52"/><line x1="73" y1="70" x2="167" y2="104"/>
+          <line x1="73" y1="70" x2="167" y2="156"/><line x1="73" y1="70" x2="167" y2="208"/>
+          <line x1="73" y1="130" x2="167" y2="52"/><line x1="73" y1="130" x2="167" y2="104"/>
+          <line x1="73" y1="130" x2="167" y2="156"/><line x1="73" y1="130" x2="167" y2="208"/>
+          <line x1="73" y1="190" x2="167" y2="52"/><line x1="73" y1="190" x2="167" y2="104"/>
+          <line x1="73" y1="190" x2="167" y2="156"/><line x1="73" y1="190" x2="167" y2="208"/>
+        </g>
+
+        <!-- Connections: hidden1 to hidden2 -->
+        <g stroke="rgba(181,130,10,0.12)" stroke-width="1">
+          <line x1="203" y1="52" x2="297" y2="52"/><line x1="203" y1="52" x2="297" y2="104"/>
+          <line x1="203" y1="52" x2="297" y2="156"/><line x1="203" y1="52" x2="297" y2="208"/>
+          <line x1="203" y1="104" x2="297" y2="52"/><line x1="203" y1="104" x2="297" y2="104"/>
+          <line x1="203" y1="104" x2="297" y2="156"/><line x1="203" y1="104" x2="297" y2="208"/>
+          <line x1="203" y1="156" x2="297" y2="52"/><line x1="203" y1="156" x2="297" y2="104"/>
+          <line x1="203" y1="156" x2="297" y2="156"/><line x1="203" y1="156" x2="297" y2="208"/>
+          <line x1="203" y1="208" x2="297" y2="52"/><line x1="203" y1="208" x2="297" y2="104"/>
+          <line x1="203" y1="208" x2="297" y2="156"/><line x1="203" y1="208" x2="297" y2="208"/>
+        </g>
+
+        <!-- Connections: hidden2 to output -->
+        <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+          <line x1="333" y1="52" x2="427" y2="104"/><line x1="333" y1="52" x2="427" y2="156"/>
+          <line x1="333" y1="104" x2="427" y2="104"/><line x1="333" y1="104" x2="427" y2="156"/>
+          <line x1="333" y1="156" x2="427" y2="104"/><line x1="333" y1="156" x2="427" y2="156"/>
+          <line x1="333" y1="208" x2="427" y2="104"/><line x1="333" y1="208" x2="427" y2="156"/>
+        </g>
+
+        <!-- Layer size annotation -->
+        <text x="55" y="238" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.25)" font-family="Outfit,sans-serif">3 neurons</text>
+        <text x="185" y="238" text-anchor="middle" font-size="9" fill="rgba(181,130,10,0.5)" font-family="Outfit,sans-serif">4 neurons</text>
+        <text x="315" y="238" text-anchor="middle" font-size="9" fill="rgba(181,130,10,0.5)" font-family="Outfit,sans-serif">4 neurons</text>
+        <text x="445" y="238" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.25)" font-family="Outfit,sans-serif">2 neurons</text>
+      </svg>
+      <p class="net-caption">Every neuron in each layer is connected to every neuron in the next layer (this is called a "fully connected" or "dense" layer). The input layer simply receives the data. The output layer produces the final prediction. The hidden layers do the work of learning intermediate representations.</p>
+    </div>
+
+    <p>The number of layers and the number of neurons per layer are both hyperparameters that you choose before training. A network with two or more hidden layers is commonly called a <strong>deep</strong> neural network, which is where the term "deep learning" comes from. Depth is not a precise technical threshold; it is a term that reflects the shift in the field toward architectures with many layers.</p>
+
+    <h2 id="forward-pass">The forward pass: how data flows through the network</h2>
+
+    <p>When you feed a data point into a trained neural network to get a prediction, the computation that happens is called the <strong>forward pass</strong>. It is called "forward" because information flows in one direction: from the input layer, through each hidden layer in sequence, to the output layer. Nothing goes backwards during inference.</p>
+
+    <div class="forward-steps">
+      <div class="fwd-step">
+        <div class="fwd-num">1</div>
+        <div class="fwd-body">
+          <div class="fwd-title">Input enters the network</div>
+          <div class="fwd-desc">Your raw data (a row of numbers) is fed into the input layer. Each feature becomes the activation of one input neuron. No computation happens here; the input layer just passes the data on.</div>
+        </div>
+      </div>
+      <div class="fwd-step">
+        <div class="fwd-num">2</div>
+        <div class="fwd-body">
+          <div class="fwd-title">Hidden layer 1 computes</div>
+          <div class="fwd-desc">Each neuron in the first hidden layer computes z = (weighted sum of inputs) + bias, then applies its activation function to get an output. These outputs are passed to the next layer.</div>
+        </div>
+      </div>
+      <div class="fwd-step">
+        <div class="fwd-num">3</div>
+        <div class="fwd-body">
+          <div class="fwd-title">Hidden layer 2 (and more) compute</div>
+          <div class="fwd-desc">Each subsequent hidden layer repeats the same process, building on the outputs of the previous layer. Early layers tend to learn simple patterns; later layers combine these into more complex representations.</div>
+        </div>
+      </div>
+      <div class="fwd-step">
+        <div class="fwd-num">4</div>
+        <div class="fwd-body">
+          <div class="fwd-title">Output layer produces the prediction</div>
+          <div class="fwd-desc">The output layer applies a final activation: sigmoid for binary classification, softmax for multi-class classification, or no activation (linear) for regression. This gives you the model's prediction.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-label">Analogy</div>
+      <p>Think of a large company processing a job application. The document first reaches the HR team who extract key facts (education, years of experience). Their summary goes to the hiring manager who assesses fit for the role. That assessment goes to the department head who makes a final recommendation. Each layer processes what the previous layer passed on, adding a higher level of interpretation. The neural network does the same thing with numbers.</p>
+    </div>
+
+    <h2 id="universal-approximation">What makes neural networks so powerful</h2>
+
+    <p>In 1989, mathematician George Cybenko proved something remarkable: a neural network with just one hidden layer containing enough neurons can approximate any continuous mathematical function to any desired degree of accuracy. This result, known as the <strong>Universal Approximation Theorem</strong>, tells us that the architecture is not the limiting factor. A sufficiently large network can, in principle, learn any pattern that exists in data.</p>
+
+    <p>This does not mean "any network learns anything." The theorem tells us about theoretical capacity, not about whether training will actually find the right weights, or whether you have enough data, or whether the network will generalise. But it does explain why the architecture is so widely applicable: image recognition, language translation, game playing, weather forecasting, protein structure prediction. One architecture, tuned differently, does all of it.</p>
+
+    <h2 id="keras-code">Your first neural network in Keras</h2>
+
+    <p>Keras is the standard high-level interface for building neural networks. It ships as part of TensorFlow and is the fastest way to go from idea to working model. The API maps directly onto the concepts you just learned: you stack layers, specify their size and activation, then compile and train.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Python</span>
+        <span class="code-tag">first_neural_network.py</span>
+      </div>
+      <div class="code-body"><pre><span class="py-kw">import</span> numpy <span class="py-kw">as</span> np
+<span class="py-kw">from</span> tensorflow <span class="py-kw">import</span> keras
+<span class="py-kw">from</span> tensorflow.keras <span class="py-kw">import</span> layers
+<span class="py-kw">from</span> sklearn.datasets <span class="py-kw">import</span> <span class="py-fn">load_breast_cancer</span>
+<span class="py-kw">from</span> sklearn.model_selection <span class="py-kw">import</span> <span class="py-fn">train_test_split</span>
+<span class="py-kw">from</span> sklearn.preprocessing <span class="py-kw">import</span> <span class="py-fn">StandardScaler</span>
+
+<span class="py-cm"># Load and prepare data</span>
+X, y = <span class="py-fn">load_breast_cancer</span>(return_X_y=<span class="py-fn">True</span>)
+X_train, X_test, y_train, y_test = <span class="py-fn">train_test_split</span>(
+    X, y, test_size=<span class="py-num">0.2</span>, random_state=<span class="py-num">42</span>, stratify=y
+)
+
+<span class="py-cm"># Scale inputs: neural networks are sensitive to feature scale</span>
+scaler = <span class="py-fn">StandardScaler</span>()
+X_train = scaler.<span class="py-fn">fit_transform</span>(X_train)
+X_test  = scaler.<span class="py-fn">transform</span>(X_test)
+
+<span class="py-cm"># Build the network</span>
+model = keras.<span class="py-fn">Sequential</span>([
+    layers.<span class="py-fn">Dense</span>(<span class="py-num">64</span>, activation=<span class="py-str">'relu'</span>, input_shape=(X_train.shape[<span class="py-num">1</span>],)),
+    layers.<span class="py-fn">Dense</span>(<span class="py-num">32</span>, activation=<span class="py-str">'relu'</span>),
+    layers.<span class="py-fn">Dense</span>(<span class="py-num">1</span>,  activation=<span class="py-str">'sigmoid'</span>)
+])
+
+<span class="py-cm"># Compile: choose loss function and optimiser</span>
+model.<span class="py-fn">compile</span>(
+    optimizer=<span class="py-str">'adam'</span>,
+    loss=<span class="py-str">'binary_crossentropy'</span>,
+    metrics=[<span class="py-str">'accuracy'</span>]
+)
+
+<span class="py-cm"># Train</span>
+history = model.<span class="py-fn">fit</span>(
+    X_train, y_train,
+    epochs=<span class="py-num">50</span>,
+    batch_size=<span class="py-num">32</span>,
+    validation_split=<span class="py-num">0.15</span>,
+    verbose=<span class="py-num">0</span>
+)
+
+<span class="py-cm"># Evaluate on the held-out test set</span>
+loss, accuracy = model.<span class="py-fn">evaluate</span>(X_test, y_test, verbose=<span class="py-num">0</span>)
+<span class="py-fn">print</span>(<span class="py-fn">f</span><span class="py-str">"Test accuracy: {accuracy:.4f}"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="output-block">
+      <div class="output-label">Typical output</div>
+      Test accuracy: 0.9737
+    </div>
+
+    <p>Notice a few things in the code. The network has an input layer (defined by <strong>input_shape</strong>), two hidden layers with ReLU activation, and one output neuron with sigmoid (because this is binary classification: benign or malignant). The <strong>loss function</strong> is binary cross-entropy, the standard choice for binary classification. The <strong>optimiser</strong> is Adam, a modern gradient descent variant that adapts the learning rate automatically and works well as a default.</p>
+
+    <p>Also notice the <strong>StandardScaler</strong> applied to the inputs. Neural networks are sensitive to the scale of their inputs in a way that decision trees and random forests are not. Features with large numeric ranges can dominate the gradient updates and make training unstable. Scaling all features to have mean zero and standard deviation one is standard practice before feeding data into a neural network.</p>
+
+    <div class="callout">
+      <div class="callout-label">Always scale your inputs for neural networks</div>
+      <p>This is not optional. If your features have very different scales (for example, age in the range 18-80, and income in the range 20,000-500,000), the income feature will produce gradients hundreds of times larger than the age feature. The network will pay almost no attention to age during training. StandardScaler (or MinMaxScaler for inputs bounded between 0 and 1) fixes this.</p>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list" id="toc">
+        <li class="toc-item" data-target="the-inspiration">Inspired by the brain</li>
+        <li class="toc-item" data-target="one-neuron">What one neuron computes</li>
+        <li class="toc-item" data-target="activation-functions">Activation functions</li>
+        <li class="toc-item" data-target="layers">Layers and networks</li>
+        <li class="toc-item" data-target="forward-pass">The forward pass</li>
+        <li class="toc-item" data-target="universal-approximation">Why networks are powerful</li>
+        <li class="toc-item" data-target="keras-code">First network in Keras</li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">perceptron</div>
+          <div class="term-def">The simplest artificial neuron, invented by Frank Rosenblatt in 1958. The foundational unit of all neural networks.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">activation function</div>
+          <div class="term-def">A non-linear function applied after the weighted sum inside each neuron. Makes deep networks able to learn complex patterns.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">ReLU</div>
+          <div class="term-def">Rectified Linear Unit. f(z) = max(0, z). The most widely used activation function in hidden layers today.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">hidden layer</div>
+          <div class="term-def">Any layer between the input and output. Where the network learns intermediate representations.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">forward pass</div>
+          <div class="term-def">The computation that produces a prediction: data flows from input through each layer to the output.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">dense layer</div>
+          <div class="term-def">A fully connected layer where every neuron connects to every neuron in the next layer. Also called a linear layer.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Go deeper</div>
+      <div class="book-card">
+        <div class="book-title">Deep Learning</div>
+        <div class="book-author">Goodfellow, Bengio, Courville</div>
+        <div class="book-note">Free online at deeplearningbook.org. The definitive technical reference. Chapter 6 covers feedforward networks in full detail.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">Neural Networks and Deep Learning</div>
+        <div class="book-author">Michael Nielsen</div>
+        <div class="book-note">Free online at neuralnetworksanddeeplearning.com. The most beginner-friendly rigorous treatment that exists. Builds up from one neuron.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Hands-on activity</div>
+    <h2 class="act-title">Build, break, and understand your first network</h2>
+    <p class="act-body">You are going to build a neural network from scratch in Keras, then deliberately change one thing at a time to understand what each part does. The goal is intuition, not just a working model.</p>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Open the Lesson 4.1 Colab notebook. Run the breast cancer classifier exactly as shown. Record the test accuracy.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Remove the StandardScaler (skip the scaling step entirely). Retrain. How much does accuracy drop? This shows you why scaling matters.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Change all 'relu' activations to 'sigmoid'. Retrain. Does performance change? Does training take longer?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">04</span>
+        <span class="step-text">Add a third hidden layer with 16 neurons between the existing two. Does a deeper network help? What if you train for 100 epochs instead of 50?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">05</span>
+        <span class="step-text">Call model.summary() after building the network. Count the total number of parameters. Trace where each number comes from: (inputs × neurons) + bias for each layer.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-4-1';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<div style="max-width:860px;margin:0 auto;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(26,24,20,0.1);">
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code live in Google Colab</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">All examples + challenge exercises &middot; Free GPU included &middot; No setup required</div>
+  </div>
+  <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-4.1-neuron.ipynb" target="_blank" rel="noopener" style="flex-shrink:0;">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+  </a>
+</div>
+
+<div class="nav-section">
+  <a class="nav-card prev" href="../PHASE THREE/LESSON 3.6.html">
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Evaluation Metrics: How Good is Your Model?</span>
+    <span class="nav-arrow">←</span>
+  </a>
+  <a class="nav-card next" href="LESSON 4.2.html">
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Training Deep Networks: Backpropagation</span>
+    <span class="nav-arrow">→</span>
+  </a>
+</div>
+
+<footer>
+  <span class="footer-course">AI Crash Course</span>
+  <span class="footer-copy">Phase 4 · Lesson 4.1 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
+});
+const items = document.querySelectorAll('.toc-item');
+const targets = Array.from(items).map(i => document.getElementById(i.dataset.target)).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      items.forEach(i => i.classList.remove('active'));
+      const active = document.querySelector(`.toc-item[data-target="${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+targets.forEach(t => observer.observe(t));
+</script>
+</body>
+</html>

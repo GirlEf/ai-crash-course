@@ -1,0 +1,1815 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Crash Course: Learn Artificial Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0908;
+  --paper: #f5f0e8;
+  --paper2: #ede8df;
+  --paper3: #e4ddd2;
+  --cream: #faf7f2;
+  --accent: #c8401a;
+  --accent2: #1a6bc8;
+  --accent3: #2a8c5a;
+  --accent4: #b5820a;
+  --accent5: #8c1a5a;
+  --muted: #6b6459;
+  --border: rgba(10,9,8,0.12);
+  --border2: rgba(10,9,8,0.22);
+  --display: 'Playfair Display', Georgia, serif;
+  --ui: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--ui);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.6;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  background: var(--ink);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  z-index: 2;
+}
+
+.logo {
+  font-family: var(--ui);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+}
+
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(200,64,26,0.4);
+  padding: 5px 12px;
+  border-radius: 2px;
+}
+
+/* Big decorative background text */
+.hero-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--display);
+  font-size: clamp(120px, 22vw, 320px);
+  font-weight: 900;
+  color: rgba(255,255,255,0.025);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+  z-index: 0;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: end;
+  padding: 60px 60px 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-left {}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.eyebrow-line {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+}
+.eyebrow-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-h1 {
+  font-family: var(--display);
+  font-size: clamp(52px, 7vw, 96px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 40px;
+}
+.hero-h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--paper);
+  opacity: 0.7;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 16px 28px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.hero-cta:hover { background: #a83515; transform: translateY(-1px); }
+.hero-cta-arrow { font-size: 18px; transition: transform 0.2s; }
+.hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+.hero-cta-wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.hero-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  font-family: var(--ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  border: 1px solid rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.hero-resume:hover { border-color: rgba(255,255,255,0.7); color: #fff; transform: translateY(-1px); }
+.hero-resume-arrow { font-size: 16px; transition: transform 0.2s; }
+.hero-resume:hover .hero-resume-arrow { transform: translateX(4px); }
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.hero-desc {
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+  max-width: 360px;
+  text-align: right;
+  margin-bottom: 48px;
+  font-weight: 400;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+.hero-stat {
+  padding: 20px 24px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  min-width: 80px;
+}
+.stat-n {
+  font-family: var(--display);
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.hero-bottom {
+  padding: 0 60px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+.scroll-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.scroll-line {
+  width: 48px;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+}
+
+/* ─── COURSE NAV ─── */
+.course-nav {
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.course-nav-inner {
+  display: flex;
+  align-items: stretch;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px;
+  overflow-x: auto;
+}
+.phase-tab {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 28px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--ui);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  gap: 3px;
+  text-align: left;
+}
+.phase-tab:hover { background: var(--paper2); }
+.phase-tab.active { border-bottom-color: var(--ink); background: var(--paper2); }
+.tab-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.tab-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.tab-weeks {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+.phase-tab.active .tab-num { color: var(--accent); }
+
+/* ─── MAIN CONTENT ─── */
+.main-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px 120px;
+}
+
+/* ─── PHASE PANEL ─── */
+.phase-panel { display: none; }
+.phase-panel.active { display: block; }
+
+/* Phase Hero Strip */
+.phase-strip {
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr;
+  gap: 0;
+  margin: 0 -60px 0;
+  padding: 72px 60px 64px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.phase-strip-bg {
+  position: absolute;
+  top: -20px; right: -20px;
+  font-family: var(--display);
+  font-size: 200px;
+  font-weight: 900;
+  color: rgba(10,9,8,0.04);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.strip-divider {
+  background: var(--border);
+  margin: 0 60px;
+}
+.strip-left {}
+.phase-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.phase-label-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.phase-big-title {
+  font-family: var(--display);
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 0;
+}
+.phase-big-title em {
+  font-style: italic;
+  font-weight: 400;
+}
+.strip-right {
+  padding-left: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.phase-desc-big {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--muted);
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+.phase-meta-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.meta-pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-section {
+  margin: 48px 0 0;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border);
+}
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+.progress-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.progress-fraction {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+}
+.progress-track {
+  height: 3px;
+  background: var(--paper3);
+  margin-bottom: 28px;
+  position: relative;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px;
+}
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  transition: all 0.15s;
+  user-select: none;
+}
+.check-item:hover { background: var(--paper2); border-color: var(--border2); }
+.check-item.done { background: var(--paper2); }
+.check-box {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: transparent;
+  transition: all 0.15s;
+}
+.check-item.done .check-box {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+}
+.check-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+.check-item.done .check-label { color: var(--muted); text-decoration: line-through; }
+
+/* ─── LESSONS ─── */
+.lessons-section { margin-top: 56px; }
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.section-heading-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.section-heading-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.lessons-grid { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); }
+
+.lesson {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  overflow: hidden;
+}
+.lesson:last-child { border-bottom: none; }
+.lesson:hover { background: var(--paper); }
+.lesson.open { background: var(--paper); }
+
+.lesson-top {
+  display: grid;
+  grid-template-columns: 80px 1fr 48px;
+  align-items: center;
+  padding: 22px 28px;
+  gap: 0;
+}
+.lesson-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.lesson-title-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  padding-right: 24px;
+}
+.lesson.open .lesson-title-text { color: var(--accent); }
+.lesson-toggle {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--muted);
+  transition: all 0.2s;
+  justify-self: end;
+}
+.lesson.open .lesson-toggle {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+  transform: rotate(45deg);
+}
+
+.lesson-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lesson.open .lesson-body { max-height: 380px; }
+.lesson-open-btn {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  padding: 6px 16px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.18s;
+}
+.lesson-open-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lesson-body-inner {
+  padding: 0 28px 28px 108px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: start;
+}
+.lesson-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  font-weight: 400;
+}
+.tags {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  padding: 4px 10px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ─── OUTCOMES ─── */
+.outcomes-section { margin-top: 56px; }
+.outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--border);
+}
+.outcome {
+  padding: 28px 24px;
+  border-right: 1px solid var(--border);
+}
+.outcome:last-child { border-right: none; }
+.outcome-num {
+  font-family: var(--display);
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 12px;
+  opacity: 0.12;
+}
+.outcome-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.outcome-text {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ─── ACTIVITY ─── */
+.activity-section { margin-top: 56px; }
+.activity-card {
+  display: grid;
+  grid-template-columns: 4px 1fr;
+}
+.activity-accent { }
+.activity-body {
+  padding: 32px 36px;
+  background: var(--ink);
+  color: var(--cream);
+}
+.activity-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+.activity-title {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.activity-text {
+  font-size: 14px;
+  line-height: 1.75;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+/* ─── PHASE-SPECIFIC COLORS ─── */
+.p1 { --pc: #c8401a; }
+.p2 { --pc: #1a6bc8; }
+.p3 { --pc: #2a8c5a; }
+.p4 { --pc: #b5820a; }
+.p5 { --pc: #8c1a5a; }
+
+.phase-label { color: var(--pc); }
+.phase-label-dot { background: var(--pc); }
+.outcome-label { color: var(--pc); }
+.activity-accent { background: var(--pc); }
+.progress-fill { background: var(--pc) !important; }
+.check-item.done .check-box { background: var(--pc) !important; border-color: var(--pc) !important; }
+.phase-tab.active { border-bottom-color: var(--pc) !important; }
+
+/* ─── PHASE TRANSITION CARD ─── */
+.phase-transition {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px 8px;
+}
+.phase-transition-inner {
+  background: linear-gradient(135deg, rgba(181,130,10,0.06) 0%, rgba(181,130,10,0.02) 100%);
+  border: 1px solid rgba(181,130,10,0.2);
+  border-left: 4px solid var(--gold);
+  padding: 20px 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.phase-transition-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.phase-transition-text { font-family: var(--ui); font-size: 13px; color: var(--ink2); line-height: 1.65; }
+.phase-transition-text strong { color: var(--ink); font-weight: 700; display: block; margin-bottom: 4px; font-size: 14px; }
+@media (max-width: 900px) { .phase-transition { padding: 0 28px 8px; } }
+@media (max-width: 600px) { .phase-transition { padding: 0 20px 8px; } .phase-transition-inner { padding: 16px 18px; } }
+
+/* ─── READINESS CHECK ─── */
+.readiness-block {
+  background: rgba(181,130,10,0.04);
+  border: 1px solid rgba(181,130,10,0.18);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-top: 20px;
+}
+.readiness-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 600; }
+.readiness-list { display: flex; flex-direction: column; gap: 6px; }
+.readiness-item { display: flex; align-items: center; gap: 10px; font-family: var(--ui); font-size: 13px; color: var(--ink2); }
+.readiness-item input[type="checkbox"] { accent-color: var(--gold); width: 15px; height: 15px; cursor: pointer; flex-shrink: 0; }
+.readiness-item label { cursor: pointer; line-height: 1.4; }
+.readiness-note { font-family: var(--ui); font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+.readiness-note a { color: var(--gold); text-decoration: none; }
+.readiness-note a:hover { text-decoration: underline; }
+
+/* ─── PHASE QUIZ CTA ─── */
+.quiz-cta-section {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.quiz-cta-left { flex: 1; min-width: 180px; }
+.quiz-cta-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.quiz-cta-heading { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.quiz-cta-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.quiz-cta-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.quiz-score-badge { font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--paper2); border: 1px solid var(--border); padding: 6px 12px; white-space: nowrap; }
+.quiz-score-badge.done { color: var(--accent3); border-color: rgba(42,140,90,0.3); background: rgba(42,140,90,0.06); font-weight: 600; }
+.quiz-cta-link { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; color: #fff; background: var(--ink); padding: 10px 18px; display: inline-block; transition: opacity 0.15s; white-space: nowrap; }
+.quiz-cta-link:hover { opacity: 0.75; }
+@media (max-width: 600px) { .quiz-cta-section { flex-direction: column; } .quiz-cta-right { width: 100%; } .quiz-cta-link { width: 100%; text-align: center; } }
+
+/* ─── FOOTER ─── */
+.site-footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.35);
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.footer-brand {
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-eyebrow { animation: fadeUp 0.6s 0.1s both; }
+.hero-h1 { animation: fadeUp 0.7s 0.2s both; }
+.hero-cta { animation: fadeUp 0.6s 0.35s both; }
+.hero-desc { animation: fadeUp 0.6s 0.3s both; }
+.hero-stats { animation: fadeUp 0.6s 0.45s both; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-topbar, .hero-content, .hero-bottom { padding-left: 28px; padding-right: 28px; }
+  .hero-content { grid-template-columns: 1fr; gap: 48px; }
+  .hero-right { align-items: flex-start; }
+  .hero-desc { text-align: left; }
+  .hero-stats { grid-template-columns: repeat(4, 1fr); }
+  .course-nav-inner { padding: 0 28px; }
+  .main-wrap { padding: 0 28px 80px; }
+  .phase-strip { grid-template-columns: 1fr; padding: 48px 28px; margin: 0 -28px 0; gap: 32px; }
+  .strip-divider { display: none; }
+  .strip-right { padding-left: 0; }
+  .outcomes-grid { grid-template-columns: 1fr 1fr; }
+  .outcome { border-bottom: 1px solid var(--border); }
+  .lesson-body-inner { padding-left: 28px; grid-template-columns: 1fr; }
+  .tags { flex-direction: row; align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  .hero-h1 { font-size: 44px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .phase-tab { padding: 14px 18px; }
+  .phase-tab .tab-title { display: none; }
+  .outcomes-grid { grid-template-columns: 1fr; }
+  .checklist { grid-template-columns: 1fr; }
+  .lesson-top { grid-template-columns: 60px 1fr 40px; padding: 18px 20px; }
+  .site-footer { flex-direction: column; gap: 12px; text-align: center; padding: 32px 28px; }
+  /* Hide overflow items in hero topbar */
+  .hero-tag { display: none; }
+  .hero-topbar-instructor { display: none; }
+  /* Stack CTA buttons */
+  .hero-cta-wrap { flex-direction: column; align-items: flex-start; }
+  .hero-cta, .hero-resume { width: 100%; justify-content: center; box-sizing: border-box; }
+  /* Instructor grid: single column */
+  .instructor-section { padding: 3rem 28px !important; }
+  .instructor-wrap { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+  .instructor-photo { width: 140px !important; height: 140px !important; }
+}
+
+/* ─── DARK MODE TOGGLE BUTTON ─── */
+.dark-toggle {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.6);
+  font-size: 15px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.dark-toggle:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+
+/* ─── DARK MODE ─── */
+body.dark {
+  --ink: #e8e2d8;
+  --paper: #111009;
+  --paper2: #1c1a16;
+  --paper3: #242118;
+  --cream: #0e0d0b;
+  --muted: #9b9488;
+  --border: rgba(232,226,216,0.1);
+  --border2: rgba(232,226,216,0.18);
+  background: var(--cream);
+  color: var(--ink);
+}
+body.dark .course-nav { background: var(--paper); }
+body.dark .phase-panel { background: var(--cream); }
+body.dark .lesson { background: var(--paper2); border-color: var(--border); }
+body.dark .lesson:hover { background: var(--paper3); }
+body.dark .lesson-body { background: var(--paper3); border-color: var(--border); }
+body.dark .progress-section { background: var(--paper2); }
+body.dark .check-item { background: var(--paper3); border-color: var(--border); }
+body.dark .check-item:hover { background: var(--paper2); }
+body.dark .site-footer { background: var(--paper); border-color: var(--border); }
+body.dark .phase-tab { color: var(--ink); }
+body.dark .phase-tab.active { background: var(--paper3); }
+body.dark .outcome { background: var(--paper3); border-color: var(--border); }
+body.dark .section-heading-text { background: var(--paper2); color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+<header class="hero">
+  <div class="hero-topbar">
+    <div class="logo">AI Crash Course</div>
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <a href="glossary.html" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(255,255,255,0.6);text-decoration:none;text-transform:uppercase;border:1px solid rgba(255,255,255,0.2);padding:6px 14px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.color='#f0e0b0';this.style.borderColor='rgba(181,130,10,0.5)';" onmouseout="this.style.color='rgba(255,255,255,0.6)';this.style.borderColor='rgba(255,255,255,0.2)';">Glossary</a>
+      <a href="about-instructor.html" class="hero-topbar-instructor" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(255,255,255,0.6);text-decoration:none;text-transform:uppercase;border:1px solid rgba(255,255,255,0.2);padding:6px 14px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.color='#f0e0b0';this.style.borderColor='rgba(181,130,10,0.5)';" onmouseout="this.style.color='rgba(255,255,255,0.6)';this.style.borderColor='rgba(255,255,255,0.2)';">Meet the Instructor</a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle dark mode" aria-label="Toggle dark mode"><span id="dark-icon">&#9789;</span></button>
+      <div class="hero-tag">v1.0 · Beginner to Builder</div>
+    </div>
+  </div>
+  <div class="hero-bg-text">AI</div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Complete Curriculum Guide</span>
+      </div>
+      <h1 class="hero-h1">Learn<br><em>Artificial</em><br>Intelligence</h1>
+      <div class="hero-cta-wrap">
+        <a class="hero-cta" href="#course" onclick="document.getElementById('course').scrollIntoView({behavior:'smooth'});return false;">
+          Start the course <span class="hero-cta-arrow">→</span>
+        </a>
+        <a id="resume-btn" class="hero-resume" href="#" style="display:none;">
+          Resume <span class="hero-resume-arrow">→</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <p class="hero-desc">A structured 12-week journey from zero to building real AI systems, designed for absolute beginners with big ambitions.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="stat-n">5</div>
+          <div class="stat-l">Phases</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-n">25</div>
+          <div class="stat-l">Lessons</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-n">12</div>
+          <div class="stat-l">Weeks</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-n">5</div>
+          <div class="stat-l">Projects</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-bottom">
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll to explore
+    </div>
+  </div>
+</header>
+
+<!-- ─── COURSE NAV ─── -->
+<nav id="course" class="course-nav">
+  <div class="course-nav-inner">
+    <button class="phase-tab p1 active" onclick="showPhase(0)">
+      <span class="tab-num">01</span>
+      <span class="tab-title">The Big Picture</span>
+      <span class="tab-weeks">Wk 1–2</span>
+    </button>
+    <button class="phase-tab p2" onclick="showPhase(1)">
+      <span class="tab-num">02</span>
+      <span class="tab-title">Data & Maths</span>
+      <span class="tab-weeks">Wk 3–4</span>
+    </button>
+    <button class="phase-tab p3" onclick="showPhase(2)">
+      <span class="tab-num">03</span>
+      <span class="tab-title">Machine Learning</span>
+      <span class="tab-weeks">Wk 5–7</span>
+    </button>
+    <button class="phase-tab p4" onclick="showPhase(3)">
+      <span class="tab-num">04</span>
+      <span class="tab-title">Deep Learning</span>
+      <span class="tab-weeks">Wk 8–10</span>
+    </button>
+    <button class="phase-tab p5" onclick="showPhase(4)">
+      <span class="tab-num">05</span>
+      <span class="tab-title">Applied AI</span>
+      <span class="tab-weeks">Wk 11–12</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main class="main-wrap">
+
+<!-- ══════════════ PHASE 1 ══════════════ -->
+<div class="phase-panel p1 active" id="panel-0">
+  <div class="phase-strip">
+    <div class="phase-strip-bg">01</div>
+    <div class="strip-left">
+      <div class="phase-label">
+        <span class="phase-label-dot"></span>
+        Phase One · Weeks 1 &amp; 2
+      </div>
+      <h2 class="phase-big-title">What is AI?<br><em>The Big Picture</em></h2>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-right">
+      <p class="phase-desc-big">Set the stage. Demystify AI language. Make students feel like they already live in an AI world, because they do. Zero prerequisites, zero code, maximum clarity.</p>
+      <div class="phase-meta-pills">
+        <span class="meta-pill">4 Lessons</span>
+        <span class="meta-pill">No code required</span>
+        <span class="meta-pill">Discussion-based</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Phase progress</span>
+      <span class="progress-fraction" id="p0-frac">0 <span style="font-weight:400;font-size:14px;color:var(--muted)">/ 4</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="p0-fill"></div></div>
+    <div class="checklist" id="p0-list">
+      <div class="check-item" onclick="tick(this,'p0',4)"><div class="check-box">✓</div><span class="check-label">1.1: The story of AI from Turing to today</span></div>
+      <div class="check-item" onclick="tick(this,'p0',4)"><div class="check-box">✓</div><span class="check-label">1.2: AI vs Machine Learning vs Deep Learning</span></div>
+      <div class="check-item" onclick="tick(this,'p0',4)"><div class="check-box">✓</div><span class="check-label">1.3: Types of AI, narrow, general and super</span></div>
+      <div class="check-item" onclick="tick(this,'p0',4)"><div class="check-box">✓</div><span class="check-label">1.4: AI you already use every day</span></div>
+    </div>
+  </div>
+
+  <div class="lessons-section">
+    <div class="section-heading">
+      <span class="section-heading-text">Lessons</span>
+      <div class="section-heading-line"></div>
+    </div>
+    <div class="lessons-grid">
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top">
+          <span class="lesson-code">1.1</span>
+          <span class="lesson-title-text">The Story of AI, from Turing to Today</span>
+          <span class="lesson-toggle">+</span>
+        </div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Walk through AI history in 10 milestones. Alan Turing's test, the first AI winter, the rise of deep learning in 2012, the GPT moment in 2022. Show how we got here and why the timing of today's explosion makes total sense.</p>
+          <a href="PHASE ONE/LESSON 1.1.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">History</span><span class="tag">Context</span><span class="tag">Timeline</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top">
+          <span class="lesson-code">1.2</span>
+          <span class="lesson-title-text">AI vs Machine Learning vs Deep Learning</span>
+          <span class="lesson-toggle">+</span>
+        </div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Clear the biggest terminology confusion beginners have. Use the "Russian doll" analogy: Deep Learning ⊂ Machine Learning ⊂ AI. Visual diagram only, zero maths. Students leave able to use all three terms correctly in any conversation.</p>
+          <a href="PHASE ONE/LESSON 1.2.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Terminology</span><span class="tag">Concepts</span><span class="tag">Visual</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top">
+          <span class="lesson-code">1.3</span>
+          <span class="lesson-title-text">Types of AI: Narrow, General and Super</span>
+          <span class="lesson-toggle">+</span>
+        </div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Explain the 3 tiers of AI capability. Where are we now? What's realistic vs science fiction? Address fears early. Terminator talk derails learning. Students understand that today's AI is powerful, but narrow.</p>
+          <a href="PHASE ONE/LESSON 1.3.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Concepts</span><span class="tag">Future of AI</span><span class="tag">Discussion</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top">
+          <span class="lesson-code">1.4</span>
+          <span class="lesson-title-text">AI you already use every day</span>
+          <span class="lesson-toggle">+</span>
+        </div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Map AI to familiar products: Spotify recommendations, Face ID, Gmail spam filters, Google Maps ETAs, TikTok's For You page. Students leave the session realising they have been using AI for years without ever knowing it.</p>
+          <a href="PHASE ONE/LESSON 1.4.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Real-world</span><span class="tag">Relatable</span><span class="tag">Discovery</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcomes-section">
+    <div class="section-heading">
+      <span class="section-heading-text">Learning outcomes</span>
+      <div class="section-heading-line"></div>
+    </div>
+    <div class="outcomes-grid">
+      <div class="outcome"><div class="outcome-num">01</div><div class="outcome-label">Fluency</div><div class="outcome-text">Use AI, ML, and DL correctly in any conversation</div></div>
+      <div class="outcome"><div class="outcome-num">02</div><div class="outcome-label">Context</div><div class="outcome-text">Explain why AI is exploding right now historically</div></div>
+      <div class="outcome"><div class="outcome-num">03</div><div class="outcome-label">Awareness</div><div class="outcome-text">Spot and name AI in products they use every day</div></div>
+      <div class="outcome"><div class="outcome-num">04</div><div class="outcome-label">Confidence</div><div class="outcome-text">Feel genuinely ready to go deeper, not intimidated</div></div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="section-heading">
+      <span class="section-heading-text">Week Activity</span>
+      <div class="section-heading-line"></div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-accent"></div>
+      <div class="activity-body">
+        <div class="activity-eyebrow">Exercise · No code required</div>
+        <div class="activity-title">The AI Audit</div>
+        <div class="activity-text">Students list 10 apps they use daily and identify where AI might be involved. Share findings and discuss in the next session. There are no right or wrong answers. The goal is building curiosity and a habit of noticing AI in the wild.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-cta-section">
+    <div class="quiz-cta-left">
+      <div class="quiz-cta-eyebrow">Phase Check</div>
+      <div class="quiz-cta-heading">Test your Phase 1 knowledge</div>
+      <div class="quiz-cta-sub">4 questions on AI history, terminology, and the capability spectrum.</div>
+    </div>
+    <div class="quiz-cta-right">
+      <span class="quiz-score-badge" id="qscore-p1">Not attempted</span>
+      <a href="quiz-phase-1.html" class="quiz-cta-link">Take the quiz &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PHASE 2 ══════════════ -->
+<div class="phase-panel p2" id="panel-1">
+  <div class="phase-strip">
+    <div class="phase-strip-bg">02</div>
+    <div class="strip-left">
+      <div class="phase-label">
+        <span class="phase-label-dot"></span>
+        Phase Two · Weeks 3 &amp; 4
+      </div>
+      <h2 class="phase-big-title">Data &amp;<br><em>Mathematics</em></h2>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-right">
+      <p class="phase-desc-big">AI runs on data. Before any model is built, students must understand what data is, how to work with it, and the intuition behind the maths, kept visual rather than formal.</p>
+      <div class="phase-meta-pills">
+        <span class="meta-pill">5 Lessons</span>
+        <span class="meta-pill">Light Python</span>
+        <span class="meta-pill">Google Colab</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Phase progress</span>
+      <span class="progress-fraction" id="p1-frac">0 <span style="font-weight:400;font-size:14px;color:var(--muted)">/ 5</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="p1-fill"></div></div>
+    <div class="checklist" id="p1-list">
+      <div class="check-item" onclick="tick(this,'p1',5)"><div class="check-box">✓</div><span class="check-label">2.1: What is data? Structured vs unstructured</span></div>
+      <div class="check-item" onclick="tick(this,'p1',5)"><div class="check-box">✓</div><span class="check-label">2.2: Statistics intuition for AI</span></div>
+      <div class="check-item" onclick="tick(this,'p1',5)"><div class="check-box">✓</div><span class="check-label">2.3: Vectors and matrices, without the pain</span></div>
+      <div class="check-item" onclick="tick(this,'p1',5)"><div class="check-box">✓</div><span class="check-label">2.4: Python for AI, your first notebook</span></div>
+      <div class="check-item" onclick="tick(this,'p1',5)"><div class="check-box">✓</div><span class="check-label">2.5: Exploring and cleaning real data</span></div>
+    </div>
+  </div>
+
+  <div class="lessons-section">
+    <div class="section-heading"><span class="section-heading-text">Lessons</span><div class="section-heading-line"></div></div>
+    <div class="lessons-grid">
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">2.1</span><span class="lesson-title-text">What is data? Structured vs unstructured</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Tables, text, images, audio. All of it is data. Show how AI sees the world purely as numbers. Introduce real datasets: CSV files, images as pixel arrays, text as tokens. Students pick apart a sample dataset together live.</p>
+          <a href="PHASE TWO/LESSON 2.1.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Data types</span><span class="tag">Concepts</span><span class="tag">Formats</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">2.2</span><span class="lesson-title-text">Statistics intuition for AI</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Mean, median, variance, distributions, explained visually. Why does it matter? Because AI models are sophisticated statistics engines at their core. Real datasets, histograms and scatter plots. No proofs, no memorisation.</p>
+          <a href="PHASE TWO/LESSON 2.2.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Statistics</span><span class="tag">Visual</span><span class="tag">Intuition</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">2.3</span><span class="lesson-title-text">Vectors and Matrices: Without the Pain</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Introduce linear algebra as the language AI speaks. A vector is just a list of numbers. A matrix is a table. Kept visual with arrows and grids. Demonstrate how images are simply matrices of pixel values.</p>
+          <a href="PHASE TWO/LESSON 2.3.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Linear algebra</span><span class="tag">Visual</span><span class="tag">Intuition</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">2.4</span><span class="lesson-title-text">Python for AI: Your First Notebook</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Set up Google Colab with zero installation. Learn variables, lists, loops, functions. Load a CSV with Pandas. Plot data with Matplotlib. First hands-on code session. Keep it celebratory, not stressful.</p>
+          <a href="PHASE TWO/LESSON 2.4.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Colab</span><span class="tag">Pandas</span><span class="tag">Hands-on</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">2.5</span><span class="lesson-title-text">Exploring and cleaning real data</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Work with a real messy dataset. Handle missing values, duplicates, outliers. Visualise distributions. Students learn that 80% of real AI work is data prep, not modelling. Far better to know this upfront.</p>
+          <a href="PHASE TWO/LESSON 2.5.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">EDA</span><span class="tag">NumPy</span><span class="tag">Cleaning</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcomes-section">
+    <div class="section-heading"><span class="section-heading-text">Learning outcomes</span><div class="section-heading-line"></div></div>
+    <div class="outcomes-grid">
+      <div class="outcome"><div class="outcome-num">01</div><div class="outcome-label">Data literacy</div><div class="outcome-text">Understand and describe any dataset with confidence</div></div>
+      <div class="outcome"><div class="outcome-num">02</div><div class="outcome-label">Python basics</div><div class="outcome-text">Write simple data scripts in Colab independently</div></div>
+      <div class="outcome"><div class="outcome-num">03</div><div class="outcome-label">Maths intuition</div><div class="outcome-text">Grasp vectors and statistics without anxiety</div></div>
+      <div class="outcome"><div class="outcome-num">04</div><div class="outcome-label">Real-world prep</div><div class="outcome-text">Clean and explore a raw dataset on their own</div></div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="section-heading"><span class="section-heading-text">Week Activity</span><div class="section-heading-line"></div></div>
+    <div class="activity-card">
+      <div class="activity-accent"></div>
+      <div class="activity-body">
+        <div class="activity-eyebrow">Exercise · Google Colab · Pandas</div>
+        <div class="activity-title">Titanic Explorer</div>
+        <div class="activity-text">Load the Titanic dataset in Colab. Answer 5 questions using Pandas: average passenger age, survival rate by gender, most common class, youngest and oldest passengers. No modelling yet, just pure data exploration and curiosity.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-cta-section">
+    <div class="quiz-cta-left">
+      <div class="quiz-cta-eyebrow">Phase Check</div>
+      <div class="quiz-cta-heading">Test your Phase 2 knowledge</div>
+      <div class="quiz-cta-sub">4 questions on data types, statistical thinking, and the maths behind AI models.</div>
+    </div>
+    <div class="quiz-cta-right">
+      <span class="quiz-score-badge" id="qscore-p2">Not attempted</span>
+      <a href="quiz-phase-2.html" class="quiz-cta-link">Take the quiz &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PHASE 3 ══════════════ -->
+<div class="phase-panel p3" id="panel-2">
+  <div class="phase-strip">
+    <div class="phase-strip-bg">03</div>
+    <div class="strip-left">
+      <div class="phase-label">
+        <span class="phase-label-dot"></span>
+        Phase Three · Weeks 5 to 7
+      </div>
+      <h2 class="phase-big-title">Machine<br><em>Learning</em></h2>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-right">
+      <p class="phase-desc-big">The heart of the course. Students move from understanding AI to actually building it. Train real models, evaluate them properly, and and understand exactly why they work, or why they fall apart.</p>
+      <div class="phase-meta-pills">
+        <span class="meta-pill">6 Lessons</span>
+        <span class="meta-pill">Scikit-learn</span>
+        <span class="meta-pill">Mini project</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Phase progress</span>
+      <span class="progress-fraction" id="p2-frac">0 <span style="font-weight:400;font-size:14px;color:var(--muted)">/ 6</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="p2-fill"></div></div>
+    <div class="checklist" id="p2-list">
+      <div class="check-item" onclick="tick(this,'p2',6)"><div class="check-box">✓</div><span class="check-label">3.1: How machines learn, the core idea</span></div>
+      <div class="check-item" onclick="tick(this,'p2',6)"><div class="check-box">✓</div><span class="check-label">3.2: Supervised learning, classification</span></div>
+      <div class="check-item" onclick="tick(this,'p2',6)"><div class="check-box">✓</div><span class="check-label">3.3: Supervised learning, regression</span></div>
+      <div class="check-item" onclick="tick(this,'p2',6)"><div class="check-box">✓</div><span class="check-label">3.4: Unsupervised learning, clustering</span></div>
+      <div class="check-item" onclick="tick(this,'p2',6)"><div class="check-box">✓</div><span class="check-label">3.5: Training, testing and avoiding overfitting</span></div>
+      <div class="check-item" onclick="tick(this,'p2',6)"><div class="check-box">✓</div><span class="check-label">3.6: Evaluation metrics that actually matter</span></div>
+    </div>
+  </div>
+
+  <div class="lessons-section">
+    <div class="section-heading"><span class="section-heading-text">Lessons</span><div class="section-heading-line"></div></div>
+    <div class="lessons-grid">
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">3.1</span><span class="lesson-title-text">How Machines Learn: The Core Idea</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Introduce the learning loop: data → model → prediction → error → adjust. Use a simple linear regression example with a live visual of the line "fitting" to points. The session where everything clicks for beginners.</p>
+          <a href="PHASE THREE/LESSON 3.1.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Concepts</span><span class="tag">Learning loop</span><span class="tag">Visual</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">3.2</span><span class="lesson-title-text">Supervised Learning: Classification</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Spam vs not spam, cat vs dog. Decision trees, K-Nearest Neighbours explained visually. Build a classifier on the Titanic dataset. Will this passenger survive? Students see and own their first real model prediction.</p>
+          <a href="PHASE THREE/LESSON 3.2.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Classification</span><span class="tag">Decision tree</span><span class="tag">KNN</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">3.3</span><span class="lesson-title-text">Supervised Learning: Regression</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Predict house prices with linear and polynomial regression. Plot the prediction line live. Introduce loss functions and ask: how do we measure exactly how wrong a model is? MSE explained visually with no derivations.</p>
+          <a href="PHASE THREE/LESSON 3.3.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Regression</span><span class="tag">Loss functions</span><span class="tag">Scikit-learn</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">3.4</span><span class="lesson-title-text">Unsupervised Learning: Clustering</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">No labels, no right answers. K-Means clustering: let the model find groups entirely on its own. Customer segmentation as the example. Visualise clusters with colour-coded scatter plots. Students discover patterns they didn't put there.</p>
+          <a href="PHASE THREE/LESSON 3.4.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">K-Means</span><span class="tag">Clustering</span><span class="tag">Unsupervised</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">3.5</span><span class="lesson-title-text">Training, testing and avoiding overfitting</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Why you always split your data. Train/test/validation sets. The bias-variance tradeoff. Overfitting illustrated clearly: a model that memorises vs one that generalises. Cross-validation basics with Scikit-learn in practice.</p>
+          <a href="PHASE THREE/LESSON 3.5.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Validation</span><span class="tag">Overfitting</span><span class="tag">Best practices</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">3.6</span><span class="lesson-title-text">Evaluating Your Model: Metrics That Matter</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Accuracy alone is not enough. Precision, recall, F1-score, confusion matrices explained. When does a false negative cost more than a false positive? Cancer detection vs spam filter. Context completely changes what "good" means.</p>
+          <a href="PHASE THREE/LESSON 3.6.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Evaluation</span><span class="tag">Precision</span><span class="tag">Recall</span><span class="tag">F1</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcomes-section">
+    <div class="section-heading"><span class="section-heading-text">Learning outcomes</span><div class="section-heading-line"></div></div>
+    <div class="outcomes-grid">
+      <div class="outcome"><div class="outcome-num">01</div><div class="outcome-label">Build models</div><div class="outcome-text">Train classifiers and regressors from scratch</div></div>
+      <div class="outcome"><div class="outcome-num">02</div><div class="outcome-label">Evaluate properly</div><div class="outcome-text">Choose the right metric for the problem at hand</div></div>
+      <div class="outcome"><div class="outcome-num">03</div><div class="outcome-label">Avoid pitfalls</div><div class="outcome-text">Detect and correct overfitting in practice</div></div>
+      <div class="outcome"><div class="outcome-num">04</div><div class="outcome-label">Think like an engineer</div><div class="outcome-text">Frame any real problem as a ML task</div></div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="section-heading"><span class="section-heading-text">Mini Project</span><div class="section-heading-line"></div></div>
+    <div class="activity-card">
+      <div class="activity-accent"></div>
+      <div class="activity-body">
+        <div class="activity-eyebrow">Project · Scikit-learn · Written reflection</div>
+        <div class="activity-title">Titanic Survival Predictor</div>
+        <div class="activity-text">Build a Titanic survival predictor using at least 2 different algorithms. Compare accuracy scores. Submit a short written reflection: "What worked, what didn't, and why." First real model built and owned entirely by the student.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-cta-section">
+    <div class="quiz-cta-left">
+      <div class="quiz-cta-eyebrow">Phase Check</div>
+      <div class="quiz-cta-heading">Test your Phase 3 knowledge</div>
+      <div class="quiz-cta-sub">4 questions on training, classification, overfitting, and gradient descent.</div>
+    </div>
+    <div class="quiz-cta-right">
+      <span class="quiz-score-badge" id="qscore-p3">Not attempted</span>
+      <a href="quiz-phase-3.html" class="quiz-cta-link">Take the quiz &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE TRANSITION: 3 → 4 -->
+<div class="phase-transition">
+  <div class="phase-transition-inner">
+    <span class="phase-transition-icon">⚙️</span>
+    <div class="phase-transition-text">
+      <strong>The course shifts format here.</strong>
+      Phases 1 to 3 were about building mental models. From Phase 4 onward, you will be running real code in Google Colab notebooks alongside the lesson material. The layout changes to a lab format to reflect that. If you are not yet comfortable with Python basics, the readiness check inside Phase 4 will tell you what to review before you begin.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PHASE 4 ══════════════ -->
+<div class="phase-panel p4" id="panel-3">
+  <div class="phase-strip">
+    <div class="phase-strip-bg">04</div>
+    <div class="strip-left">
+      <div class="phase-label">
+        <span class="phase-label-dot"></span>
+        Phase Four · Weeks 8 to 10
+      </div>
+      <h2 class="phase-big-title">Neural<br><em>Networks</em></h2>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-right">
+      <p class="phase-desc-big">From classical ML to the technology powering all modern AI. Students learn how neural networks actually learn, and how the transformer architecture published in 2017 changed absolutely everything.</p>
+      <div class="phase-meta-pills">
+        <span class="meta-pill">5 Lessons</span>
+        <span class="meta-pill">Keras</span>
+        <span class="meta-pill">TF Playground</span>
+      </div>
+      <div class="readiness-block">
+        <div class="readiness-title">&#10003; Phase 4 Python Readiness Check</div>
+        <div class="readiness-list">
+          <label class="readiness-item"><input type="checkbox" onchange="updateReadiness(this)"> <span>I can create variables and understand strings, integers, and lists</span></label>
+          <label class="readiness-item"><input type="checkbox" onchange="updateReadiness(this)"> <span>I can write a <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">for</code> loop and an <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">if/else</code> statement</span></label>
+          <label class="readiness-item"><input type="checkbox" onchange="updateReadiness(this)"> <span>I can define and call a function with <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">def</code></span></label>
+          <label class="readiness-item"><input type="checkbox" onchange="updateReadiness(this)"> <span>I can import a library (<code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">import numpy as np</code>)</span></label>
+          <label class="readiness-item"><input type="checkbox" onchange="updateReadiness(this)"> <span>I have opened a Google Colab notebook and run at least one cell</span></label>
+          <label class="readiness-item"><input type="checkbox" onchange="updateReadiness(this)"> <span>I can read a CSV file with pandas (<code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">pd.read_csv</code>)</span></label>
+        </div>
+        <p class="readiness-note" id="readiness-note">Tick each item you are confident with. Not there yet? Revisit <a href="PHASE TWO/LESSON 2.4.html">Lesson 2.4</a> and spend 30 minutes on <a href="https://www.kaggle.com/learn/python" target="_blank" rel="noopener">Kaggle's free Python course</a> before continuing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Phase progress</span>
+      <span class="progress-fraction" id="p3-frac">0 <span style="font-weight:400;font-size:14px;color:var(--muted)">/ 5</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="p3-fill"></div></div>
+    <div class="checklist" id="p3-list">
+      <div class="check-item" onclick="tick(this,'p3',5)"><div class="check-box">✓</div><span class="check-label">4.1: The neuron, from biology to maths</span></div>
+      <div class="check-item" onclick="tick(this,'p3',5)"><div class="check-box">✓</div><span class="check-label">4.2: Building a neural network, layers and depth</span></div>
+      <div class="check-item" onclick="tick(this,'p3',5)"><div class="check-box">✓</div><span class="check-label">4.3: Convolutional Neural Networks, how machines see</span></div>
+      <div class="check-item" onclick="tick(this,'p3',5)"><div class="check-box">✓</div><span class="check-label">4.4: Transformers and the attention mechanism</span></div>
+      <div class="check-item" onclick="tick(this,'p3',5)"><div class="check-box">✓</div><span class="check-label">4.5: Transfer learning and fine-tuning</span></div>
+    </div>
+  </div>
+
+  <div class="lessons-section">
+    <div class="section-heading"><span class="section-heading-text">Lessons</span><div class="section-heading-line"></div></div>
+    <div class="lessons-grid">
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">4.1</span><span class="lesson-title-text">The Neuron: From Biology to Maths</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Start with a biological neuron analogy students already understand. Show a perceptron: inputs, weights, bias, activation function. Use TensorFlow Playground so students can visually tune a single neuron and watch it learn in real time.</p>
+          <a href="PHASE FOUR/LESSON 4.1.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Perceptron</span><span class="tag">Weights</span><span class="tag">Activation</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">4.2</span><span class="lesson-title-text">Building a Neural Network: Layers and Depth</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Stack neurons into layers: input, hidden, output. Why depth matters so much. Introduce activation functions: ReLU, Sigmoid and Softmax, with guidance on when to use each. Build a simple network in Keras in under 10 lines of code.</p>
+          <a href="PHASE FOUR/LESSON 4.2.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Layers</span><span class="tag">Keras</span><span class="tag">Architecture</span><span class="tag">ReLU</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">4.3</span><span class="lesson-title-text">Convolutional Neural Networks: How Machines See</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">How filters scan an image and build up feature maps. Max pooling, local connectivity, and weight sharing. CNN architecture from input to classification output. Landmark models from LeNet-5 to ResNet. Build an MNIST digit classifier in Keras achieving 99.2% accuracy.</p>
+          <a href="PHASE FOUR/LESSON 4.3.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">CNN</span><span class="tag">Filters</span><span class="tag">Keras</span><span class="tag">MNIST</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">4.4</span><span class="lesson-title-text">Transformers and the Attention Mechanism</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Self-attention explained from first principles: queries, keys, and values. Scaled dot-product attention formula and why it works. Multi-head attention, positional encoding, and the full encoder block. BERT vs GPT. Use Hugging Face pipelines for sentiment analysis and text generation in 5 lines of code.</p>
+          <a href="PHASE FOUR/LESSON 4.4.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Transformers</span><span class="tag">Attention</span><span class="tag">BERT</span><span class="tag">GPT</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">4.5</span><span class="lesson-title-text">Transfer Learning and Fine-Tuning</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Why training from scratch is almost never the right choice. Feature extraction vs fine-tuning, when to use each. Fine-tune ResNet-50 on a custom image dataset in two phases with Keras. Fine-tune DistilBERT for text classification with Hugging Face Trainer. Understand catastrophic forgetting and how to avoid it.</p>
+          <a href="PHASE FOUR/LESSON 4.5.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Transfer learning</span><span class="tag">Fine-tuning</span><span class="tag">ResNet</span><span class="tag">DistilBERT</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcomes-section">
+    <div class="section-heading"><span class="section-heading-text">Learning outcomes</span><div class="section-heading-line"></div></div>
+    <div class="outcomes-grid">
+      <div class="outcome"><div class="outcome-num">01</div><div class="outcome-label">Network intuition</div><div class="outcome-text">Explain how a neural network learns in plain English</div></div>
+      <div class="outcome"><div class="outcome-num">02</div><div class="outcome-label">Hands-on DL</div><div class="outcome-text">Build and train a network from scratch in Keras</div></div>
+      <div class="outcome"><div class="outcome-num">03</div><div class="outcome-label">Architecture knowledge</div><div class="outcome-text">Know when to reach for CNN, RNN, or transformer</div></div>
+      <div class="outcome"><div class="outcome-num">04</div><div class="outcome-label">Modern AI context</div><div class="outcome-text">Understand the architecture powering today's AI</div></div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="section-heading"><span class="section-heading-text">Mini Project</span><div class="section-heading-line"></div></div>
+    <div class="activity-card">
+      <div class="activity-accent"></div>
+      <div class="activity-body">
+        <div class="activity-eyebrow">Project · Keras · MNIST or CIFAR-10</div>
+        <div class="activity-title">Image Classifier</div>
+        <div class="activity-text">Build an image classifier on MNIST or CIFAR-10. Train for 5 epochs and plot the training vs validation accuracy curve over time. Written reflection: "What is your model confident about, when does it fail, and why?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-cta-section">
+    <div class="quiz-cta-left">
+      <div class="quiz-cta-eyebrow">Phase Check</div>
+      <div class="quiz-cta-heading">Test your Phase 4 knowledge</div>
+      <div class="quiz-cta-sub">4 questions on neurons, CNNs, Transformers, and transfer learning.</div>
+    </div>
+    <div class="quiz-cta-right">
+      <span class="quiz-score-badge" id="qscore-p4">Not attempted</span>
+      <a href="quiz-phase-4.html" class="quiz-cta-link">Take the quiz &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PHASE 5 ══════════════ -->
+<div class="phase-panel p5" id="panel-4">
+  <div class="phase-strip">
+    <div class="phase-strip-bg">05</div>
+    <div class="strip-left">
+      <div class="phase-label">
+        <span class="phase-label-dot"></span>
+        Phase Five · Weeks 11 to 12
+      </div>
+      <h2 class="phase-big-title">Applied AI<br><em>&amp; Ethics</em></h2>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-right">
+      <p class="phase-desc-big">Bring it all together. Explore the AI tools reshaping the world, learn to prompt effectively, grapple with real ethical stakes, and ship a project that is entirely your own creation.</p>
+      <div class="phase-meta-pills">
+        <span class="meta-pill">5 Lessons</span>
+        <span class="meta-pill">Capstone project</span>
+        <span class="meta-pill">Portfolio piece</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Phase progress</span>
+      <span class="progress-fraction" id="p4-frac">0 <span style="font-weight:400;font-size:14px;color:var(--muted)">/ 5</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="p4-fill"></div></div>
+    <div class="checklist" id="p4-list">
+      <div class="check-item" onclick="tick(this,'p4',5)"><div class="check-box">✓</div><span class="check-label">5.1: AI ethics, bias, fairness and accountability</span></div>
+      <div class="check-item" onclick="tick(this,'p4',5)"><div class="check-box">✓</div><span class="check-label">5.2: Large language models, how they actually work</span></div>
+      <div class="check-item" onclick="tick(this,'p4',5)"><div class="check-box">✓</div><span class="check-label">5.3: Prompt engineering, getting the most from AI</span></div>
+      <div class="check-item" onclick="tick(this,'p4',5)"><div class="check-box">✓</div><span class="check-label">5.4: Computer vision in practice</span></div>
+      <div class="check-item" onclick="tick(this,'p4',5)"><div class="check-box">✓</div><span class="check-label">5.5: The future of AI, what is coming next</span></div>
+    </div>
+  </div>
+
+  <div class="lessons-section">
+    <div class="section-heading"><span class="section-heading-text">Lessons</span><div class="section-heading-line"></div></div>
+    <div class="lessons-grid">
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">5.1</span><span class="lesson-title-text">AI Ethics: Bias, Fairness and Accountability</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Where bias originates in the AI pipeline, and why it compounds. Six bias types with real case studies: COMPAS recidivism, Amazon's hiring tool, Obermeyer's healthcare disparity (Science 2019), and Gender Shades. The mathematical impossibility of satisfying all fairness definitions simultaneously. Explainability tools. EU AI Act and regulation.</p>
+          <a href="PHASE FIVE/LESSON 5.1.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Ethics</span><span class="tag">Bias</span><span class="tag">Fairness</span><span class="tag">Regulation</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">5.2</span><span class="lesson-title-text">Large Language Models: How They Actually Work</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Tokenisation and Byte-Pair Encoding. Next-token prediction as the core training objective. Scaling laws (Kaplan 2020, Chinchilla 2022) and emergent abilities. RLHF, Constitutional AI, and DPO alignment techniques. Hallucination types and mitigation. RAG architecture. Context windows from 4K to 1M tokens.</p>
+          <a href="PHASE FIVE/LESSON 5.2.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">LLMs</span><span class="tag">RLHF</span><span class="tag">RAG</span><span class="tag">Scaling laws</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">5.3</span><span class="lesson-title-text">Prompt Engineering: Getting the Most from AI</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Zero-shot, few-shot, and chain-of-thought prompting with verified research citations. System prompts and role prompting. Temperature, top-p, top-k, and when to adjust them. Practical techniques, common mistakes, and full working OpenAI API v1.0+ code including structured JSON output with chain-of-thought.</p>
+          <a href="PHASE FIVE/LESSON 5.3.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Prompting</span><span class="tag">CoT</span><span class="tag">Few-shot</span><span class="tag">OpenAI API</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">5.4</span><span class="lesson-title-text">Computer Vision in Practice</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Classification, detection, segmentation, and pose estimation. YOLO's single-pass detection architecture and its evolution through v11. U-Net for medical image segmentation. OpenCV for image pre-processing and result overlay. Hugging Face DETR and torchvision ResNet-50 inference pipelines. Medical imaging challenges, DICOM files, and ethical considerations in facial recognition.</p>
+          <a href="PHASE FIVE/LESSON 5.4.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Computer vision</span><span class="tag">YOLO</span><span class="tag">OpenCV</span><span class="tag">Medical AI</span></div>
+        </div></div>
+      </div>
+      <div class="lesson" onclick="openLesson(this)" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson(this);}">
+        <div class="lesson-top"><span class="lesson-code">5.5</span><span class="lesson-title-text">The Future of AI: What Is Coming Next</span><span class="lesson-toggle">+</span></div>
+        <div class="lesson-body"><div class="lesson-body-inner">
+          <div><p class="lesson-desc">Multimodal AI (CLIP, GPT-4o, diffusion models). AI agents, the ReAct loop, and function calling with full Python code. Reasoning models: OpenAI o1, o3, and DeepSeek-R1. Open vs closed model trade-offs. AI safety, alignment, and mechanistic interpretability. Economic impact studies. Where to go next as a practitioner.</p>
+          <a href="PHASE FIVE/LESSON 5.5.html" class="lesson-open-btn" onclick="event.stopPropagation()">Open Lesson &rarr;</a></div>
+          <div class="tags"><span class="tag">Future</span><span class="tag">Agents</span><span class="tag">Multimodal</span><span class="tag">Safety</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcomes-section">
+    <div class="section-heading"><span class="section-heading-text">Learning outcomes</span><div class="section-heading-line"></div></div>
+    <div class="outcomes-grid">
+      <div class="outcome"><div class="outcome-num">01</div><div class="outcome-label">Applied skills</div><div class="outcome-text">Use and evaluate AI tools with a critical eye</div></div>
+      <div class="outcome"><div class="outcome-num">02</div><div class="outcome-label">Prompt mastery</div><div class="outcome-text">Write effective prompts for any task or model</div></div>
+      <div class="outcome"><div class="outcome-num">03</div><div class="outcome-label">Ethical reasoning</div><div class="outcome-text">Identify and articulate AI risks and bias clearly</div></div>
+      <div class="outcome"><div class="outcome-num">04</div><div class="outcome-label">Portfolio piece</div><div class="outcome-text">Ship a real project they can show the world</div></div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="section-heading"><span class="section-heading-text">Capstone Options</span><div class="section-heading-line"></div></div>
+    <div class="activity-card">
+      <div class="activity-accent"></div>
+      <div class="activity-body">
+        <div class="activity-eyebrow">Final Project · Student's choice</div>
+        <div class="activity-title">Pick one. Build it. Ship it.</div>
+        <div class="activity-text">
+          Option A: Train an ML model on a dataset that is personally meaningful to you.<br><br>
+          Option B: Build a prompt-powered tool that solves a real problem for a real person.<br><br>
+          Option C: Analyse a real-world AI system: how it works, where it fails, how you would improve it.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-cta-section">
+    <div class="quiz-cta-left">
+      <div class="quiz-cta-eyebrow">Phase Check</div>
+      <div class="quiz-cta-heading">Test your Phase 5 knowledge</div>
+      <div class="quiz-cta-sub">4 questions on bias, hallucination, AI regulation, and alignment.</div>
+    </div>
+    <div class="quiz-cta-right">
+      <span class="quiz-score-badge" id="qscore-p5">Not attempted</span>
+      <a href="quiz-phase-5.html" class="quiz-cta-link">Take the quiz &rarr;</a>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE BANNER -->
+  <div style="margin:48px 0 0;background:linear-gradient(135deg,#1a1200 0%,#2c2000 60%,#3a2e00 100%);border:1px solid rgba(181,130,10,0.35);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;">
+    <div>
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(181,130,10,0.7);margin-bottom:8px;">Course Complete</div>
+      <div style="font-family:var(--display);font-size:24px;font-weight:700;color:#fff;margin-bottom:6px;">You made it. <em style="font-style:italic;color:rgba(181,130,10,0.9);">Claim your certificate.</em></div>
+      <div style="font-family:var(--ui);font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">25 lessons, 5 phases, 12 weeks of AI. Printable PDF certificate with your name.</div>
+    </div>
+    <a href="certificate.html" style="font-family:var(--ui);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(181,130,10,0.9);color:#fff;text-decoration:none;padding:14px 28px;display:inline-block;flex-shrink:0;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Get Certificate &#8594;</a>
+  </div>
+</div>
+
+</main>
+
+<!-- ─── INSTRUCTOR CARD ─── -->
+<section class="instructor-section" style="background:#0a0908;padding:5rem 60px;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="instructor-wrap" style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:220px 1fr;gap:3rem;align-items:center;">
+    <!-- Photo slot -->
+    <div style="position:relative;">
+      <div class="instructor-photo" style="width:200px;height:200px;border-radius:50%;overflow:hidden;border:3px solid rgba(181,130,10,0.5);margin:0 auto;">
+        <img src="instructor.jpg"
+             alt="Abena Fosuaa Gyasi"
+             style="width:100%;height:100%;object-fit:cover;object-position:center 20%;"
+             onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2c2000,#4a3800)';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;\'>&#128100;</div>';" />
+      </div>
+      <div style="text-align:center;margin-top:1rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(181,130,10,0.8);margin-bottom:0.3rem;">Your Instructor</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#fff;">Abena Fosuaa Gyasi</div>
+        <div style="font-family:'Syne',sans-serif;font-size:11px;color:rgba(255,255,255,0.45);margin-top:0.2rem;">MSc AI · Loughborough University</div>
+      </div>
+    </div>
+    <!-- Text -->
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(181,130,10,0.8);margin-bottom:1rem;">About the Instructor</div>
+      <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:1rem;line-height:1.25;">Built by someone who knows both the code and the classroom.</h2>
+      <p style="font-family:'Syne',sans-serif;font-size:14px;line-height:1.8;color:rgba(255,255,255,0.6);margin-bottom:1.5rem;">I am an AI Specialist currently pursuing my MSc in Artificial Intelligence at Loughborough University. As an AI Research Assistant on NIHR-funded healthcare projects, I have built production machine learning systems that improve diagnostic accuracy and serve thousands of daily predictions. I created this course to give you the grounded, honest introduction to AI that I wish had existed when I started.</p>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.75rem;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(181,130,10,0.15);border:1px solid rgba(181,130,10,0.3);color:rgba(181,130,10,0.9);padding:4px 12px;border-radius:6px;">PyTorch</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(181,130,10,0.15);border:1px solid rgba(181,130,10,0.3);color:rgba(181,130,10,0.9);padding:4px 12px;border-radius:6px;">TensorFlow</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);padding:4px 12px;border-radius:6px;">Computer Vision</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);padding:4px 12px;border-radius:6px;">Healthcare AI</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);padding:4px 12px;border-radius:6px;">NLP</span>
+      </div>
+      <a href="about-instructor.html" style="display:inline-block;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;background:#b5820a;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;letter-spacing:0.04em;transition:all 0.2s;" onmouseover="this.style.background='#8a6008'" onmouseout="this.style.background='#b5820a'">Read Full Profile &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+  <span class="footer-brand">AI Crash Course</span>
+  <span>Created by Abena Fosuaa Gyasi &middot; 5 Phases &middot; 25 Lessons &middot; 12 Weeks &middot; Built for beginners</span>
+  <span style="font-size:11px;opacity:0.55;">&copy; 2026 Abena Fosuaa Gyasi &middot; All rights reserved</span>
+</footer>
+
+<script>
+const phaseColors = ['#c8401a','#1a6bc8','#2a8c5a','#b5820a','#8c1a5a'];
+const STORAGE_KEY = 'aicc-progress-v1';
+
+/* ─── PHASE SWITCHING ─── */
+function showPhase(i) {
+  document.querySelectorAll('.phase-panel').forEach((p,j) => p.classList.toggle('active', j===i));
+  document.querySelectorAll('.phase-tab').forEach((t,j) => {
+    t.classList.toggle('active', j===i);
+    t.style.setProperty('--pc', phaseColors[j]);
+  });
+  const panel   = document.getElementById('panel-' + i);
+  const lessons = panel.querySelector('.lessons-section');
+  const target  = lessons || panel;
+  const navH    = document.getElementById('course').offsetHeight;
+  const y       = target.getBoundingClientRect().top + window.scrollY - navH - 20;
+  window.scrollTo({ top: Math.max(y, 0), behavior: 'smooth' });
+}
+
+/* ─── LESSON EXPAND ─── */
+function openLesson(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.lesson.open').forEach(l => {
+    l.classList.remove('open');
+    l.setAttribute('aria-expanded', 'false');
+  });
+  if (!isOpen) {
+    el.classList.add('open');
+    el.setAttribute('aria-expanded', 'true');
+  }
+}
+
+/* ─── PROGRESS TRACKER ─── */
+function saveProgress() {
+  const data = {};
+  document.querySelectorAll('.checklist').forEach(list => {
+    data[list.id] = Array.from(list.querySelectorAll('.check-item'))
+                         .map(item => item.classList.contains('done'));
+  });
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function loadProgress() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e) {}
+  if (!data) return;
+  document.querySelectorAll('.checklist').forEach(list => {
+    const saved = data[list.id];
+    if (!saved) return;
+    const items = list.querySelectorAll('.check-item');
+    const phId  = list.id.replace('-list', '');
+    items.forEach((item, idx) => { if (saved[idx]) item.classList.add('done'); });
+    const done  = Array.from(items).filter(i => i.classList.contains('done')).length;
+    const total = items.length;
+    document.getElementById(`${phId}-frac`).innerHTML =
+      `${done} <span style="font-weight:400;font-size:14px;color:var(--muted)">/ ${total}</span>`;
+    document.getElementById(`${phId}-fill`).style.width = `${(done/total)*100}%`;
+  });
+}
+
+function tick(el, pid, total) {
+  el.classList.toggle('done');
+  const done = document.querySelectorAll(`#${pid}-list .check-item.done`).length;
+  document.getElementById(`${pid}-frac`).innerHTML =
+    `${done} <span style="font-weight:400;font-size:14px;color:var(--muted)">/ ${total}</span>`;
+  document.getElementById(`${pid}-fill`).style.width = `${(done/total)*100}%`;
+  saveProgress();
+}
+
+/* ─── PHASE 4 READINESS ─── */
+function updateReadiness(cb) {
+  const all = document.querySelectorAll('.readiness-item input[type="checkbox"]');
+  const checked = Array.from(all).filter(c => c.checked).length;
+  const note = document.getElementById('readiness-note');
+  if (!note) return;
+  if (checked === all.length) {
+    note.innerHTML = '&#9989; You are ready for Phase 4. Open Lesson 4.1 when you are set.';
+    note.style.color = '#2a8c5a';
+  } else {
+    note.innerHTML = 'Tick each item you are confident with. Not there yet? Revisit <a href="PHASE TWO/LESSON 2.4.html">Lesson 2.4</a> and spend 30 minutes on <a href="https://www.kaggle.com/learn/python" target="_blank" rel="noopener">Kaggle\'s free Python course</a> before continuing.';
+    note.style.color = '';
+  }
+}
+
+/* ─── QUIZ SCORES ─── */
+function loadQuizScores() {
+  const pairs = [
+    ['aicc-quiz-p1', 'qscore-p1'],
+    ['aicc-quiz-p2', 'qscore-p2'],
+    ['aicc-quiz-p3', 'qscore-p3'],
+    ['aicc-quiz-p4', 'qscore-p4'],
+    ['aicc-quiz-p5', 'qscore-p5'],
+  ];
+  pairs.forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+      const val = localStorage.getItem(key);
+      if (val) {
+        el.textContent = val + ' correct';
+        el.classList.add('done');
+      }
+    } catch(e) {}
+  });
+}
+
+/* ─── RESUME CTA ─── */
+function showResumeBtn() {
+  // Build a map: lesson code (e.g. "1.1") -> href
+  const linkMap = {};
+  document.querySelectorAll('.lesson-open-btn').forEach(btn => {
+    const codeEl = btn.closest('.lesson')?.querySelector('.lesson-code');
+    if (codeEl) linkMap[codeEl.textContent.trim()] = btn.getAttribute('href');
+  });
+
+  // Find the first check-item without .done class
+  const first = document.querySelector('.check-item:not(.done)');
+  if (!first) return; // all done — no resume needed
+
+  const label = first.querySelector('.check-label');
+  if (!label) return;
+  const code = label.textContent.split(':')[0].trim(); // e.g. "1.1"
+  const href = linkMap[code];
+  if (!href) return;
+
+  const btn = document.getElementById('resume-btn');
+  if (btn) {
+    btn.href = href;
+    btn.style.display = 'inline-flex';
+    btn.title = 'Continue from lesson ' + code;
+  }
+}
+
+/* ─── DARK MODE ─── */
+function toggleDark() {
+  const on = document.body.classList.toggle('dark');
+  document.getElementById('dark-icon').textContent = on ? '☀' : '☽';
+  try { localStorage.setItem('aicc-dark', on ? '1' : '0'); } catch(e) {}
+}
+
+/* ─── INIT ─── */
+document.querySelectorAll('.phase-tab').forEach((t,i) => {
+  t.style.setProperty('--pc', phaseColors[i]);
+});
+loadProgress();
+loadQuizScores();
+showResumeBtn();
+
+// Restore dark mode preference
+try {
+  if (localStorage.getItem('aicc-dark') === '1') {
+    document.body.classList.add('dark');
+    document.getElementById('dark-icon').textContent = '☀';
+  }
+} catch(e) {}
+</script>
+</body>
+</html>

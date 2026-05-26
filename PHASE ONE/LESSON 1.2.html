@@ -1,0 +1,681 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1.2: AI vs ML vs Deep Learning — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #b83c12;
+  --accent-soft: rgba(184,60,18,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --blue: #1a5c9a;
+  --blue-soft: rgba(26,92,154,0.08);
+  --green: #1e6e45;
+  --green-soft: rgba(30,110,69,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.85;
+  min-height: 100vh;
+}
+
+.reading-progress {
+  position: fixed; top: 0; left: 0;
+  height: 3px; background: var(--accent);
+  z-index: 200; width: 0%;
+  transition: width 0.1s linear;
+}
+
+.topbar {
+  background: var(--ink);
+  padding: 14px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header {
+  max-width: 860px; margin: 0 auto;
+  padding: 72px 40px 56px;
+  border-bottom: 1px solid var(--border);
+  animation: fadeUp 0.5s 0.05s both;
+}
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(184,60,18,0.2); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar {
+  max-width: 860px; margin: 0 auto;
+  padding: 32px 40px; background: var(--paper2);
+  border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start;
+  animation: fadeUp 0.5s 0.15s both;
+}
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap {
+  max-width: 860px; margin: 0 auto;
+  display: grid; grid-template-columns: var(--max) 1fr;
+  gap: 0; padding: 0 40px; align-items: start;
+  animation: fadeUp 0.5s 0.25s both;
+}
+
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* RUSSIAN DOLL DIAGRAM */
+.doll-diagram {
+  margin: 40px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.doll-layer {
+  padding: 28px 28px 28px 28px;
+  position: relative;
+  cursor: default;
+}
+.doll-ai {
+  background: rgba(184,60,18,0.07);
+  border: 2px solid rgba(184,60,18,0.3);
+}
+.doll-ml {
+  background: rgba(26,92,154,0.07);
+  border: 2px solid rgba(26,92,154,0.3);
+  border-top: none;
+  margin: 0 24px;
+}
+.doll-dl {
+  background: rgba(30,110,69,0.07);
+  border: 2px solid rgba(30,110,69,0.3);
+  border-top: none;
+  margin: 0 48px;
+  padding-bottom: 28px;
+}
+.doll-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.doll-ai .doll-tag { color: var(--accent); }
+.doll-ml .doll-tag { color: var(--blue); }
+.doll-dl .doll-tag { color: var(--green); }
+.doll-name {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.doll-ai .doll-name { color: var(--accent); }
+.doll-ml .doll-name { color: var(--blue); }
+.doll-dl .doll-name { color: var(--green); }
+.doll-desc {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* COMPARISON TABLE */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 32px 0;
+  font-family: var(--ui);
+}
+.compare-table th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 2px solid var(--border2);
+  background: var(--paper2);
+}
+.compare-table td {
+  font-size: 14px;
+  color: var(--ink);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.6;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: var(--paper2); }
+.col-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.col-ai { color: var(--accent); }
+.col-ml { color: var(--blue); }
+.col-dl { color: var(--green); }
+
+/* REAL WORLD EXAMPLES */
+.examples-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 32px 0;
+}
+.example-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.example-label {
+  padding: 18px 20px;
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+}
+.ex-ai { background: var(--accent); }
+.ex-ml { background: var(--blue); }
+.ex-dl { background: var(--green); }
+.example-content {
+  padding: 18px 20px;
+  background: var(--paper2);
+}
+.example-product {
+  font-family: var(--ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.example-explain {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ACTIVITY */
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+/* PREV / NEXT */
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .doll-ml { margin: 0 16px; }
+  .doll-dl { margin: 0 32px; }
+  .example-row { grid-template-columns: 120px 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--ui); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reflect-subtitle { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.reflect-list { display: flex; flex-direction: column; gap: 8px; }
+.reflect-list details { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; }
+.reflect-list summary { font-family: var(--ui); font-size: 15px; font-weight: 500; color: var(--ink); padding: 14px 18px 14px 48px; cursor: pointer; list-style: none; position: relative; }
+.reflect-list summary::-webkit-details-marker { display: none; }
+.reflect-list summary::before { content: '?'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.3); width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; }
+.reflect-list details[open] summary::before { content: '!'; color: var(--accent); background: var(--accent-soft); border-color: rgba(184,60,18,0.3); }
+.reflect-hint { font-family: var(--ui); font-size: 14px; color: var(--muted); padding: 0 18px 14px 48px; line-height: 1.65; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 1.2</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">10 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 1: The Big Picture</span>
+    <span class="lesson-num-tag">Lesson 2 of 4</span>
+  </div>
+  <h1 class="lesson-title">AI, Machine Learning<br>and <em>Deep Learning</em></h1>
+  <p class="lesson-intro">These three terms get used interchangeably in the media, in job adverts and in conversations at dinner parties. They are not the same thing. Here is what each one actually means.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>The real difference between AI, ML and DL</div>
+    <div class="obj-item"><div class="obj-dot"></div>Why the confusion exists in the first place</div>
+    <div class="obj-item"><div class="obj-dot"></div>Real products that show each type in action</div>
+    <div class="obj-item"><div class="obj-dot"></div>How to use these terms correctly from now on</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>Why does the confusion exist?</h2>
+
+    <p>Pick up any newspaper article about technology and you will find the terms AI, machine learning and deep learning scattered around as if they all mean the same thing. A company releases a new product and calls it "AI-powered." A researcher publishes a paper using "deep learning." A business analyst writes a report about "machine learning strategy." Same thing, right?</p>
+
+    <p>Not quite. These three terms describe real and distinct concepts. They are related, but understanding the difference between them is one of the most useful things you can do before going any deeper into this subject.</p>
+
+    <p>The good news is that once you see the relationship clearly, it is almost impossible to forget.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">The simplest way to think about it</div>
+      <p>Imagine three circles, one inside the other. Deep learning sits inside machine learning. Machine learning sits inside artificial intelligence. Every deep learning system is a machine learning system. Every machine learning system is a form of AI. But not every AI system uses machine learning, and not every machine learning system uses deep learning.</p>
+    </div>
+
+    <h2>The three layers, clearly defined</h2>
+
+    <div class="doll-diagram">
+      <div class="doll-layer doll-ai">
+        <div class="doll-tag">The broadest category</div>
+        <div class="doll-name">Artificial Intelligence</div>
+        <div class="doll-desc">Any technique that allows a machine to mimic or replicate human intelligence. This includes chess engines, voice assistants, recommendation systems and anything else that makes a computer appear to think or make decisions. AI does not have to learn from data. A chess program that follows handwritten rules is AI.</div>
+      </div>
+      <div class="doll-layer doll-ml">
+        <div class="doll-tag">A subset of AI</div>
+        <div class="doll-name">Machine Learning</div>
+        <div class="doll-desc">AI systems that learn from data rather than following fixed rules written by a programmer. Instead of telling the machine exactly what to do in every situation, you show it thousands of examples and let it figure out the patterns. The machine improves as it sees more data.</div>
+      </div>
+      <div class="doll-layer doll-dl">
+        <div class="doll-tag">A subset of machine learning</div>
+        <div class="doll-name">Deep Learning</div>
+        <div class="doll-desc">Machine learning that uses layered networks loosely inspired by the human brain. These networks can learn extremely complex patterns from raw data such as images, audio and text. Most of the AI breakthroughs you hear about today, including ChatGPT, image generators and voice recognition, are built on deep learning.</div>
+      </div>
+    </div>
+
+    <h2>The critical difference: rules vs learning</h2>
+
+    <p>The single most important thing that separates old-school AI from machine learning is how the system gets its instructions.</p>
+
+    <p>In traditional AI, a programmer sits down and writes out every rule the system needs. For a spam filter, they might write: "If the email contains the words 'click here to claim your prize', mark it as spam." This works until spammers change their language. Then you rewrite the rules. Then they change again. It is a constant arms race between human programmers and the problem they are trying to solve.</p>
+
+    <p>In machine learning, nobody writes the rules. Instead, you show the system thousands of emails that humans have already labelled as spam or not spam. The system looks at those examples, finds the patterns that separate the two categories, and builds its own rules automatically. When spammers change tactics, you just feed in new examples and the system updates itself.</p>
+
+    <div class="pullquote">
+      <p>Machine learning is the science of getting computers to act without being explicitly programmed.</p>
+      <cite>Andrew Ng, AI researcher and educator</cite>
+    </div>
+
+    <h2>So what makes deep learning different?</h2>
+
+    <p>Standard machine learning works brilliantly when you can describe your data in a table. Rows of numbers, columns of features. Predicting house prices from square footage and number of bedrooms, for example, is a machine learning problem that works very well.</p>
+
+    <p>But what about a photograph? A photograph is not a table of numbers with clear features. It is millions of pixels, and the meaning of any single pixel depends entirely on what is around it. The same shade of grey means something completely different in a face versus in a sky versus in a car bumper.</p>
+
+    <p>Deep learning solves this by stacking multiple layers of processing on top of each other. The first layer might learn to spot edges. The next layer combines edges into shapes. The next layer combines shapes into objects. By the end, the system can recognise a cat in a photograph without a single human ever writing a rule about what a cat looks like.</p>
+
+    <div class="callout">
+      <div class="callout-label">Why the word "deep"?</div>
+      <p>The "deep" in deep learning refers to the depth of the network, meaning the number of layers stacked on top of each other. Early neural networks had one or two layers. Modern ones have dozens or even hundreds. The depth is what gives them their extraordinary capability.</p>
+    </div>
+
+    <h2>Seeing it in the real world</h2>
+
+    <p>The clearest way to cement this understanding is to look at products you already use and place them correctly into one of the three categories.</p>
+
+    <div class="examples-grid">
+      <div class="example-row">
+        <div class="example-label ex-ai">Artificial Intelligence</div>
+        <div class="example-content">
+          <div class="example-product">Google Maps route planning</div>
+          <div class="example-explain">Finds the fastest route using algorithms and real-time traffic rules. Intelligent behaviour, but largely rule-based. This is AI in the broadest sense.</div>
+        </div>
+      </div>
+      <div class="example-row">
+        <div class="example-label ex-ai">Artificial Intelligence</div>
+        <div class="example-content">
+          <div class="example-product">Chess or Go engines</div>
+          <div class="example-explain">Uses search algorithms and evaluation functions to play at superhuman level. Older chess engines follow explicit rules. This is AI without machine learning.</div>
+        </div>
+      </div>
+      <div class="example-row">
+        <div class="example-label ex-ml">Machine Learning</div>
+        <div class="example-content">
+          <div class="example-product">Spotify recommendations</div>
+          <div class="example-explain">Learns your listening patterns and compares them to millions of other users to predict what you will enjoy next. Classic ML using your behaviour as data.</div>
+        </div>
+      </div>
+      <div class="example-row">
+        <div class="example-label ex-ml">Machine Learning</div>
+        <div class="example-content">
+          <div class="example-product">Credit card fraud detection</div>
+          <div class="example-explain">Trained on millions of past transactions labelled as fraudulent or legitimate. Learns the patterns that indicate something suspicious without being told what those patterns are.</div>
+        </div>
+      </div>
+      <div class="example-row">
+        <div class="example-label ex-dl">Deep Learning</div>
+        <div class="example-content">
+          <div class="example-product">Face ID on your phone</div>
+          <div class="example-explain">Uses a deep neural network trained on facial images to recognise your face in varying light, angles and expressions. No human wrote rules about what your face looks like.</div>
+        </div>
+      </div>
+      <div class="example-row">
+        <div class="example-label ex-dl">Deep Learning</div>
+        <div class="example-content">
+          <div class="example-product">ChatGPT and Claude</div>
+          <div class="example-explain">Large language models built on transformer-based deep learning networks trained on enormous amounts of text. The most visible example of deep learning in everyday life today.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>A quick comparison side by side</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th><span class="col-label col-ai">AI</span></th>
+          <th><span class="col-label col-ml">Machine Learning</span></th>
+          <th><span class="col-label col-dl">Deep Learning</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Learns from data?</strong></td>
+          <td>Not necessarily</td>
+          <td>Yes, always</td>
+          <td>Yes, always</td>
+        </tr>
+        <tr>
+          <td><strong>Needs labelled examples?</strong></td>
+          <td>Sometimes</td>
+          <td>Usually yes</td>
+          <td>Often yes, sometimes no</td>
+        </tr>
+        <tr>
+          <td><strong>Works well on images and audio?</strong></td>
+          <td>Rarely on its own</td>
+          <td>Sometimes, with effort</td>
+          <td>Exceptionally well</td>
+        </tr>
+        <tr>
+          <td><strong>How explainable is it?</strong></td>
+          <td>Often very clear</td>
+          <td>Reasonably clear</td>
+          <td>Often hard to explain</td>
+        </tr>
+        <tr>
+          <td><strong>How much data does it need?</strong></td>
+          <td>Varies</td>
+          <td>Moderate amounts</td>
+          <td>Large amounts</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>The one thing to take away</h2>
+
+    <p>If someone says "we use AI in our product," that tells you almost nothing. It is like saying "we use technology." AI is the umbrella, not the description.</p>
+
+    <p>The more interesting questions are always: does it learn from data, or does it follow fixed rules? And if it learns, does it use deep learning or a simpler approach? Those two questions will tell you far more about what a system can and cannot do.</p>
+
+    <p>From this point on in the course, you will be able to hear those terms in any context and place them accurately. That alone puts you ahead of the majority of people who talk about AI confidently but have never stopped to separate the layers.</p>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">Why the confusion exists</li>
+        <li class="toc-item">The three layers defined</li>
+        <li class="toc-item">Rules vs learning</li>
+        <li class="toc-item">What makes deep learning different</li>
+        <li class="toc-item">Real world examples</li>
+        <li class="toc-item">The one thing to take away</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Human Compatible</div>
+        <div class="book-author">Stuart Russell · 2019</div>
+        <div class="book-note">Covers the distinction between different types of AI thinking clearly and without jargon.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">The Hundred-Page Machine Learning Book</div>
+        <div class="book-author">Andriy Burkov · 2019</div>
+        <div class="book-note">Short, precise and surprisingly readable. A great companion for when you move into Phase 3.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Artificial Intelligence</div>
+          <div class="term-def">Any system that mimics human intelligence, whether it learns or follows fixed rules.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Machine Learning</div>
+          <div class="term-def">AI that learns patterns from data rather than following instructions a human wrote out.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Deep Learning</div>
+          <div class="term-def">Machine learning using layered neural networks. Powers most modern AI breakthroughs.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Neural Network</div>
+          <div class="term-def">A system of connected layers loosely modelled on how neurons work in the human brain.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Training data</div>
+          <div class="term-def">The examples a machine learning system learns from before it is used in the real world.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Lesson Activity · No tools needed</div>
+    <div class="act-title">Sort the Products</div>
+    <div class="act-body">Now that you know the three layers, let us test it with things you already use. This is not a trick exercise. There are no wrong answers as long as you can explain your reasoning.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Take these five products: Netflix recommendations, Google Translate, a traditional calculator, Siri or Alexa, and your email spam filter.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">For each one, decide: is it AI only, machine learning, or deep learning? Write your reasoning in one sentence per product.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Bring your answers to the live session. We will go through each one together, and you will likely discover that some of these products use all three layers at once.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-1-2';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<!-- REFLECT -->
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <div class="reflect-eyebrow">Pause &amp; Reflect</div>
+    <h3 class="reflect-title">Check your understanding</h3>
+    <p class="reflect-subtitle">Click any question to reveal a thinking prompt. There are no wrong answers.</p>
+    <div class="reflect-list">
+      <details>
+        <summary>Can you explain AI, Machine Learning, and Deep Learning to a 10-year-old using one everyday example for each?</summary>
+        <p class="reflect-hint">Try analogies: AI is the broad idea of making machines smart. ML is teaching a machine by example, like training a dog. Deep Learning is a method inside ML that mirrors how the brain works in layers. A voice assistant, a spam filter, and face unlock each map to one of these levels.</p>
+      </details>
+      <details>
+        <summary>Is all Deep Learning also Machine Learning? Is all Machine Learning also AI? Draw the relationship in your head.</summary>
+        <p class="reflect-hint">Think of three concentric circles: AI is the largest. Inside it is Machine Learning. Inside ML is Deep Learning. Every deep learning system is an ML system, which is an AI system. But not every AI system uses ML, and not every ML system uses deep learning.</p>
+      </details>
+      <details>
+        <summary>Your phone's autocorrect: would you call it AI, ML, or Deep Learning? What clues help you decide?</summary>
+        <p class="reflect-hint">Traditional autocorrect used rule-based AI (dictionaries, grammar rules). Modern predictive keyboards use ML trained on typing patterns. The latest models use deep learning to predict whole phrases from context. The answer depends on which generation of the feature you are thinking about.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="LESSON 1.1.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">The Story of AI: From Turing to Today</span>
+  </a>
+  <a class="nav-card next" href="LESSON 1.3.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Types of AI: Narrow, General and Super</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 1</span>
+  <span class="footer-copy">Lesson 1.2 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

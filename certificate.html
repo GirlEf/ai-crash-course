@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate of Completion | AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0908;
+  --paper: #f5f0e8;
+  --cream: #faf7f2;
+  --gold: #b5820a;
+  --gold-light: rgba(181,130,10,0.12);
+  --gold-mid: rgba(181,130,10,0.35);
+  --accent: #c8401a;
+  --muted: #6b6459;
+  --border: rgba(10,9,8,0.1);
+  --display: 'Playfair Display', Georgia, serif;
+  --ui: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { background: var(--cream); color: var(--ink); font-family: var(--ui); min-height: 100vh; }
+
+/* TOPBAR */
+.topbar {
+  background: var(--ink);
+  padding: 14px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.topbar a { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.15s; }
+.topbar a:hover { color: #fff; }
+
+/* PAGE LAYOUT */
+.page-wrap { max-width: 900px; margin: 0 auto; padding: 60px 40px 100px; }
+.page-header { text-align: center; margin-bottom: 56px; }
+.page-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.page-title { font-family: var(--display); font-size: clamp(32px, 5vw, 52px); font-weight: 700; line-height: 1.1; }
+.page-title em { color: var(--gold); font-style: italic; }
+.page-desc { font-size: 15px; color: var(--muted); margin-top: 16px; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+
+/* NAME INPUT SECTION */
+.name-form {
+  background: var(--paper);
+  border: 1px solid rgba(181,130,10,0.25);
+  border-top: 3px solid var(--gold);
+  padding: 32px 40px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.name-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+.name-input-row { display: flex; gap: 12px; align-items: center; }
+#name-input {
+  flex: 1;
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+  border: none;
+  border-bottom: 2px solid var(--gold-mid);
+  background: transparent;
+  padding: 8px 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#name-input:focus { border-color: var(--gold); }
+#name-input::placeholder { color: rgba(10,9,8,0.25); font-style: italic; }
+.btn-generate {
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.btn-generate:hover { opacity: 0.85; }
+
+/* CERTIFICATE */
+.cert-wrap { display: none; flex-direction: column; gap: 24px; }
+.cert-wrap.visible { display: flex; }
+
+.certificate {
+  background: var(--paper);
+  border: 1px solid var(--gold-mid);
+  position: relative;
+  padding: 72px 80px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Corner ornaments */
+.cert-corner {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-color: var(--gold-mid);
+  border-style: solid;
+}
+.cert-corner.tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+.cert-corner.tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+.cert-corner.bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+.cert-corner.br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+/* Inner border */
+.cert-inner { border: 1px solid var(--gold-mid); padding: 56px 48px; position: relative; }
+
+.cert-logo {
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+.cert-presented {
+  font-family: var(--display);
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+.cert-name {
+  font-family: var(--display);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 28px;
+  word-break: break-word;
+}
+.cert-divider {
+  width: 80px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 28px;
+}
+.cert-for {
+  font-family: var(--display);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+.cert-title {
+  font-family: var(--display);
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.cert-subtitle {
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+.cert-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 48px;
+  border: 1px solid var(--gold-mid);
+}
+.cert-stat {
+  padding: 16px 32px;
+  border-right: 1px solid var(--gold-mid);
+  flex: 1;
+}
+.cert-stat:last-child { border-right: none; }
+.cert-stat-n {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.cert-stat-l {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cert-signatures {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+.cert-sig { text-align: center; }
+.cert-sig-name {
+  font-family: var(--display);
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+.cert-sig-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cert-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 36px;
+  letter-spacing: 0.06em;
+}
+.cert-watermark {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(10,9,8,0.15);
+  text-transform: uppercase;
+}
+
+/* PRINT BUTTON */
+.cert-actions { display: flex; gap: 12px; justify-content: center; }
+.btn-print, .btn-back {
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-print { background: var(--ink); color: #fff; border: none; }
+.btn-print:hover { opacity: 0.8; }
+.btn-back { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+.btn-back:hover { background: var(--paper); }
+
+/* PRINT STYLES */
+@media print {
+  body { background: white; }
+  .topbar, .page-header, .name-form, .cert-actions { display: none !important; }
+  .cert-wrap { display: flex !important; }
+  .page-wrap { padding: 0; max-width: none; }
+  .certificate { border: 2px solid #c9a227; page-break-inside: avoid; }
+  @page { margin: 20mm; size: A4 landscape; }
+}
+
+@media (max-width: 700px) {
+  .topbar { padding: 14px 24px; }
+  .page-wrap { padding: 40px 24px 80px; }
+  .name-form { padding: 24px; }
+  .certificate { padding: 40px 28px; }
+  .cert-inner { padding: 32px 20px; }
+  .cert-stats { flex-direction: column; }
+  .cert-stat { border-right: none; border-bottom: 1px solid var(--gold-mid); }
+  .cert-stat:last-child { border-bottom: none; }
+  .cert-signatures { gap: 40px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="ai_crash_course_pro.html">&#8592; Back to Course</a>
+  <span style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.3);">Certificate of Completion</span>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- LOCKED STATE (shown if not all lessons done) -->
+  <div id="cert-locked" style="display:none; text-align:center; padding: 60px 40px;">
+    <div style="font-size:3rem; margin-bottom:1.5rem;">🔒</div>
+    <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Not yet earned</div>
+    <h1 style="font-family:var(--display);font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:1rem;">Complete the course <em style="color:var(--gold);font-style:italic;">first.</em></h1>
+    <p style="font-size:15px;color:var(--muted);max-width:420px;margin:0 auto 2.5rem;line-height:1.7;">Your certificate will unlock when you have marked all 25 lessons as complete. You are almost there.</p>
+    <div style="background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:28px 32px;max-width:460px;margin:0 auto 2rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-family:var(--ui);font-weight:700;font-size:14px;">Lessons completed</span>
+        <span style="font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:700;" id="cert-done-count">0 / 25</span>
+      </div>
+      <div style="background:rgba(181,130,10,0.12);border-radius:4px;height:8px;overflow:hidden;">
+        <div id="cert-prog-bar" style="background:var(--gold);height:100%;width:0%;transition:width 0.4s;border-radius:4px;"></div>
+      </div>
+    </div>
+    <a href="ai_crash_course_pro.html" style="display:inline-block;font-family:var(--ui);font-weight:700;font-size:13px;letter-spacing:0.06em;background:var(--ink);color:#fff;padding:14px 32px;text-decoration:none;border-radius:4px;transition:opacity 0.2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">&#8592; Return to course</a>
+  </div>
+
+  <!-- UNLOCKED STATE -->
+  <div id="cert-unlocked">
+
+  <div class="page-header">
+    <div class="page-eyebrow">Congratulations</div>
+    <h1 class="page-title">You <em>finished.</em></h1>
+    <p class="page-desc">25 lessons. 5 phases. 12 weeks of ideas, code, and thinking. Enter your name below to generate your certificate.</p>
+  </div>
+
+  <!-- Name input -->
+  <div class="name-form">
+    <div class="name-label">Your full name</div>
+    <div class="name-input-row">
+      <input id="name-input" type="text" placeholder="Type your name here..." maxlength="60" />
+      <button class="btn-generate" onclick="generateCert()">Generate Certificate</button>
+    </div>
+  </div>
+
+  <!-- Certificate -->
+  <div class="cert-wrap" id="cert-wrap">
+    <div class="certificate" id="certificate">
+      <div class="cert-corner tl"></div>
+      <div class="cert-corner tr"></div>
+      <div class="cert-corner bl"></div>
+      <div class="cert-corner br"></div>
+
+      <div class="cert-inner">
+        <div class="cert-logo">AI Crash Course &nbsp;&bull;&nbsp; Abena Fosuaa Gyasi</div>
+
+        <div class="cert-presented">This certificate is proudly presented to</div>
+        <div class="cert-name" id="cert-name">Your Name</div>
+        <div class="cert-divider"></div>
+
+        <div class="cert-for">for successfully completing</div>
+        <div class="cert-title">AI Crash Course for Absolute Beginners</div>
+        <div class="cert-subtitle">A structured 12-week journey from zero to builder</div>
+
+        <div class="cert-stats">
+          <div class="cert-stat">
+            <div class="cert-stat-n">5</div>
+            <div class="cert-stat-l">Phases</div>
+          </div>
+          <div class="cert-stat">
+            <div class="cert-stat-n">25</div>
+            <div class="cert-stat-l">Lessons</div>
+          </div>
+          <div class="cert-stat">
+            <div class="cert-stat-n">12</div>
+            <div class="cert-stat-l">Weeks</div>
+          </div>
+          <div class="cert-stat">
+            <div class="cert-stat-n">5</div>
+            <div class="cert-stat-l">Projects</div>
+          </div>
+        </div>
+
+        <div class="cert-signatures">
+          <div class="cert-sig">
+            <div class="cert-sig-name">Abena Fosuaa Gyasi</div>
+            <div class="cert-sig-role">Course Instructor</div>
+          </div>
+        </div>
+
+        <div class="cert-date" id="cert-date"></div>
+        <div class="cert-watermark">AI Crash Course &bull; v1.0</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="cert-actions">
+      <button class="btn-print" onclick="window.print()">&#128438; Print / Save as PDF</button>
+      <a class="btn-back" href="ai_crash_course_pro.html">&#8592; Back to Course</a>
+    </div>
+  </div>
+
+  </div><!-- end #cert-unlocked -->
+</div>
+
+<script>
+/* ── PROGRESS GATE ── */
+(function() {
+  const STORAGE_KEY = 'aicc-progress-v1';
+  const TOTAL = 25;
+  let done = 0;
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (data) {
+      Object.values(data).forEach(arr => {
+        if (Array.isArray(arr)) arr.forEach(v => { if (v) done++; });
+      });
+    }
+  } catch(e) {}
+
+  const pct = Math.round((done / TOTAL) * 100);
+  document.getElementById('cert-done-count').textContent = done + ' / ' + TOTAL;
+  document.getElementById('cert-prog-bar').style.width = pct + '%';
+
+  if (done < TOTAL) {
+    document.getElementById('cert-locked').style.display = 'block';
+    document.getElementById('cert-unlocked').style.display = 'none';
+  } else {
+    document.getElementById('cert-locked').style.display = 'none';
+    document.getElementById('cert-unlocked').style.display = 'block';
+  }
+})();
+
+/* ── CERTIFICATE GENERATOR ── */
+function generateCert() {
+  const name = document.getElementById('name-input').value.trim();
+  if (!name) {
+    document.getElementById('name-input').focus();
+    document.getElementById('name-input').style.borderColor = '#c8401a';
+    setTimeout(() => document.getElementById('name-input').style.borderColor = '', 1500);
+    return;
+  }
+  document.getElementById('cert-name').textContent = name;
+  const now = new Date();
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cert-date').textContent =
+    'Completed ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  document.getElementById('cert-wrap').classList.add('visible');
+  document.getElementById('cert-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Allow Enter key in name input
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') generateCert();
+});
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

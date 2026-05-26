@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 Check | AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0a0908;--ink2:#4a453f;--paper:#faf7f2;--paper2:#f0ebe0;--accent:#2a8c5a;--gold:#b5820a;--gold-soft:rgba(181,130,10,0.08);--border:rgba(10,9,8,0.1);--muted:#7a746a;--correct:#2a8c5a;--wrong:#c8401a;--ui:'Syne',sans-serif;--serif:'Playfair Display',Georgia,serif;--mono:'JetBrains Mono',monospace; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);min-height:100vh;}
+.topbar{background:var(--ink);padding:14px 60px;display:flex;justify-content:space-between;align-items:center;}
+.topbar a{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.55);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;}
+.topbar a:hover{color:#fff;}
+.topbar-badge{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;border:1px solid rgba(42,140,90,0.4);padding:4px 10px;}
+.page{max-width:720px;margin:0 auto;padding:60px 40px 100px;}
+.quiz-header{text-align:center;margin-bottom:56px;}
+.quiz-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.quiz-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.15;margin-bottom:14px;}
+.quiz-title em{color:var(--accent);font-style:italic;}
+.quiz-desc{font-size:14px;color:var(--ink2);line-height:1.7;max-width:440px;margin:0 auto;}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:40px;}
+.quiz-progress-bar{flex:1;height:4px;background:var(--paper2);border-radius:2px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s;width:0%;}
+.quiz-progress-label{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;}
+.question-card{background:#fff;border:1px solid var(--border);padding:36px 40px;margin-bottom:20px;display:none;}
+.question-card.active{display:block;}
+.q-number{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.q-text{font-family:var(--serif);font-size:19px;line-height:1.55;margin-bottom:28px;}
+.options{display:flex;flex-direction:column;gap:10px;}
+.option{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border:1px solid var(--border);background:var(--paper);cursor:pointer;transition:all 0.15s;border-radius:4px;}
+.option:hover{background:var(--paper2);border-color:rgba(10,9,8,0.2);}
+.option.selected{border-color:var(--accent);background:rgba(42,140,90,0.04);}
+.option.correct{border-color:var(--correct);background:rgba(42,140,90,0.06);}
+.option.wrong{border-color:var(--wrong);background:rgba(200,64,26,0.06);}
+.option-letter{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted);min-width:18px;padding-top:1px;flex-shrink:0;}
+.option-text{font-family:var(--ui);font-size:14px;line-height:1.5;}
+.option.correct .option-letter{color:var(--correct);}
+.option.wrong .option-letter{color:var(--wrong);}
+.explanation{margin-top:20px;padding:18px 20px;background:var(--gold-soft);border-left:3px solid var(--gold);display:none;}
+.explanation.show{display:block;}
+.expl-label{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.expl-text{font-size:13px;line-height:1.65;color:var(--ink2);}
+.q-actions{margin-top:24px;display:flex;justify-content:flex-end;gap:12px;}
+.btn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.06em;padding:12px 24px;border:none;cursor:pointer;transition:all 0.15s;text-transform:uppercase;}
+.btn-submit{background:var(--ink);color:#fff;display:none;}
+.btn-submit.show{display:block;}
+.btn-submit:hover{background:var(--accent);}
+.btn-next{background:var(--accent);color:#fff;display:none;}
+.btn-next.show{display:block;}
+.btn-next:hover{opacity:0.88;}
+.score-card{display:none;text-align:center;padding:56px 40px;background:#fff;border:1px solid var(--border);}
+.score-card.show{display:block;}
+.score-icon{font-size:3rem;margin-bottom:1rem;}
+.score-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.score-number{font-family:var(--serif);font-size:64px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;}
+.score-out-of{font-family:var(--ui);font-size:14px;color:var(--muted);margin-bottom:20px;}
+.score-message{font-size:15px;color:var(--ink2);line-height:1.7;max-width:380px;margin:0 auto 36px;}
+.score-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-home{background:var(--ink);color:#fff;text-decoration:none;display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.06em;padding:12px 24px;text-transform:uppercase;transition:background 0.15s;}
+.btn-home:hover{background:var(--accent);}
+.btn-retry{background:transparent;border:1px solid var(--border);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.06em;padding:12px 24px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;}
+.btn-retry:hover{border-color:var(--ink);}
+@media(max-width:600px){.topbar{padding:12px 20px;}.page{padding:40px 20px 80px;}.question-card{padding:24px 20px;}}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="ai_crash_course_pro.html">&#8592; AI Crash Course</a>
+  <span class="topbar-badge">Phase 3 Check</span>
+</nav>
+
+<div class="page">
+  <div class="quiz-header">
+    <div class="quiz-eyebrow">Knowledge Check</div>
+    <h1 class="quiz-title">Phase 3 — <em>How Machines Learn</em></h1>
+    <p class="quiz-desc">Four questions on training, classification, overfitting, and the algorithm at the heart of every neural network.</p>
+  </div>
+
+  <div class="quiz-progress">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="prog-fill"></div></div>
+    <span class="quiz-progress-label" id="prog-label">Question 1 of 4</span>
+  </div>
+
+  <div class="question-card active" id="q0">
+    <div class="q-number">Question 1 of 4</div>
+    <p class="q-text">During training, what actually changes inside a machine learning model?</p>
+    <div class="options">
+      <div class="option" onclick="select(0,0,false)"><span class="option-letter">A</span><span class="option-text">The number of layers in the network</span></div>
+      <div class="option" onclick="select(0,1,true)"><span class="option-letter">B</span><span class="option-text">The weights and biases — the model's numerical parameters</span></div>
+      <div class="option" onclick="select(0,2,false)"><span class="option-letter">C</span><span class="option-text">The training data is reorganised into a better order</span></div>
+      <div class="option" onclick="select(0,3,false)"><span class="option-letter">D</span><span class="option-text">The activation functions are swapped for more suitable ones</span></div>
+    </div>
+    <div class="explanation" id="expl0">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">The architecture (number of layers, type of activation functions) is fixed before training begins. What changes are the parameters: the weights and biases attached to every connection in the network. Each training step computes a prediction, measures the error (the loss), and nudges the weights slightly in a direction that reduces that error. After millions or billions of such nudges, the weights encode a rich statistical understanding of the training data.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub0" onclick="submit(0)">Check answer</button>
+      <button class="btn btn-next" id="nxt0" onclick="next(0)">Next question &#8594;</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="q1">
+    <div class="q-number">Question 2 of 4</div>
+    <p class="q-text">Predicting whether an email is spam or not spam is an example of which type of machine learning task?</p>
+    <div class="options">
+      <div class="option" onclick="select(1,0,false)"><span class="option-letter">A</span><span class="option-text">Regression</span></div>
+      <div class="option" onclick="select(1,1,false)"><span class="option-letter">B</span><span class="option-text">Clustering</span></div>
+      <div class="option" onclick="select(1,2,true)"><span class="option-letter">C</span><span class="option-text">Classification</span></div>
+      <div class="option" onclick="select(1,3,false)"><span class="option-letter">D</span><span class="option-text">Reinforcement learning</span></div>
+    </div>
+    <div class="explanation" id="expl1">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">Classification assigns data points to one of a fixed set of categories. Here the categories are "spam" and "not spam" — making this binary classification. Regression predicts a continuous number (like tomorrow's temperature or a house price). Clustering discovers natural groupings without predefined labels. Reinforcement learning trains an agent to take actions to maximise reward over time. Spam detection is one of the earliest commercial applications of machine learning and remains a classic example of the task type.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub1" onclick="submit(1)">Check answer</button>
+      <button class="btn btn-next" id="nxt1" onclick="next(1)">Next question &#8594;</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="q2">
+    <div class="q-number">Question 3 of 4</div>
+    <p class="q-text">A model scores 99% accuracy on training data but only 61% on new, unseen data. What is this problem called?</p>
+    <div class="options">
+      <div class="option" onclick="select(2,0,false)"><span class="option-letter">A</span><span class="option-text">Underfitting</span></div>
+      <div class="option" onclick="select(2,1,false)"><span class="option-letter">B</span><span class="option-text">Feature engineering</span></div>
+      <div class="option" onclick="select(2,2,true)"><span class="option-letter">C</span><span class="option-text">Overfitting</span></div>
+      <div class="option" onclick="select(2,3,false)"><span class="option-letter">D</span><span class="option-text">Regularisation</span></div>
+    </div>
+    <div class="explanation" id="expl2">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">Overfitting happens when a model learns the training data so thoroughly that it has effectively memorised it, noise and all. It performs brilliantly on examples it has seen but fails on new data because it is fitting the quirks of the training set rather than the underlying pattern. Underfitting is the opposite: the model is too simple to capture the pattern even in training data. Regularisation is one of the techniques used to combat overfitting by penalising overly complex parameter combinations.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub2" onclick="submit(2)">Check answer</button>
+      <button class="btn btn-next" id="nxt2" onclick="next(2)">Next question &#8594;</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="q3">
+    <div class="q-number">Question 4 of 4</div>
+    <p class="q-text">Gradient descent helps a model learn by doing what, repeatedly?</p>
+    <div class="options">
+      <div class="option" onclick="select(3,0,false)"><span class="option-letter">A</span><span class="option-text">Randomly shuffling the training data until a good solution appears</span></div>
+      <div class="option" onclick="select(3,1,true)"><span class="option-letter">B</span><span class="option-text">Adjusting each parameter in the direction that reduces the loss most</span></div>
+      <div class="option" onclick="select(3,2,false)"><span class="option-letter">C</span><span class="option-text">Comparing the model to a baseline and keeping whichever performs better</span></div>
+      <div class="option" onclick="select(3,3,false)"><span class="option-letter">D</span><span class="option-text">Increasing the learning rate whenever accuracy stops improving</span></div>
+    </div>
+    <div class="explanation" id="expl3">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">Gradient descent is the core optimisation algorithm behind almost every neural network. The gradient indicates which direction to nudge each weight in order to reduce the loss function. "Descent" captures the idea of stepping downhill in the loss landscape, making the error smaller with each pass through the training data. The size of each step is the learning rate: too large and the model overshoots the minimum; too small and training becomes impractically slow.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub3" onclick="submit(3)">Check answer</button>
+      <button class="btn btn-next" id="nxt3" onclick="showScore()">See your score &#8594;</button>
+    </div>
+  </div>
+
+  <div class="score-card" id="score-card">
+    <div class="score-icon" id="score-icon">🎉</div>
+    <div class="score-eyebrow">Phase 3 Complete</div>
+    <div class="score-number" id="score-num">4</div>
+    <div class="score-out-of">out of 4</div>
+    <p class="score-message" id="score-msg">You understand how models actually learn — the process that drives every modern AI system.</p>
+    <div class="score-actions">
+      <a href="ai_crash_course_pro.html" class="btn-home">&#8592; Back to course</a>
+      <button class="btn-retry" onclick="restart()">Try again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOTAL=4,QUIZ_KEY='aicc-quiz-p3';
+let answers=new Array(TOTAL).fill(null),correct=new Array(TOTAL).fill(null),current=0,score=0;
+function select(q,opt,isCorrect){const card=document.getElementById('q'+q);const opts=card.querySelectorAll('.option');opts.forEach(o=>o.classList.remove('selected'));opts[opt].classList.add('selected');answers[q]=opt;correct[q]=isCorrect;document.getElementById('sub'+q).classList.add('show');}
+function submit(q){const card=document.getElementById('q'+q);const opts=card.querySelectorAll('.option');opts.forEach(o=>{o.style.pointerEvents='none';const fn=o.getAttribute('onclick');if(fn&&fn.includes('true'))o.classList.add('correct');else if(o.classList.contains('selected'))o.classList.add('wrong');});document.getElementById('expl'+q).classList.add('show');document.getElementById('sub'+q).classList.remove('show');document.getElementById('nxt'+q).classList.add('show');if(correct[q])score++;}
+function next(q){document.getElementById('q'+q).classList.remove('active');current=q+1;document.getElementById('q'+current).classList.add('active');const pct=((current)/TOTAL)*100;document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-label').textContent='Question '+(current+1)+' of '+TOTAL;}
+function showScore(){document.getElementById('q3').classList.remove('active');document.getElementById('prog-fill').style.width='100%';document.getElementById('prog-label').textContent='Complete';document.getElementById('score-card').classList.add('show');document.getElementById('score-num').textContent=score;const msgs=['This is foundational territory — revisit Phase 3 carefully. The ideas of parameters, loss, and gradient descent underpin all modern AI.','Some foundations need reinforcing. Work back through the explanations and give Phase 3 another read.','Good progress. Two concepts need a little more time — the explanations above will help you lock them in.','Solid understanding. One concept to review, and you will have a complete picture of how models learn.'];const icons=['📖','💪','👍','🎉'];document.getElementById('score-icon').textContent=icons[score]||'🎉';document.getElementById('score-msg').textContent=msgs[score]||msgs[3];try{localStorage.setItem(QUIZ_KEY,score+'/'+TOTAL);}catch(e){}}
+function restart(){answers=new Array(TOTAL).fill(null);correct=new Array(TOTAL).fill(null);score=0;current=0;document.getElementById('score-card').classList.remove('show');for(let i=0;i<TOTAL;i++){const card=document.getElementById('q'+i);card.classList.remove('active');card.querySelectorAll('.option').forEach(o=>{o.classList.remove('selected','correct','wrong');o.style.pointerEvents='';});const expl=document.getElementById('expl'+i);if(expl)expl.classList.remove('show');document.getElementById('sub'+i).classList.remove('show');document.getElementById('nxt'+i).classList.remove('show');}document.getElementById('q0').classList.add('active');document.getElementById('prog-fill').style.width='0%';document.getElementById('prog-label').textContent='Question 1 of '+TOTAL;}
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

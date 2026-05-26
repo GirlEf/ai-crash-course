@@ -1,0 +1,601 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.4: Python for AI — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #1a6bc8;
+  --accent-soft: rgba(26,107,200,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --green: #1e6e45;
+  --green-soft: rgba(30,110,69,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(26,107,200,0.25); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* CODE BLOCK */
+.code-block {
+  background: #1e1e2e;
+  border-radius: 0;
+  margin: 28px 0;
+  overflow: hidden;
+}
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.code-lang {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.code-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(26,107,200,0.8);
+  letter-spacing: 0.06em;
+}
+.code-body {
+  padding: 20px 18px;
+  overflow-x: auto;
+}
+.code-body pre {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #cdd6f4;
+  white-space: pre;
+}
+/* Syntax colours */
+.py-kw { color: #cba6f7; }   /* keywords */
+.py-fn { color: #89b4fa; }   /* functions */
+.py-str { color: #a6e3a1; }  /* strings */
+.py-num { color: #fab387; }  /* numbers */
+.py-cm { color: #6c7086; }   /* comments */
+.py-op { color: #89dceb; }   /* operators/methods */
+
+/* COLAB STEPS */
+.colab-steps { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); margin: 32px 0; }
+.colab-step { display: grid; grid-template-columns: 48px 1fr; border-bottom: 1px solid var(--border); }
+.colab-step:last-child { border-bottom: none; }
+.step-n {
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step-content { padding: 18px 20px; background: var(--paper2); }
+.step-title { font-family: var(--ui); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.step-desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* LIBRARY CARDS */
+.library-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 32px 0; }
+.lib-card { border: 1px solid var(--border); overflow: hidden; }
+.lib-head { padding: 12px 18px; font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.04em; color: #fff; }
+.lib-numpy { background: #4c7fff; }
+.lib-pandas { background: #e76f51; }
+.lib-matplotlib { background: #2a9d8f; }
+.lib-sklearn { background: #f4a261; }
+.lib-body { padding: 14px 18px; background: var(--paper2); }
+.lib-tagline { font-family: var(--ui); font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.lib-desc { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* OUTPUT BLOCK */
+.output-block {
+  background: var(--paper3);
+  border-left: 3px solid var(--green);
+  padding: 14px 18px;
+  margin: -8px 0 28px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.7;
+}
+.output-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ACTIVITY */
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+.colab-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  padding: 12px 22px;
+  text-decoration: none;
+  margin-top: 24px;
+  transition: background 0.2s;
+}
+.colab-link:hover { background: #155aa8; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .library-grid { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 2.4</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">15 min read + hands-on</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 2: Data &amp; Mathematics</span>
+    <span class="lesson-num-tag">Lesson 4 of 5</span>
+  </div>
+  <h1 class="lesson-title">Python for AI:<br><em>Your First Notebook</em></h1>
+  <p class="lesson-intro">This is where the theory becomes real. No installation, no setup headaches. Just open a browser, go to Google Colab, and start writing code. By the end of this lesson, you will have loaded a real dataset, asked it questions, and plotted your first chart.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>Set up and navigate Google Colab in under 2 minutes</div>
+    <div class="obj-item"><div class="obj-dot"></div>Python fundamentals: variables, lists, loops, functions</div>
+    <div class="obj-item"><div class="obj-dot"></div>Load and explore a dataset using Pandas</div>
+    <div class="obj-item"><div class="obj-dot"></div>Create your first data visualisation with Matplotlib</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>Why Python? Why Colab?</h2>
+
+    <p>Python is the language of AI. Not because it is the fastest, and not because it was designed for AI. It was not. Python is dominant in AI because of its extraordinary ecosystem of libraries: NumPy, Pandas, Scikit-learn, TensorFlow, PyTorch. Decades of brilliant people have built tools that make incredibly complex operations available in just a few lines of readable code.</p>
+
+    <p>Google Colab is a free, cloud-based environment that runs Python notebooks in your browser. No downloads, no installation, no "it works on my machine" problems. You get access to free GPUs, built-in libraries, and the ability to share your work with a link. It is used by researchers at DeepMind and students in their first week of learning AI alike.</p>
+
+    <div class="colab-steps">
+      <div class="colab-step">
+        <div class="step-n">1</div>
+        <div class="step-content">
+          <div class="step-title">Open Colab</div>
+          <div class="step-desc">Go to <strong>colab.research.google.com</strong>. Sign in with a Google account. Click "New notebook." You are in.</div>
+        </div>
+      </div>
+      <div class="colab-step">
+        <div class="step-n">2</div>
+        <div class="step-content">
+          <div class="step-title">Understand the interface</div>
+          <div class="step-desc">A notebook is a series of cells. A <strong>code cell</strong> runs Python. A <strong>text cell</strong> is for notes (uses Markdown). Press <strong>Shift + Enter</strong> to run a cell.</div>
+        </div>
+      </div>
+      <div class="colab-step">
+        <div class="step-n">3</div>
+        <div class="step-content">
+          <div class="step-title">Run your first cell</div>
+          <div class="step-desc">Type <code>print("Hello, AI world!")</code> in a code cell and press Shift + Enter. You are now a Python programmer.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>The four libraries you need</h2>
+
+    <p>You will work with four core libraries throughout this course. They are all pre-installed in Colab. This is what each one does.</p>
+
+    <div class="library-grid">
+      <div class="lib-card">
+        <div class="lib-head lib-numpy">NumPy</div>
+        <div class="lib-body">
+          <div class="lib-tagline">Numbers at speed</div>
+          <div class="lib-desc">Fast operations on arrays and matrices. The foundation everything else is built on. <code>import numpy as np</code></div>
+        </div>
+      </div>
+      <div class="lib-card">
+        <div class="lib-head lib-pandas">Pandas</div>
+        <div class="lib-body">
+          <div class="lib-tagline">Data in tables</div>
+          <div class="lib-desc">Load, clean and analyse datasets as DataFrames, which are essentially programmable spreadsheets. <code>import pandas as pd</code></div>
+        </div>
+      </div>
+      <div class="lib-card">
+        <div class="lib-head lib-matplotlib">Matplotlib</div>
+        <div class="lib-body">
+          <div class="lib-tagline">Charts and plots</div>
+          <div class="lib-desc">Visualise data with histograms, scatter plots, line charts. Always the first tool for understanding a new dataset. <code>import matplotlib.pyplot as plt</code></div>
+        </div>
+      </div>
+      <div class="lib-card">
+        <div class="lib-head lib-sklearn">Scikit-learn</div>
+        <div class="lib-body">
+          <div class="lib-tagline">Machine learning models</div>
+          <div class="lib-desc">Train classifiers, regressors and clustering algorithms with a few lines. You will use this heavily in Phase 3. <code>import sklearn</code></div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Python fundamentals in 5 minutes</h2>
+
+    <p>Before we touch data, you need to know a few Python basics. These are genuinely the only things you need to get started. Do not try to memorise them. Just read them once, then use them.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">Variables &amp; types</span></div>
+      <div class="code-body"><pre><span class="py-cm"># Variables — no need to declare a type</span>
+name = <span class="py-str">"Alice"</span>
+age = <span class="py-num">25</span>
+is_enrolled = <span class="py-kw">True</span>
+score = <span class="py-num">94.5</span>
+
+<span class="py-cm"># Lists — ordered collections (can mix types)</span>
+ages = [<span class="py-num">22</span>, <span class="py-num">38</span>, <span class="py-num">26</span>, <span class="py-num">35</span>, <span class="py-num">28</span>]
+names = [<span class="py-str">"Alice"</span>, <span class="py-str">"Bob"</span>, <span class="py-str">"Charlie"</span>]
+
+<span class="py-cm"># Access elements (index starts at 0)</span>
+<span class="py-fn">print</span>(ages[<span class="py-num">0</span>])    <span class="py-cm"># 22</span>
+<span class="py-fn">print</span>(ages[-<span class="py-num">1</span>])   <span class="py-cm"># 28 — last element</span></pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">Loops &amp; conditions</span></div>
+      <div class="code-body"><pre><span class="py-cm"># For loop — iterate over a list</span>
+<span class="py-kw">for</span> age <span class="py-kw">in</span> ages:
+    <span class="py-fn">print</span>(<span class="py-str">f"Age: </span>{age}<span class="py-str">"</span>)
+
+<span class="py-cm"># If / else</span>
+<span class="py-kw">if</span> age &gt; <span class="py-num">30</span>:
+    <span class="py-fn">print</span>(<span class="py-str">"Over 30"</span>)
+<span class="py-kw">elif</span> age == <span class="py-num">30</span>:
+    <span class="py-fn">print</span>(<span class="py-str">"Exactly 30"</span>)
+<span class="py-kw">else</span>:
+    <span class="py-fn">print</span>(<span class="py-str">"Under 30"</span>)
+
+<span class="py-cm"># List comprehension — a compact loop</span>
+doubled = [x * <span class="py-num">2</span> <span class="py-kw">for</span> x <span class="py-kw">in</span> ages]
+<span class="py-cm"># [44, 76, 52, 70, 56]</span></pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">Functions</span></div>
+      <div class="code-body"><pre><span class="py-cm"># Define a function with def</span>
+<span class="py-kw">def</span> <span class="py-fn">calculate_mean</span>(numbers):
+    <span class="py-kw">return</span> <span class="py-fn">sum</span>(numbers) / <span class="py-fn">len</span>(numbers)
+
+mean_age = <span class="py-fn">calculate_mean</span>(ages)
+<span class="py-fn">print</span>(mean_age)   <span class="py-cm"># 29.8</span></pre></div>
+    </div>
+
+    <h2>Loading your first real dataset with Pandas</h2>
+
+    <p>Now for the part that makes everything feel real. The Titanic dataset is one of the most famous datasets in machine learning. It contains information about 891 passengers, including whether each one survived. Here is how to load it and start asking questions.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">Load the Titanic dataset</span></div>
+      <div class="code-body"><pre><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
+
+<span class="py-cm"># Load directly from a URL — no download needed</span>
+url = <span class="py-str">"https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"</span>
+df = pd.<span class="py-fn">read_csv</span>(url)
+
+<span class="py-cm"># See the first 5 rows</span>
+df.<span class="py-op">head</span>()</pre></div>
+    </div>
+
+    <div class="output-block">
+      <div class="output-label">Output</div>
+      A table appears showing 5 rows × 12 columns: PassengerId, Survived, Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">Ask basic questions</span></div>
+      <div class="code-body"><pre><span class="py-cm"># Shape: how many rows and columns?</span>
+<span class="py-fn">print</span>(df.<span class="py-op">shape</span>)         <span class="py-cm"># (891, 12)</span>
+
+<span class="py-cm"># Statistical summary</span>
+df.<span class="py-fn">describe</span>()
+
+<span class="py-cm"># Average passenger age</span>
+<span class="py-fn">print</span>(df[<span class="py-str">'Age'</span>].<span class="py-op">mean</span>())   <span class="py-cm"># 29.7</span>
+
+<span class="py-cm"># Survival rate (0=died, 1=survived)</span>
+<span class="py-fn">print</span>(df[<span class="py-str">'Survived'</span>].<span class="py-op">mean</span>())  <span class="py-cm"># 0.38 — 38% survived</span>
+
+<span class="py-cm"># Survival rate broken down by gender</span>
+<span class="py-fn">print</span>(df.<span class="py-op">groupby</span>(<span class="py-str">'Sex'</span>)[<span class="py-str">'Survived'</span>].<span class="py-op">mean</span>())
+<span class="py-cm"># female    0.742
+# male      0.189</span></pre></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">What the data is already telling us</div>
+      <p>With five lines of Pandas, you have already discovered something historically significant: 74% of women survived vs 19% of men. The "women and children first" evacuation policy is visible directly in the data. This is the power of data exploration. Real signals emerge before you build a single model.</p>
+    </div>
+
+    <h2>Your first plot with Matplotlib</h2>
+
+    <p>Charts are not just pretty. They reveal patterns in seconds that would take hours to find in raw numbers. The most important habit you can build as an AI practitioner is plotting your data before doing anything else.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">Plot passenger age distribution</span></div>
+      <div class="code-body"><pre><span class="py-kw">import</span> matplotlib.pyplot <span class="py-kw">as</span> plt
+
+<span class="py-cm"># Histogram of passenger ages</span>
+plt.<span class="py-fn">figure</span>(figsize=(<span class="py-num">10</span>, <span class="py-num">5</span>))
+df[<span class="py-str">'Age'</span>].<span class="py-fn">dropna</span>().<span class="py-fn">hist</span>(bins=<span class="py-num">30</span>, color=<span class="py-str">'#1a6bc8'</span>, edgecolor=<span class="py-str">'white'</span>)
+plt.<span class="py-fn">title</span>(<span class="py-str">'Age Distribution of Titanic Passengers'</span>)
+plt.<span class="py-fn">xlabel</span>(<span class="py-str">'Age'</span>)
+plt.<span class="py-fn">ylabel</span>(<span class="py-str">'Number of Passengers'</span>)
+plt.<span class="py-fn">show</span>()
+
+<span class="py-cm"># Survival count by class (bar chart)</span>
+df.<span class="py-op">groupby</span>(<span class="py-str">'Pclass'</span>)[<span class="py-str">'Survived'</span>].<span class="py-op">mean</span>().<span class="py-fn">plot</span>(
+    kind=<span class="py-str">'bar'</span>,
+    color=[<span class="py-str">'#2a9d8f'</span>, <span class="py-str">'#e76f51'</span>, <span class="py-str">'#264653'</span>],
+    title=<span class="py-str">'Survival Rate by Ticket Class'</span>
+)
+plt.<span class="py-fn">ylabel</span>(<span class="py-str">'Survival Rate'</span>)
+plt.<span class="py-fn">xticks</span>(rotation=<span class="py-num">0</span>)
+plt.<span class="py-fn">show</span>()</pre></div>
+    </div>
+
+    <p>Every time you call <code>plt.show()</code>, a chart appears directly below the cell in Colab. You will see a bell-shaped age distribution and a clear bar chart showing that 1st class passengers survived at a much higher rate than 3rd class, another stark real-world signal sitting right there in the data.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Think of it this way</div>
+      <p>A Pandas DataFrame is like a smart spreadsheet that you can write instructions to. Instead of clicking through menus, you write short commands. <code>df['Age'].mean()</code> is just "give me the average of the Age column." Once you learn a few dozen of these commands, you can explore almost any dataset in the world.</p>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">Why Python and Colab?</li>
+        <li class="toc-item">The four libraries</li>
+        <li class="toc-item">Python fundamentals</li>
+        <li class="toc-item">Loading data with Pandas</li>
+        <li class="toc-item">Your first plot</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Quick reference</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">df.head()</div>
+          <div class="term-def">Show the first 5 rows of a DataFrame.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">df.shape</div>
+          <div class="term-def">Returns a tuple of (rows, columns) showing the size of your dataset.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">df.describe()</div>
+          <div class="term-def">Summary statistics for all numeric columns.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">df['col'].mean()</div>
+          <div class="term-def">Calculate the mean of a specific column.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">df.groupby('col')</div>
+          <div class="term-def">Group rows by a column to compute stats per group.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Shift + Enter</div>
+          <div class="term-def">Run the current cell in Colab.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Python for Data Analysis</div>
+        <div class="book-author">Wes McKinney · 2022</div>
+        <div class="book-note">Written by the creator of Pandas. The definitive guide and a great reference to keep handy.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Hands-on Activity · Google Colab · Pandas</div>
+    <div class="act-title">Titanic Explorer</div>
+    <div class="act-body">Open Google Colab and complete this exercise. You are not expected to know everything. Experimentation is the point. Use the code from this lesson as a starting template.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Load the Titanic dataset using the URL from this lesson. Display the first 10 rows and print the shape of the dataset.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Answer these 5 questions with code: (1) What was the average passenger age? (2) What percentage of passengers survived? (3) How many passengers were in each ticket class? (4) What was the youngest and oldest passenger age? (5) What was the average fare paid by survivors vs non-survivors?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Create one chart of your choice. A histogram, bar chart, or anything that reveals something interesting about the data. Add a title and axis labels. Share your notebook link in the group.</span>
+      </div>
+    </div>
+    <a class="colab-link" href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-2.4-python-basics.ipynb" target="_blank">Open in Colab →</a>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-2-4';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="LESSON 2.3.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Vectors and Matrices: Without the Pain</span>
+  </a>
+  <a class="nav-card next" href="LESSON 2.5.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Exploring and Cleaning Real Data</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 2</span>
+  <span class="footer-copy">Lesson 2.4 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

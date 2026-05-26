@@ -1,0 +1,802 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Glossary | AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0908;
+  --paper: #f5f0e8;
+  --paper2: #ede8df;
+  --paper3: #e4ddd2;
+  --cream: #faf7f2;
+  --accent: #c8401a;
+  --accent2: #1a6bc8;
+  --accent3: #2a8c5a;
+  --accent4: #b5820a;
+  --accent5: #8c1a5a;
+  --muted: #6b6459;
+  --border: rgba(10,9,8,0.12);
+  --border2: rgba(10,9,8,0.22);
+  --display: 'Playfair Display', Georgia, serif;
+  --ui: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--cream); color: var(--ink); font-family: var(--ui); min-height: 100vh; }
+
+/* TOPBAR */
+.topbar {
+  background: var(--ink);
+  padding: 14px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+.topbar-brand {
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.topbar-brand:hover { color: #fff; }
+.topbar-sep { color: rgba(255,255,255,0.2); }
+.topbar-page {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+/* HERO */
+.glossary-hero {
+  background: var(--ink);
+  color: #fff;
+  padding: 80px 60px 60px;
+  border-bottom: 1px solid var(--border2);
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 16px;
+}
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.hero-title em { font-style: italic; color: rgba(200,64,26,0.9); }
+.hero-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.55);
+  max-width: 540px;
+  line-height: 1.7;
+}
+
+/* SEARCH */
+.search-bar-wrap {
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 60px;
+  position: sticky;
+  top: 49px;
+  z-index: 99;
+}
+.search-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.search-icon { color: var(--muted); font-size: 16px; flex-shrink: 0; }
+#glossary-search {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--ui);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+}
+#glossary-search::placeholder { color: var(--muted); }
+.search-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* CONTENT */
+.glossary-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 60px 100px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+/* ALPHABET NAV */
+.alpha-nav {
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.alpha-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.alpha-link:hover, .alpha-link.has-entries:hover { background: var(--paper2); color: var(--ink); }
+.alpha-link.has-entries { color: var(--ink); }
+.alpha-link.inactive { opacity: 0.3; pointer-events: none; }
+
+/* TERMS */
+.glossary-main { min-width: 0; }
+.letter-group { margin-bottom: 56px; }
+.letter-group[hidden] { display: none; }
+.letter-heading {
+  font-family: var(--display);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.25;
+  line-height: 1;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+.term-list { display: flex; flex-direction: column; gap: 1px; }
+.term-item {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.term-item:hover { border-color: var(--border2); }
+.term-item[hidden] { display: none; }
+.term-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  gap: 16px;
+}
+.term-name {
+  font-family: var(--ui);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.term-name mark { background: rgba(200,64,26,0.15); color: var(--accent); border-radius: 2px; }
+.term-phase {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.p1 { background: rgba(200,64,26,0.1); color: #c8401a; }
+.p2 { background: rgba(26,107,200,0.1); color: #1a6bc8; }
+.p3 { background: rgba(42,140,90,0.1); color: #2a8c5a; }
+.p4 { background: rgba(181,130,10,0.1); color: #b5820a; }
+.p5 { background: rgba(140,26,90,0.1); color: #8c1a5a; }
+.term-body {
+  font-size: 14px;
+  color: var(--muted);
+  padding: 0 20px 16px;
+  line-height: 1.7;
+  display: none;
+}
+.term-item.open .term-body { display: block; }
+.term-item.open .term-header { border-bottom: 1px solid var(--border); }
+.term-example {
+  margin-top: 10px;
+  background: var(--paper2);
+  border-left: 3px solid var(--border2);
+  padding: 8px 12px;
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--ink);
+  font-style: italic;
+}
+.no-results {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--muted);
+  font-size: 15px;
+  display: none;
+}
+
+/* FOOTER */
+.glossary-footer {
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  padding: 28px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.glossary-footer a { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 900px) {
+  .topbar, .search-bar-wrap, .glossary-hero { padding-left: 28px; padding-right: 28px; }
+  .glossary-wrap { grid-template-columns: 1fr; padding: 28px 28px 80px; gap: 32px; }
+  .alpha-nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  .glossary-footer { padding: 24px 28px; }
+}
+@media (max-width: 600px) {
+  .topbar { padding: 12px 20px; gap: 8px; }
+  .topbar-right-label { display: none; }
+  .glossary-hero { padding: 36px 20px 28px; }
+  .glossary-hero h1 { font-size: 28px; }
+  .search-bar-wrap { padding-left: 20px; padding-right: 20px; }
+  .search-inner { flex-direction: column; }
+  .search-input { font-size: 15px; padding: 12px 16px; }
+  .glossary-wrap { padding: 20px 20px 60px; }
+  .term-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="topbar-brand" href="ai_crash_course_pro.html">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-page">Glossary</span>
+  </div>
+  <span style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.3);">50 terms across 5 phases</span>
+</nav>
+
+<!-- HERO -->
+<div class="glossary-hero">
+  <div class="hero-eyebrow">Reference</div>
+  <h1 class="hero-title">AI <em>Glossary</em></h1>
+  <p class="hero-desc">Every key term used across the 25 lessons, with plain English definitions and real-world examples. Click any term to expand it.</p>
+</div>
+
+<!-- SEARCH -->
+<div class="search-bar-wrap">
+  <div class="search-inner">
+    <span class="search-icon">&#128269;</span>
+    <input id="glossary-search" type="search" placeholder="Search terms..." autocomplete="off" />
+    <span class="search-count" id="search-count">50 terms</span>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="glossary-wrap">
+
+  <!-- Alphabet nav -->
+  <nav class="alpha-nav" id="alpha-nav">
+    <a class="alpha-link has-entries" href="#letter-A">A</a>
+    <a class="alpha-link has-entries" href="#letter-B">B</a>
+    <a class="alpha-link has-entries" href="#letter-C">C</a>
+    <a class="alpha-link has-entries" href="#letter-D">D</a>
+    <a class="alpha-link has-entries" href="#letter-E">E</a>
+    <a class="alpha-link has-entries" href="#letter-F">F</a>
+    <a class="alpha-link has-entries" href="#letter-G">G</a>
+    <a class="alpha-link has-entries" href="#letter-H">H</a>
+    <a class="alpha-link inactive" href="#letter-I">I</a>
+    <a class="alpha-link inactive" href="#letter-J">J</a>
+    <a class="alpha-link has-entries" href="#letter-K">K</a>
+    <a class="alpha-link has-entries" href="#letter-L">L</a>
+    <a class="alpha-link has-entries" href="#letter-M">M</a>
+    <a class="alpha-link has-entries" href="#letter-N">N</a>
+    <a class="alpha-link has-entries" href="#letter-O">O</a>
+    <a class="alpha-link has-entries" href="#letter-P">P</a>
+    <a class="alpha-link inactive" href="#letter-Q">Q</a>
+    <a class="alpha-link has-entries" href="#letter-R">R</a>
+    <a class="alpha-link has-entries" href="#letter-S">S</a>
+    <a class="alpha-link has-entries" href="#letter-T">T</a>
+    <a class="alpha-link inactive" href="#letter-U">U</a>
+    <a class="alpha-link has-entries" href="#letter-V">V</a>
+    <a class="alpha-link has-entries" href="#letter-W">W</a>
+    <a class="alpha-link inactive" href="#letter-X">X</a>
+    <a class="alpha-link inactive" href="#letter-Y">Y</a>
+    <a class="alpha-link inactive" href="#letter-Z">Z</a>
+  </nav>
+
+  <!-- Terms -->
+  <div class="glossary-main" id="glossary-main">
+
+    <div class="letter-group" id="letter-A">
+      <div class="letter-heading">A</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Accuracy</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">The percentage of predictions a model gets correct out of all predictions made. Accuracy = (Correct predictions) / (Total predictions). Simple and intuitive, but misleading when classes are imbalanced.
+            <div class="term-example">If a spam filter correctly labels 90 of 100 emails, its accuracy is 90%. But if 95 of those were ham, always guessing "not spam" would score 95% accuracy without learning anything.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Activation Function</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A mathematical function applied to the output of a neuron to introduce non-linearity. Without activation functions, a neural network would behave like a single linear equation no matter how many layers it has. Common choices: ReLU, sigmoid, tanh, softmax.
+            <div class="term-example">ReLU simply returns 0 for negative values and the number itself for positive values: f(x) = max(0, x). This lets networks learn complex, curved decision boundaries.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Attention Mechanism</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A technique that lets a model focus on the most relevant parts of its input when producing each output. Attention computes a weighted sum of "values" based on the similarity between a "query" and a set of "keys." It is the core innovation behind the Transformer architecture.
+            <div class="term-example">When translating "The cat sat on the mat" to French, the model attends strongly to "cat" when generating "le chat" and to "mat" when generating "le tapis."</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Artificial General Intelligence (AGI)</span><span class="term-phase p1">Phase 1</span></div>
+          <div class="term-body">A hypothetical AI system that can perform any intellectual task a human can, including learning new skills from scratch, applying reasoning across domains, and understanding context without additional training. AGI does not currently exist.
+            <div class="term-example">A human who can learn chess, write poetry, diagnose illness, and cook dinner demonstrates general intelligence. Current AI systems can only do one of these per model.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-B">
+      <div class="letter-heading">B</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Backpropagation</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">The algorithm that trains neural networks by computing how much each weight contributed to the error, then adjusting all weights in the direction that reduces that error. It works by applying the chain rule of calculus from the output layer backwards to the input layer.
+            <div class="term-example">Think of it like tracing blame for a wrong answer. If the network predicted "dog" but the answer was "cat," backprop figures out which neurons fired too strongly and dials them back.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Bias (model)</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">In machine learning, "bias" has two meanings. (1) Statistical bias: the error from wrong assumptions in the model, causing it to miss relevant relationships in the data (underfitting). (2) AI fairness bias: systematic unfairness baked into a model because of skewed training data or labels.
+            <div class="term-example">A hiring algorithm trained on historical data where engineers were mostly male may learn to score male candidates higher, not because of skill, but because of historical bias in the data it learned from.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Batch Size</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">The number of training examples the model sees before updating its weights. Larger batches give more stable gradient estimates but require more memory. Smaller batches are noisier but often generalise better and train faster per epoch.
+            <div class="term-example">A batch size of 32 means the model looks at 32 images, computes the average error, then adjusts its weights once before moving to the next 32 images.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-C">
+      <div class="letter-heading">C</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Classification</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A type of supervised learning where the model predicts which category (class) an input belongs to. The output is a discrete label. Binary classification has two classes; multi-class has three or more.
+            <div class="term-example">Spam detection (spam / not spam) is binary classification. Handwriting recognition (0 through 9) is 10-class classification.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Clustering</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">An unsupervised learning technique that groups data points so that items within a group are more similar to each other than to items in other groups. No labels are required. Common algorithms include K-Means and DBSCAN.
+            <div class="term-example">A supermarket uses clustering on purchase data to discover that customers naturally fall into segments: families, students, and elderly shoppers. No one told the algorithm these categories exist.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Convolutional Neural Network (CNN)</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A neural network architecture designed for grid-structured data like images. It uses convolutional filters (small sliding windows) that learn to detect local patterns like edges, textures, and shapes. Pooling layers then downsample to reduce computation.
+            <div class="term-example">A CNN trained on faces first learns to detect edges, then eyes and noses, then whole faces by the deeper layers. Each layer builds on patterns found in the previous one.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Cross-Validation</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A technique for evaluating model performance by splitting data into K folds, training K times (each time using a different fold as the validation set), and averaging the results. Gives a more reliable estimate than a single train/test split.
+            <div class="term-example">5-fold cross-validation trains five separate models. Each model sees 80% of the data for training and 20% for validation, but no two models use the same 20% for validation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-D">
+      <div class="letter-heading">D</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Deep Learning</span><span class="term-phase p1">Phase 1</span></div>
+          <div class="term-body">A subset of Machine Learning that uses neural networks with many layers (hence "deep") to learn hierarchical representations of data. Each layer transforms the data into a more abstract representation. Deep learning excels at unstructured data like images, audio, and text.
+            <div class="term-example">A deep learning model for speech recognition processes raw audio waveforms, extracts frequency patterns, identifies phonemes, and assembles words -- each level of abstraction handled by a different set of layers.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Decision Tree</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A machine learning model that makes predictions by learning a flowchart of yes/no questions about the input features. Easy to interpret and explain. Prone to overfitting on their own, but powerful when combined into ensembles (like Random Forests).
+            <div class="term-example">A credit approval decision tree might ask: salary above 40k? Yes: approved. No: employed over 2 years? Yes: approved. No: rejected. Every path through the tree is a decision rule.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Dropout</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A regularisation technique where a random fraction of neurons are set to zero during each training step. This prevents neurons from co-adapting too closely, reducing overfitting and making the network more robust.
+            <div class="term-example">With dropout rate 0.3, each neuron has a 30% chance of being switched off for that batch. The network learns to not rely on any single neuron, which forces redundant representations.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-E">
+      <div class="letter-heading">E</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Embedding</span><span class="term-phase p5">Phase 5</span></div>
+          <div class="term-body">A dense vector (list of numbers) that represents a word, sentence, image, or other object in a continuous space. Items that are semantically similar end up with vectors that are close together. Embeddings allow mathematical operations like finding meaning through subtraction and addition.
+            <div class="term-example">The classic example: vector("king") - vector("man") + vector("woman") is approximately equal to vector("queen"). The model has learned gender and royalty as directions in space.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Epoch</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">One complete pass through the entire training dataset. A model typically trains for multiple epochs so it can refine its weights repeatedly. Too few epochs leads to underfitting; too many can cause overfitting.
+            <div class="term-example">Training for 10 epochs on 50,000 images means the model processes each of those 50,000 images 10 times, updating its weights after every batch throughout all 10 passes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-F">
+      <div class="letter-heading">F</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">F1 Score</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">The harmonic mean of precision and recall. F1 = 2 * (Precision * Recall) / (Precision + Recall). A single metric that balances both: it is high only when both precision and recall are high. Useful for imbalanced datasets where accuracy is misleading.
+            <div class="term-example">A disease screening test with precision 0.9 and recall 0.6 has F1 = 0.72. A perfect test would have F1 = 1.0. The score penalises large gaps between precision and recall.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Feature Engineering</span><span class="term-phase p2">Phase 2</span></div>
+          <div class="term-body">The process of using domain knowledge to create, transform, or select input variables (features) that help a machine learning model learn better. Deep learning reduces but does not eliminate the need for feature engineering.
+            <div class="term-example">For a house price model, raw data might include a purchase date. Feature engineering might extract "age of house in years" and "was it built during a housing boom" as more informative features.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Fine-Tuning</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">Continuing to train a pretrained model on a new, smaller dataset so it adapts to a specific task. The model starts with knowledge from its original training and refines it rather than learning from scratch. Usually requires far less data and compute than training from scratch.
+            <div class="term-example">GPT-4 was pretrained on internet text, then fine-tuned on human feedback to become a helpful assistant. The fine-tuning data was much smaller but changed the model's behaviour dramatically.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-G">
+      <div class="letter-heading">G</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Gradient Descent</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">The optimisation algorithm used to train most machine learning models. It repeatedly adjusts the model's parameters in the direction that reduces the loss function, using the gradient (slope) of the loss to know which direction is "downhill."
+            <div class="term-example">Imagine you are blindfolded on a hilly landscape and want to reach the lowest point. You feel the slope under your feet and take a step downhill. Repeat thousands of times. That is gradient descent.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Generalisation</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A model's ability to perform well on new, unseen data it was not trained on. Good generalisation means the model learned underlying patterns, not just memorised training examples. The gap between training performance and test performance measures generalisation.
+            <div class="term-example">A model that scores 99% on its training set but 62% on new examples has poor generalisation. It memorised the training data instead of learning the underlying concept.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-H">
+      <div class="letter-heading">H</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Hyperparameter</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A configuration value set before training that controls the learning process itself, rather than being learned from data. Examples: learning rate, batch size, number of layers, number of epochs, regularisation strength. Choosing good hyperparameters is often done by trial-and-error or grid search.
+            <div class="term-example">The number of trees in a Random Forest is a hyperparameter. You pick it before training. The split thresholds within each tree are parameters the model learns during training.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-K">
+      <div class="letter-heading">K</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">K-Means</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">An unsupervised clustering algorithm that partitions data into K clusters by iteratively assigning each point to its nearest cluster centre (centroid) and then moving each centroid to the average position of its assigned points. Sensitive to the initial centroid positions and the number K.
+            <div class="term-example">K-Means with K=3 on customer data might discover three natural customer segments. You must decide K in advance, which is why the elbow method and silhouette score are used to pick the right value.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-L">
+      <div class="letter-heading">L</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Large Language Model (LLM)</span><span class="term-phase p5">Phase 5</span></div>
+          <div class="term-body">A very large neural network (billions of parameters) trained on vast amounts of text data to predict and generate language. LLMs learn grammar, facts, reasoning patterns, and style from the statistics of language. Examples: GPT-4, Claude, Gemini, LLaMA.
+            <div class="term-example">An LLM does not "know" facts the way a human does. It predicts what tokens are likely to follow based on patterns it saw during training. This is why they can sound confident but still be wrong.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Learning Rate</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A hyperparameter that controls how large a step the model takes in the direction of the gradient during each weight update. Too large and the model overshoots the minimum and diverges. Too small and training takes extremely long or gets stuck.
+            <div class="term-example">A learning rate of 0.001 is common for Adam optimizer. Think of it as the size of each step you take when descending a hill in the dark. Too big and you step right over the valley. Too small and you are still walking after a week.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Loss Function</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A mathematical function that measures how wrong the model's predictions are. Training aims to minimise the loss. Different tasks use different loss functions: Mean Squared Error for regression, Cross-Entropy for classification, and many others.
+            <div class="term-example">If a model predicts a house costs 200,000 but the true price is 250,000, the MSE loss for that prediction is (200,000 - 250,000)^2 = 2,500,000,000. The model then adjusts weights to reduce this value.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-M">
+      <div class="letter-heading">M</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Machine Learning</span><span class="term-phase p1">Phase 1</span></div>
+          <div class="term-body">A subset of AI where systems learn from data to improve performance on a task, without being explicitly programmed with rules for that task. The three main types are supervised learning, unsupervised learning, and reinforcement learning.
+            <div class="term-example">A spam filter built with rules requires a human to write every rule. An ML spam filter learns what spam looks like by studying thousands of examples, finding patterns a human never specified.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Model</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">In machine learning, a model is a mathematical function with learned parameters that maps inputs to outputs. The "model" is what is left after training is complete and it is ready to make predictions on new data.
+            <div class="term-example">After training on 10,000 chest X-rays, the resulting neural network weights form the "model." You can then give it a new X-ray and it will output a probability of pneumonia.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-N">
+      <div class="letter-heading">N</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Narrow AI</span><span class="term-phase p1">Phase 1</span></div>
+          <div class="term-body">An AI system designed and trained to do one specific task or a small set of related tasks. All current commercially deployed AI systems are narrow AI. They cannot transfer knowledge to unrelated domains without retraining.
+            <div class="term-example">AlphaGo plays Go better than any human but cannot play chess, hold a conversation, or recognise a face. It is extremely narrow, extremely good, and nothing else.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Neural Network</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A computational model loosely inspired by the brain, consisting of layers of interconnected nodes (neurons). Each connection has a weight. The network learns by adjusting these weights so its outputs match the training labels. The foundation of deep learning.
+            <div class="term-example">A neural network with one input layer (pixel values), two hidden layers (learned patterns), and one output layer (class probabilities) can classify handwritten digits with over 99% accuracy.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Normalisation</span><span class="term-phase p2">Phase 2</span></div>
+          <div class="term-body">Scaling numerical features so they fall within a similar range (e.g. 0 to 1, or with mean 0 and standard deviation 1). Prevents features with large values from dominating the learning process and helps gradient descent converge faster.
+            <div class="term-example">If one feature is "age" (20-80) and another is "salary" (20,000-200,000), without normalisation the salary feature dominates. After scaling both to 0-1, the model treats them equally.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-O">
+      <div class="letter-heading">O</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Overfitting</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">When a model learns the training data too well, including its noise and random fluctuations, and therefore performs poorly on new data. An overfit model has memorised rather than generalised. Solutions include more data, regularisation, dropout, and early stopping.
+            <div class="term-example">A student who memorises every past exam question word-for-word will fail when the actual exam uses different wording for the same concept. They overfit to the training set (past papers).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-P">
+      <div class="letter-heading">P</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Parameters</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">The internal values of a model that are learned during training -- primarily the weights and biases of the neurons. "Number of parameters" is commonly used to describe the size of a model. GPT-4 is estimated to have over 1 trillion parameters.
+            <div class="term-example">A simple linear regression has 2 parameters: slope and intercept. ResNet-50 has 25 million. GPT-3 has 175 billion. More parameters generally means more capacity, but also more data and compute required.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Precision</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">Of all the times the model predicted "positive," how many were actually positive? Precision = True Positives / (True Positives + False Positives). High precision means when the model says yes, it is usually right. Optimise for precision when false alarms are costly.
+            <div class="term-example">For cancer screening, high precision means few healthy people are incorrectly told they might have cancer. This reduces unnecessary panic and follow-up procedures.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Prompt Engineering</span><span class="term-phase p5">Phase 5</span></div>
+          <div class="term-body">The practice of crafting inputs (prompts) to language models in ways that consistently produce better, more accurate, or more useful outputs. Techniques include few-shot examples, chain-of-thought instructions, role assignment, and output format constraints.
+            <div class="term-example">Instead of asking "summarise this article," a well-engineered prompt might say: "You are an editor at a science magazine. Summarise this article in 3 bullet points for a non-specialist reader aged 16. Use plain English and no jargon."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-R">
+      <div class="letter-heading">R</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">RAG (Retrieval-Augmented Generation)</span><span class="term-phase p5">Phase 5</span></div>
+          <div class="term-body">A technique that improves LLM answers by first retrieving relevant documents from a knowledge base, then giving the retrieved text to the model as context before generating a response. Reduces hallucination and allows up-to-date knowledge without retraining.
+            <div class="term-example">A customer support chatbot using RAG searches a company's FAQ database for the three most relevant articles, then asks the LLM to answer the question using only those articles. The model cannot make up an answer that contradicts company policy.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Recall</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">Of all the actual positive cases, how many did the model correctly identify? Recall = True Positives / (True Positives + False Negatives). High recall means the model misses very few real positive cases. Optimise for recall when missing a positive case is costly.
+            <div class="term-example">For cancer screening, high recall means the model catches nearly every real cancer case, even if it flags some healthy patients for further testing. Missing a cancer is far worse than a false alarm.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Regression</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A type of supervised learning where the model predicts a continuous numerical value rather than a category. The output is a number on a scale. Common algorithms include Linear Regression and Ridge Regression.
+            <div class="term-example">Predicting tomorrow's temperature in degrees Celsius is regression. Predicting whether tomorrow will be hot, warm, or cold is classification. The difference is continuous output vs discrete labels.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Regularisation</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">Techniques that reduce overfitting by penalising model complexity. L1 regularisation (Lasso) pushes many weights to exactly zero. L2 regularisation (Ridge) shrinks all weights towards zero. Dropout is a regularisation technique specific to neural networks.
+            <div class="term-example">Ridge regression adds a penalty equal to the sum of squared weights to the loss function. This discourages the model from relying too heavily on any single feature and improves generalisation to new data.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Reinforcement Learning</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A type of machine learning where an agent learns to make decisions by taking actions in an environment and receiving rewards or penalties. The agent learns a policy that maximises cumulative reward over time. Used in game-playing AI, robotics, and recommendation systems.
+            <div class="term-example">AlphaGo learned to play Go by playing millions of games against itself. Each winning move reinforced good strategies; each losing move discouraged them. No human ever told it what a good move looks like.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-S">
+      <div class="letter-heading">S</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Supervised Learning</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A type of machine learning where the model learns from labelled training examples: each input comes paired with the correct output. The model learns to map inputs to outputs by minimising the difference between its predictions and the true labels.
+            <div class="term-example">Training an email spam classifier on 10,000 emails labelled "spam" or "not spam" is supervised learning. The labels supervise the learning, telling the model when it is wrong.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Softmax</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">An activation function used in the output layer of multi-class classifiers that converts raw scores (logits) into a probability distribution that sums to 1. The class with the highest probability is the model's prediction.
+            <div class="term-example">A 3-class model with raw outputs [2.0, 1.0, 0.1] is converted by softmax to approximately [0.67, 0.24, 0.09]. These are probabilities: 67% confidence in class 1, 24% in class 2, 9% in class 3.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-T">
+      <div class="letter-heading">T</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Token</span><span class="term-phase p5">Phase 5</span></div>
+          <div class="term-body">The basic unit of text that a language model processes. Tokens are not always whole words: they can be syllables, punctuation, or word fragments. GPT models split text into subword tokens. "Unbelievable" might be split into ["Un", "believ", "able"].
+            <div class="term-example">The sentence "I love AI!" might be tokenised into ["I", " love", " AI", "!"]. Four tokens, not three words. LLMs have a context window measured in tokens, which limits how much text they can process at once.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Transfer Learning</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">Reusing a model trained on one task as the starting point for a different but related task. The pretrained model has already learned useful general features (edges, textures, language patterns) that do not need to be relearned from scratch on the new task.
+            <div class="term-example">A model trained on 1 million general images already knows how to detect edges, textures, and shapes. Fine-tuning it on 500 medical X-rays is far more effective than training from scratch on just those 500 images.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Transformer</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A neural network architecture introduced in 2017 ("Attention Is All You Need") built entirely on attention mechanisms. It processes all tokens in parallel (unlike RNNs) and uses self-attention to build context-aware representations. The foundation of GPT, BERT, and all modern LLMs.
+            <div class="term-example">Unlike an RNN that reads "The cat sat on the mat" word by word, a Transformer looks at all words simultaneously and computes how much each word should influence the meaning of every other word.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Training Data</span><span class="term-phase p2">Phase 2</span></div>
+          <div class="term-body">The labelled (or unlabelled) examples the model learns from during training. The quality, size, and diversity of training data is often the single biggest factor in model performance. Garbage in, garbage out.
+            <div class="term-example">GPT models were trained on hundreds of billions of words from the internet, books, and code. The breadth and quality of this training data is why they can write code, translate languages, and answer questions about history.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-V">
+      <div class="letter-heading">V</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Validation Set</span><span class="term-phase p3">Phase 3</span></div>
+          <div class="term-body">A held-out portion of data (separate from training and test sets) used to tune hyperparameters and monitor for overfitting during training. It gives an honest signal of how the model is learning without contaminating the final test evaluation.
+            <div class="term-example">With 10,000 examples: 7,000 for training, 1,500 for validation (tune hyperparameters), 1,500 for test (final honest evaluation). Never use the test set until training is completely finished.</div>
+          </div>
+        </div>
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Vector</span><span class="term-phase p2">Phase 2</span></div>
+          <div class="term-body">An ordered list of numbers representing a point or direction in multi-dimensional space. In machine learning, features are represented as vectors; model weights are vectors; embeddings are vectors. Most of deep learning is matrix and vector arithmetic.
+            <div class="term-example">An RGB image pixel is a 3-dimensional vector [255, 128, 0] (red, green, blue). A word embedding might be a 768-dimensional vector. Cosine similarity between two embedding vectors measures how semantically similar two words or sentences are.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-group" id="letter-W">
+      <div class="letter-heading">W</div>
+      <div class="term-list">
+        <div class="term-item" onclick="this.classList.toggle('open')">
+          <div class="term-header"><span class="term-name">Weight</span><span class="term-phase p4">Phase 4</span></div>
+          <div class="term-body">A numerical value on a connection between neurons that determines how strongly one neuron influences the next. During training, weights are continuously adjusted to reduce prediction error. The "knowledge" of a neural network is encoded in its weights.
+            <div class="term-example">A weight of 0.8 on the connection from a "fur" detector neuron to a "cat" classifier means detecting fur is strong evidence for "cat." A weight near 0 means that connection has learned to be irrelevant.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" id="no-results">No terms match "<span id="no-results-term"></span>"</div>
+
+  </div><!-- /glossary-main -->
+</div><!-- /glossary-wrap -->
+
+<footer class="glossary-footer">
+  <span>AI Crash Course &copy; 2026 Abena Fosuaa Gyasi &middot; All rights reserved</span>
+  <a href="ai_crash_course_pro.html">&#8592; Back to Course</a>
+</footer>
+
+<script>
+const searchInput  = document.getElementById('glossary-search');
+const searchCount  = document.getElementById('search-count');
+const noResults    = document.getElementById('no-results');
+const noResultsTerm = document.getElementById('no-results-term');
+const allTerms     = document.querySelectorAll('.term-item');
+const allGroups    = document.querySelectorAll('.letter-group');
+const totalCount   = allTerms.length;
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  let visible = 0;
+
+  allTerms.forEach(item => {
+    const name = item.querySelector('.term-name').textContent.toLowerCase();
+    const body = item.querySelector('.term-body') ? item.querySelector('.term-body').textContent.toLowerCase() : '';
+    const match = !q || name.includes(q) || body.includes(q);
+    item.hidden = !match;
+    if (match) {
+      visible++;
+      // Highlight matching text in term name
+      const nameEl = item.querySelector('.term-name');
+      if (q) {
+        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        nameEl.innerHTML = nameEl.textContent.replace(regex, '<mark>$1</mark>');
+      } else {
+        nameEl.innerHTML = nameEl.textContent;
+      }
+    } else {
+      item.querySelector('.term-name').innerHTML = item.querySelector('.term-name').textContent;
+    }
+  });
+
+  // Hide empty letter groups
+  allGroups.forEach(group => {
+    const hasVisible = Array.from(group.querySelectorAll('.term-item')).some(i => !i.hidden);
+    group.hidden = !hasVisible;
+  });
+
+  searchCount.textContent = q ? `${visible} result${visible !== 1 ? 's' : ''}` : `${totalCount} terms`;
+  noResults.style.display = (visible === 0 && q) ? 'block' : 'none';
+  noResultsTerm.textContent = q;
+});
+</script>
+</body>
+</html>

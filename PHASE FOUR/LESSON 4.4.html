@@ -1,0 +1,914 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 4.4 — Transformers and Attention | AI Crash Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --ink-soft: #4a4a6a;
+      --paper: #fafaf7;
+      --surface: #ffffff;
+      --surface-raised: #f4f4f0;
+      --accent: #b5820a;
+      --accent-light: #f0e0b0;
+      --accent-dark: #8a6008;
+      --border: #e2e2da;
+      --success: #2a8c5a;
+      --radius: 10px;
+      --sidebar-w: 260px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.8;
+      display: flex;
+    }
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: var(--accent); width: 0%; z-index: 9999;
+      transition: width 0.1s linear;
+    }
+    .sidebar {
+      position: fixed; top: 0; left: 0;
+      width: var(--sidebar-w); height: 100vh;
+      background: var(--surface); border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      overflow-y: auto; z-index: 100;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .sidebar-brand {
+      font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: 0.95rem; color: var(--ink);
+      text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .sidebar-brand .phase-badge {
+      background: var(--accent); color: #fff;
+      font-size: 0.7rem; padding: 0.15rem 0.5rem;
+      border-radius: 99px; font-weight: 600; letter-spacing: 0.05em;
+    }
+    .toc-label {
+      font-family: 'Outfit', sans-serif; font-size: 0.7rem;
+      font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-soft); margin-bottom: 0.5rem;
+    }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.15rem; }
+    .toc-list a {
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem;
+      color: var(--ink-soft); text-decoration: none;
+      padding: 0.3rem 0.6rem; border-radius: 6px;
+      display: block; transition: all 0.2s;
+      border-left: 2px solid transparent;
+    }
+    .toc-list a:hover { color: var(--accent); background: var(--accent-light); }
+    .toc-list a.active {
+      color: var(--accent); font-weight: 600;
+      border-left-color: var(--accent); background: var(--accent-light);
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+      color: var(--ink-soft); padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-footer a { color: var(--accent); text-decoration: none; }
+    .main {
+      margin-left: var(--sidebar-w);
+      max-width: 820px; width: 100%;
+      padding: 3rem 3rem 6rem;
+    }
+    .lesson-hero {
+      background: linear-gradient(135deg, #2c2000 0%, #4a3800 60%, #6b5200 100%);
+      border-radius: 16px; padding: 3rem;
+      margin-bottom: 3rem; color: #fff; position: relative; overflow: hidden;
+    }
+    .lesson-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 50%, rgba(181,130,10,0.3) 0%, transparent 60%);
+    }
+    .lesson-hero-content { position: relative; z-index: 1; }
+    .lesson-tag {
+      font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent-light); margin-bottom: 0.75rem;
+    }
+    .lesson-hero h1 {
+      font-family: 'Outfit', sans-serif; font-size: 2.2rem;
+      font-weight: 700; line-height: 1.2; margin-bottom: 1rem;
+    }
+    .lesson-hero p { font-size: 1rem; color: rgba(255,255,255,0.8); max-width: 540px; font-family: 'Outfit', sans-serif; }
+    .hero-meta {
+      display: flex; gap: 1.5rem; margin-top: 1.5rem;
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: rgba(255,255,255,0.6);
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+    .lesson-section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+    .lesson-section h2 {
+      font-family: 'Outfit', sans-serif; font-size: 1.55rem;
+      font-weight: 700; color: var(--ink); margin-bottom: 1.25rem;
+      padding-bottom: 0.6rem; border-bottom: 2px solid var(--accent-light);
+    }
+    .lesson-section h3 {
+      font-family: 'Outfit', sans-serif; font-size: 1.15rem;
+      font-weight: 600; color: var(--ink); margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    strong { font-weight: 600; }
+    em { font-style: italic; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light); padding: 1rem 1.25rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 1.5rem 0; font-size: 0.95rem;
+    }
+    .callout.info { border-color: #2a6ab5; background: #e8f0fb; }
+    .callout.success { border-color: var(--success); background: #e5f5ed; }
+    .callout.warning { border-color: #c07800; background: #fff3d6; }
+    .callout-title {
+      font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4rem; color: var(--accent-dark);
+    }
+    .callout.info .callout-title { color: #1a4a8a; }
+    .callout.success .callout-title { color: #1a6040; }
+    .callout.warning .callout-title { color: #7a4800; }
+    .code-block {
+      background: #0f1117; border-radius: var(--radius);
+      padding: 1.5rem; overflow-x: auto; margin: 1.5rem 0;
+      border: 1px solid #2a2a3a;
+    }
+    .code-block pre {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+      line-height: 1.7; color: #c9d1d9;
+    }
+    .code-label {
+      font-family: 'Outfit', sans-serif; font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-soft); margin-bottom: 0.4rem;
+    }
+    .py-kw  { color: #ff79c6; }
+    .py-fn  { color: #50fa7b; }
+    .py-str { color: #f1fa8c; }
+    .py-num { color: #bd93f9; }
+    .py-cm  { color: #6272a4; font-style: italic; }
+    .py-op  { color: #ff79c6; }
+    .output-block {
+      background: #1a1a2e; border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem; border-radius: 0 var(--radius) var(--radius) 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+      color: #a8d8a8; margin-top: -0.5rem; overflow-x: auto;
+    }
+    .svg-container {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      margin: 1.5rem 0; overflow-x: auto;
+    }
+    .svg-caption {
+      text-align: center; font-family: 'Outfit', sans-serif;
+      font-size: 0.82rem; color: var(--ink-soft);
+      margin-top: 0.75rem; font-style: italic;
+    }
+    .info-grid {
+      display: grid; gap: 1rem; margin: 1.5rem 0;
+    }
+    .info-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .info-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .info-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+    }
+    .info-card h4 {
+      font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+      font-weight: 700; margin-bottom: 0.5rem; color: var(--accent-dark);
+    }
+    .info-card p { font-size: 0.88rem; margin: 0; color: var(--ink-soft); }
+    .compare-panel {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;
+    }
+    .compare-card {
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem;
+    }
+    .compare-card.bert { border-color: #2a6ab5; background: #e8f0fb; }
+    .compare-card.gpt { border-color: var(--accent); background: var(--accent-light); }
+    .compare-card h4 {
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+    }
+    .compare-card.bert h4 { color: #1a4a8a; }
+    .compare-card.gpt h4 { color: var(--accent-dark); }
+    .compare-card p { font-size: 0.88rem; margin: 0; line-height: 1.5; }
+    .compare-card ul {
+      font-size: 0.88rem; padding-left: 1.25rem; margin-top: 0.5rem;
+      color: var(--ink-soft); line-height: 1.7;
+    }
+    .math-block {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      margin: 1.25rem 0; text-align: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+      color: var(--ink);
+    }
+    .math-label {
+      font-family: 'Outfit', sans-serif; font-size: 0.78rem;
+      color: var(--ink-soft); margin-top: 0.5rem; text-align: center;
+    }
+    .takeaway-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+    .takeaway-list li {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.92rem;
+    }
+    .takeaway-list li::before {
+      content: '✓'; color: var(--accent); font-weight: 700;
+      font-family: 'Outfit', sans-serif; flex-shrink: 0;
+    }
+    .nav-buttons {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    .nav-btn {
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.9rem;
+      padding: 0.75rem 1.5rem; border-radius: var(--radius);
+      text-decoration: none; transition: all 0.2s;
+    }
+    .nav-btn.prev { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--border); }
+    .nav-btn.next { background: var(--accent); color: #fff; }
+    .nav-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .timeline-entry {
+      display: flex; gap: 1rem; margin-bottom: 0.75rem;
+    }
+    .timeline-year {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+      font-weight: 600; color: var(--accent); min-width: 44px; margin-top: 0.15rem;
+    }
+    .timeline-text { font-size: 0.9rem; color: var(--ink-soft); }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 2rem 1.25rem 5rem; }
+      .info-grid.cols-2, .info-grid.cols-3, .compare-panel { grid-template-columns: 1fr; }
+      .mobile-toc { display: block; }
+    }
+    .mobile-toc { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 2rem; overflow: hidden; }
+    .mobile-toc summary { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--ink); padding: 0.9rem 1.25rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .mobile-toc summary::-webkit-details-marker { display: none; }
+    .mobile-toc summary::after { content: "▾"; font-size: 0.75rem; color: var(--ink-soft); }
+    details.mobile-toc[open] summary::after { content: "▴"; }
+    .mobile-toc-links { padding: 0.5rem 0 0.75rem; border-top: 1px solid var(--border); }
+    .mobile-toc-links a { display: block; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); text-decoration: none; padding: 0.3rem 1.25rem; }
+    .mobile-toc-links a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside class="sidebar">
+  <a href="../ai_crash_course_pro.html" class="sidebar-brand">
+    <span class="phase-badge">PHASE 4</span> Neural Networks
+  </a>
+  <nav>
+    <div class="toc-label">In this lesson</div>
+    <ul class="toc-list">
+      <li><a href="#the-problem" data-section="the-problem">Before Transformers</a></li>
+      <li><a href="#attention-idea" data-section="attention-idea">The Core Idea: Attention</a></li>
+      <li><a href="#self-attention" data-section="self-attention">Self-Attention Step by Step</a></li>
+      <li><a href="#multihead" data-section="multihead">Multi-Head Attention</a></li>
+      <li><a href="#transformer-block" data-section="transformer-block">The Transformer Block</a></li>
+      <li><a href="#the-paper" data-section="the-paper">The 2017 Breakthrough</a></li>
+      <li><a href="#bert-gpt" data-section="bert-gpt">BERT vs GPT</a></li>
+      <li><a href="#code" data-section="code">Using Transformers Today</a></li>
+      <li><a href="#takeaways" data-section="takeaways">Key Takeaways</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer"><p style="margin-bottom:.5rem;"><a href="../glossary.html" style="color:var(--accent);text-decoration:none;font-size:.75rem;">&#128218; Glossary</a></p>
+    <p>Phase 4 of 5 &middot; Lesson 4 of 5</p>
+    <p style="margin-top:0.4rem"><a href="LESSON 4.5.html">Next: Transfer Learning &rarr;</a></p>
+  </div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<main class="main">
+
+  <details class="mobile-toc">
+    <summary>In this lesson</summary>
+    <nav class="mobile-toc-links">
+      <a href="#the-problem">Before Transformers</a>
+      <a href="#attention-idea">The Core Idea: Attention</a>
+      <a href="#self-attention">Self-Attention Step by Step</a>
+      <a href="#multihead">Multi-Head Attention</a>
+      <a href="#transformer-block">The Transformer Block</a>
+      <a href="#the-paper">The 2017 Breakthrough</a>
+      <a href="#bert-gpt">BERT vs GPT</a>
+      <a href="#code">Using Transformers Today</a>
+      <a href="#takeaways">Key Takeaways</a>
+    </nav>
+  </details>
+
+  <!-- Hero -->
+  <div class="lesson-hero">
+    <div class="lesson-hero-content">
+      <div class="lesson-tag">Phase 4 &middot; Lesson 4.4</div>
+      <h1>Transformers and Attention</h1>
+      <p>The architecture behind ChatGPT, BERT, and every modern language model. Understand self-attention, and you understand the engine driving the AI revolution.</p>
+      <div class="hero-meta">
+        <span>&#128337; 35 min read</span>
+        <span>&#128202; 3 visualisations</span>
+        <span>&#128187; Hugging Face</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 1: Before Transformers ── -->
+  <section class="lesson-section" id="the-problem">
+    <h2>Before Transformers: The Sequence Problem</h2>
+
+    <p>Text is fundamentally different from an image. An image has fixed spatial structure: pixels at position (x, y) are always there. A sentence is a sequence of variable length, and the relationship between words can span long distances. In "The trophy did not fit in the bag because it was too large," what does "it" refer to? The trophy, not the bag. Understanding this requires relating "it" to "trophy" across eight words of distance.</p>
+
+    <p>For years, the dominant approach to sequence data was <strong>Recurrent Neural Networks (RNNs)</strong>. An RNN processes a sequence one element at a time, passing a "hidden state" from step to step. The hidden state at step 50 is supposed to remember what happened at step 1. The problem is it often does not. Information gets diluted as it passes through many sequential multiplications.</p>
+
+    <p><strong>Long Short-Term Memory networks (LSTMs)</strong>, introduced by Hochreiter and Schmidhuber in 1997, added gating mechanisms that helped retain important information over longer distances. They powered breakthrough results in machine translation and speech recognition through the 2010s. But LSTMs still had a fundamental bottleneck: the entire history of a sequence had to be compressed into a single fixed-size hidden state vector before generating each output token.</p>
+
+    <p>In 2015, Bahdanau, Cho, and Bengio introduced the first <strong>attention mechanism for sequence-to-sequence models</strong>, allowing the decoder to look directly at all encoder states rather than relying solely on the compressed hidden state. This was enormously effective for machine translation. It was also the seed of a more radical idea: what if the entire architecture was built around attention, with no recurrence at all?</p>
+
+    <div class="callout info">
+      <div class="callout-title">Why Recurrence Is Slow</div>
+      <p>RNNs process sequences step by step: step 2 cannot begin until step 1 is complete. This sequential dependency means you cannot parallelise the computation across the length of the sequence. On modern GPUs and TPUs, which are designed for massively parallel computation, this is a serious limitation. Transformers replace sequential recurrence with parallel attention, processing all positions simultaneously, which is a large part of why they scaled so dramatically.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: The Core Idea ── -->
+  <section class="lesson-section" id="attention-idea">
+    <h2>The Core Idea: Attention</h2>
+
+    <p>The intuition behind attention is something humans do naturally when reading. When you read the sentence "The scientist published the paper after she reviewed it carefully," and you want to understand what "she" refers to, your brain does not re-read the entire sentence. It pulls out the relevant word "scientist" and connects them. You are paying <strong>attention</strong> to specific parts of the input based on relevance to the current task.</p>
+
+    <p>In a Transformer, every token in a sequence is given the ability to directly attend to every other token, computing a weighted combination that reflects how relevant each position is. If "she" strongly attends to "scientist," the representation of "she" will be heavily influenced by the representation of "scientist," correctly capturing the coreference relationship.</p>
+
+    <p>The mechanism uses a query-key-value framework drawn from information retrieval. Think of it like a soft database lookup:</p>
+
+    <div class="info-grid cols-3">
+      <div class="info-card">
+        <h4>Query (Q)</h4>
+        <p>What the current token is "looking for." Each token generates a query vector that represents what kind of information it needs from the context.</p>
+      </div>
+      <div class="info-card">
+        <h4>Key (K)</h4>
+        <p>What each token "offers." Every token generates a key vector that describes the kind of information it contains. A high Query-Key match means high relevance.</p>
+      </div>
+      <div class="info-card">
+        <h4>Value (V)</h4>
+        <p>The actual content contributed. If a token's key matches the query well, its value vector contributes heavily to the output. The output is a weighted average of all values.</p>
+      </div>
+    </div>
+
+    <p>Q, K, and V are not separate inputs. They are all derived from the same token embeddings through three different learned linear projections. This means the model learns what to look for, what to advertise, and what to contribute, all from the same underlying representations.</p>
+  </section>
+
+  <!-- ── SECTION 3: Self-Attention ── -->
+  <section class="lesson-section" id="self-attention">
+    <h2>Self-Attention Step by Step</h2>
+
+    <p>Let us walk through the exact computation. Given a sequence of tokens, each represented as a vector of dimension <em>d_model</em>:</p>
+
+    <h3>Step 1: Project into Q, K, V</h3>
+    <p>Multiply each token embedding by three learned weight matrices (W_Q, W_K, W_V) to get three vectors per token: a query Q, a key K, and a value V. The dimensions of Q and K must match (call it d_k) since we will compute their dot product.</p>
+
+    <h3>Step 2: Compute Attention Scores</h3>
+    <p>For each token acting as a query, compute a dot product with every token's key. A high dot product means the query and key are aligned, that is, this pair of tokens has a strong relationship.</p>
+
+    <h3>Step 3: Scale and Softmax</h3>
+    <p>Divide each score by the square root of d_k. This scaling prevents the dot products from growing too large in magnitude (which would push the softmax into regions where gradients become tiny). Then apply softmax to get a probability distribution over all positions, the attention weights.</p>
+
+    <div class="math-block">
+      Attention(Q, K, V) = softmax( QK<sup>T</sup> / &radic;d<sub>k</sub> ) &middot; V
+    </div>
+    <div class="math-label">The scaled dot-product attention formula (Vaswani et al., 2017). QK<sup>T</sup> computes all pairwise scores. &radic;d<sub>k</sub> prevents large magnitudes. Softmax normalises to weights. V provides the content.</div>
+
+    <h3>Step 4: Weighted Sum of Values</h3>
+    <p>Multiply the attention weights by the value vectors and sum. The output for each token is a weighted mixture of all value vectors, where the weights reflect how relevant each position was. Tokens that scored highly in the attention contribute more to the output.</p>
+
+    <!-- Attention heatmap SVG -->
+    <div class="svg-container">
+      <svg viewBox="0 0 600 310" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:600px; display:block; margin:0 auto;">
+        <text x="300" y="22" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1a1a2e">Self-Attention Weight Matrix</text>
+        <text x="300" y="38" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" fill="#4a4a6a">Row = query token. Column = key token. Darker = higher attention weight.</text>
+
+        <!-- Column labels (key tokens) at top -->
+        <text x="175" y="62" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"The"</text>
+        <text x="235" y="62" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"cat"</text>
+        <text x="295" y="62" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"is"</text>
+        <text x="355" y="62" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"gone"</text>
+
+        <!-- Column header -->
+        <text x="265" y="50" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">KEY TOKENS (attending to)</text>
+
+        <!-- Row labels (query tokens) on left -->
+        <text x="85" y="92" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"The"</text>
+        <text x="85" y="138" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"cat"</text>
+        <text x="85" y="184" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"is"</text>
+        <text x="85" y="230" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#1a1a2e">"gone"</text>
+
+        <!-- Row header (rotated text workaround) -->
+        <text x="45" y="160" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a" transform="rotate(-90 45 160)">QUERY TOKENS (looking)</text>
+
+        <!-- ── ROW 0: "The" → attention weights [0.55, 0.25, 0.12, 0.08] ── -->
+        <!-- [0,0] = 0.55 -->
+        <rect x="148" y="68" width="54" height="44" rx="3" fill="#b5820a" opacity="0.82"/>
+        <text x="175" y="95" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="white" font-weight="600">0.55</text>
+        <!-- [0,1] = 0.25 -->
+        <rect x="208" y="68" width="54" height="44" rx="3" fill="#b5820a" opacity="0.38"/>
+        <text x="235" y="95" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.25</text>
+        <!-- [0,2] = 0.12 -->
+        <rect x="268" y="68" width="54" height="44" rx="3" fill="#b5820a" opacity="0.18"/>
+        <text x="295" y="95" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.12</text>
+        <!-- [0,3] = 0.08 -->
+        <rect x="328" y="68" width="54" height="44" rx="3" fill="#b5820a" opacity="0.12"/>
+        <text x="355" y="95" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.08</text>
+
+        <!-- ── ROW 1: "cat" → [0.15, 0.50, 0.15, 0.20] ── -->
+        <rect x="148" y="114" width="54" height="44" rx="3" fill="#b5820a" opacity="0.23"/>
+        <text x="175" y="141" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.15</text>
+
+        <rect x="208" y="114" width="54" height="44" rx="3" fill="#b5820a" opacity="0.75"/>
+        <text x="235" y="141" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="white" font-weight="600">0.50</text>
+
+        <rect x="268" y="114" width="54" height="44" rx="3" fill="#b5820a" opacity="0.23"/>
+        <text x="295" y="141" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.15</text>
+
+        <rect x="328" y="114" width="54" height="44" rx="3" fill="#b5820a" opacity="0.30"/>
+        <text x="355" y="141" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.20</text>
+
+        <!-- ── ROW 2: "is" → [0.20, 0.30, 0.35, 0.15] ── -->
+        <rect x="148" y="160" width="54" height="44" rx="3" fill="#b5820a" opacity="0.30"/>
+        <text x="175" y="187" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.20</text>
+
+        <rect x="208" y="160" width="54" height="44" rx="3" fill="#b5820a" opacity="0.45"/>
+        <text x="235" y="187" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.30</text>
+
+        <rect x="268" y="160" width="54" height="44" rx="3" fill="#b5820a" opacity="0.53"/>
+        <text x="295" y="187" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="white" font-weight="600">0.35</text>
+
+        <rect x="328" y="160" width="54" height="44" rx="3" fill="#b5820a" opacity="0.23"/>
+        <text x="355" y="187" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.15</text>
+
+        <!-- ── ROW 3: "gone" → [0.10, 0.35, 0.10, 0.45] ── -->
+        <rect x="148" y="206" width="54" height="44" rx="3" fill="#b5820a" opacity="0.15"/>
+        <text x="175" y="233" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.10</text>
+
+        <rect x="208" y="206" width="54" height="44" rx="3" fill="#b5820a" opacity="0.53"/>
+        <text x="235" y="233" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="white" font-weight="600">0.35</text>
+
+        <rect x="268" y="206" width="54" height="44" rx="3" fill="#b5820a" opacity="0.15"/>
+        <text x="295" y="233" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a3500">0.10</text>
+
+        <rect x="328" y="206" width="54" height="44" rx="3" fill="#b5820a" opacity="0.68"/>
+        <text x="355" y="233" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="white" font-weight="600">0.45</text>
+
+        <!-- Annotation: row sums to 1.0 -->
+        <text x="395" y="92" font-family="JetBrains Mono,monospace" font-size="9" fill="#4a4a6a">= 1.00</text>
+        <text x="395" y="138" font-family="JetBrains Mono,monospace" font-size="9" fill="#4a4a6a">= 1.00</text>
+        <text x="395" y="184" font-family="JetBrains Mono,monospace" font-size="9" fill="#4a4a6a">= 1.00</text>
+        <text x="395" y="230" font-family="JetBrains Mono,monospace" font-size="9" fill="#4a4a6a">= 1.00</text>
+
+        <!-- Legend -->
+        <rect x="148" y="268" width="18" height="14" rx="2" fill="#b5820a" opacity="0.12"/>
+        <text x="170" y="280" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">Low attention</text>
+        <rect x="255" y="268" width="18" height="14" rx="2" fill="#b5820a" opacity="0.50"/>
+        <text x="277" y="280" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">Medium</text>
+        <rect x="345" y="268" width="18" height="14" rx="2" fill="#b5820a" opacity="0.82"/>
+        <text x="367" y="280" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">High attention</text>
+
+        <!-- Note: illustrative -->
+        <text x="300" y="298" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#8a8aaa" font-style="italic">Illustrative weights. Each row sums to 1.0 after softmax.</text>
+      </svg>
+      <p class="svg-caption">An illustrative self-attention weight matrix for a 4-token sentence. "gone" attends most strongly to itself (0.45) and to "cat" (0.35), capturing the semantic relationship. Every row is a softmax distribution over all key positions.</p>
+    </div>
+
+    <h3>A Concrete Implementation</h3>
+    <p>The mathematics of scaled dot-product attention can be implemented in about ten lines of Python:</p>
+
+    <div class="code-label">Python (NumPy)</div>
+    <div class="code-block"><pre><span class="py-kw">import</span> numpy <span class="py-kw">as</span> np
+
+<span class="py-kw">def</span> <span class="py-fn">softmax</span>(x):
+    <span class="py-cm"># Subtract max for numerical stability — prevents overflow in exp()</span>
+    exp_x = np.<span class="py-fn">exp</span>(x <span class="py-op">-</span> np.<span class="py-fn">max</span>(x, axis=<span class="py-op">-</span><span class="py-num">1</span>, keepdims=<span class="py-kw">True</span>))
+    <span class="py-kw">return</span> exp_x / exp_x.<span class="py-fn">sum</span>(axis=<span class="py-op">-</span><span class="py-num">1</span>, keepdims=<span class="py-kw">True</span>)
+
+<span class="py-kw">def</span> <span class="py-fn">scaled_dot_product_attention</span>(Q, K, V):
+    <span class="py-str">"""
+    Q: (seq_len, d_k) — queries
+    K: (seq_len, d_k) — keys
+    V: (seq_len, d_v) — values
+    """</span>
+    d_k = Q.<span class="py-fn">shape</span>[<span class="py-op">-</span><span class="py-num">1</span>]
+
+    <span class="py-cm"># Step 1: compute all pairwise scores — (seq_len, seq_len)</span>
+    scores = Q <span class="py-op">@</span> K.T / np.<span class="py-fn">sqrt</span>(d_k)
+
+    <span class="py-cm"># Step 2: apply softmax row-wise to get attention weights</span>
+    weights = <span class="py-fn">softmax</span>(scores)
+
+    <span class="py-cm"># Step 3: weighted sum of value vectors</span>
+    output = weights <span class="py-op">@</span> V
+
+    <span class="py-kw">return</span> output, weights
+
+<span class="py-cm"># Example: 4 tokens, d_k = 4</span>
+np.random.<span class="py-fn">seed</span>(<span class="py-num">42</span>)
+seq_len, d_k = <span class="py-num">4</span>, <span class="py-num">4</span>
+
+Q = np.random.<span class="py-fn">randn</span>(seq_len, d_k)
+K = np.random.<span class="py-fn">randn</span>(seq_len, d_k)
+V = np.random.<span class="py-fn">randn</span>(seq_len, d_k)
+
+output, attn_weights = <span class="py-fn">scaled_dot_product_attention</span>(Q, K, V)
+
+<span class="py-fn">print</span>(<span class="py-str">"Attention weights (each row sums to 1):"</span>)
+<span class="py-fn">print</span>(attn_weights.<span class="py-fn">round</span>(<span class="py-num">3</span>))
+<span class="py-fn">print</span>(<span class="py-str">f"\nOutput shape: {output.shape}"</span>)</pre></div>
+
+    <div class="output-block">Attention weights (each row sums to 1):
+[[0.429 0.112 0.198 0.261]
+ [0.277 0.271 0.319 0.133]
+ [0.151 0.381 0.272 0.196]
+ [0.087 0.340 0.402 0.171]]
+
+Output shape: (4, 4)</pre></div>
+
+    <p>This is the complete core of self-attention. Each row in the weight matrix is a distribution over all four positions. The output for each token is a weighted blend of all value vectors according to these weights.</p>
+  </section>
+
+  <!-- ── SECTION 4: Multi-Head ── -->
+  <section class="lesson-section" id="multihead">
+    <h2>Multi-Head Attention</h2>
+
+    <p>A single attention head learns one way to relate tokens. But a sentence has multiple types of relationships simultaneously. "John gave Mary the book" contains relationships between giver and receiver, between action and object, between subject and verb. A single attention pattern cannot capture all of these at once.</p>
+
+    <p><strong>Multi-head attention</strong> runs several attention operations in parallel, each with its own independent W_Q, W_K, and W_V projection matrices. Each "head" is free to learn a different type of relationship. The outputs from all heads are concatenated and projected through a final linear layer.</p>
+
+    <p>The original Transformer used 8 heads with d_model = 512. Each head operates in a reduced dimension of 512 / 8 = 64, so the total computational cost is comparable to a single head at full dimension. Research on analysing what individual heads learn has found that some heads specialise in syntactic relationships (subject-verb agreement), some in coreference (pronoun-noun), and some in positional patterns, though this specialisation is not guaranteed or required by the design.</p>
+
+    <div class="callout">
+      <div class="callout-title">Multi-Head Attention in One Line</div>
+      <p>MultiHead(Q, K, V) = Concat(head_1, ..., head_h) W_O, where each head_i = Attention(Q W_Q_i, K W_K_i, V W_V_i). The W_O matrix projects the concatenated output back to d_model dimensions.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: Transformer Block ── -->
+  <section class="lesson-section" id="transformer-block">
+    <h2>The Transformer Block</h2>
+
+    <p>Self-attention alone is not a complete model. The full Transformer block wraps it with several additional components, each serving a specific engineering purpose.</p>
+
+    <!-- Transformer Block SVG -->
+    <div class="svg-container">
+      <svg viewBox="0 0 420 440" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:420px; display:block; margin:0 auto;">
+        <text x="210" y="22" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1a1a2e">Transformer Encoder Block</text>
+
+        <!-- INPUT -->
+        <rect x="110" y="35" width="200" height="40" rx="6" fill="#2a6ab5" opacity="0.85"/>
+        <text x="210" y="60" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Token Embeddings</text>
+        <text x="210" y="72" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.8)">+ Positional Encoding</text>
+
+        <!-- Arrow -->
+        <line x1="210" y1="75" x2="210" y2="98" stroke="#b5820a" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Multi-Head Attention -->
+        <rect x="90" y="98" width="240" height="50" rx="6" fill="#b5820a" opacity="0.85"/>
+        <text x="210" y="119" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Multi-Head Self-Attention</text>
+        <text x="210" y="135" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.8)">Q, K, V from same input sequence</text>
+
+        <!-- Residual + LayerNorm label -->
+        <text x="362" y="175" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">Add &amp;</text>
+        <text x="362" y="186" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">LayerNorm</text>
+
+        <!-- Arrow + residual connection -->
+        <line x1="210" y1="148" x2="210" y2="168" stroke="#b5820a" stroke-width="2" marker-end="url(#arr)"/>
+        <!-- Residual path: right side bypass -->
+        <path d="M 340 115 Q 385 115 385 173 L 340 173" fill="none" stroke="#2a8c5a" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="398" y="120" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="#2a8c5a">residual</text>
+        <text x="398" y="130" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="#2a8c5a">connection</text>
+
+        <!-- Add & Norm 1 -->
+        <rect x="110" y="168" width="200" height="34" rx="6" fill="#4a6a4a" opacity="0.8"/>
+        <text x="210" y="190" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Add &amp; Layer Norm</text>
+
+        <!-- Arrow -->
+        <line x1="210" y1="202" x2="210" y2="225" stroke="#b5820a" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Feed Forward -->
+        <rect x="90" y="225" width="240" height="55" rx="6" fill="#7a3ab5" opacity="0.8"/>
+        <text x="210" y="247" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Feed-Forward Network</text>
+        <text x="210" y="260" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.8)">Dense(d_ff, ReLU) → Dense(d_model)</text>
+        <text x="210" y="272" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.7)">Applied identically to each position</text>
+
+        <!-- Residual 2 -->
+        <path d="M 340 237 Q 385 237 385 308 L 340 308" fill="none" stroke="#2a8c5a" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+        <!-- Arrow -->
+        <line x1="210" y1="280" x2="210" y2="300" stroke="#b5820a" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Add & Norm 2 -->
+        <rect x="110" y="300" width="200" height="34" rx="6" fill="#4a6a4a" opacity="0.8"/>
+        <text x="210" y="322" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Add &amp; Layer Norm</text>
+
+        <!-- Arrow -->
+        <line x1="210" y1="334" x2="210" y2="354" stroke="#b5820a" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Output -->
+        <rect x="110" y="354" width="200" height="40" rx="6" fill="#1a4a2a" opacity="0.85"/>
+        <text x="210" y="373" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Contextual Representations</text>
+        <text x="210" y="387" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.8)">Stack N times (original: N = 6)</text>
+
+        <!-- Brace: entire block repeats -->
+        <text x="210" y="430" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a" font-style="italic">This entire block stacks N times. Each block refines the representations.</text>
+
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#b5820a"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="svg-caption">One Transformer encoder block. The green dashed lines are residual (skip) connections, exactly as in ResNet. They help gradients flow through deep stacks. Layer Norm stabilises training. The feed-forward network processes each position independently after attention has aggregated context.</p>
+    </div>
+
+    <div class="info-grid cols-2">
+      <div class="info-card">
+        <h4>Residual Connections</h4>
+        <p>The output of each sub-layer is added to its input before normalisation. This is the same skip connection idea from ResNet (He et al., 2015), and it is critical for training deep stacks of Transformer blocks without vanishing gradients.</p>
+      </div>
+      <div class="info-card">
+        <h4>Layer Normalisation</h4>
+        <p>Introduced by Ba, Kiros, and Hinton in 2016, Layer Norm normalises across the feature dimension for each token independently. Unlike Batch Norm, it does not depend on batch size, making it better suited to variable-length sequences.</p>
+      </div>
+      <div class="info-card">
+        <h4>Feed-Forward Network</h4>
+        <p>After attention aggregates context, a two-layer MLP (Dense → ReLU → Dense) processes each token independently. This is where much of the model's "knowledge" is stored. In the original paper, the inner dimension d_ff = 2,048 (four times d_model = 512).</p>
+      </div>
+      <div class="info-card">
+        <h4>Positional Encoding</h4>
+        <p>Attention has no inherent notion of order. To tell the model where each token sits in the sequence, positional information is added to the embeddings. The original paper used fixed sinusoidal functions. Modern models (GPT, BERT variants) typically use learned positional embeddings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6: The Paper ── -->
+  <section class="lesson-section" id="the-paper">
+    <h2>The 2017 Breakthrough: "Attention Is All You Need"</h2>
+
+    <p>The Transformer architecture was introduced in the paper <em>"Attention Is All You Need"</em> by Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, and Illia Polosukhin, all researchers at Google at the time. It was presented at NeurIPS 2017.</p>
+
+    <p>The paper's central claim was bold: recurrence and convolution were not necessary for sequence modelling. Attention alone, applied in parallel across all positions, was sufficient and indeed superior. The model they proposed achieved state-of-the-art results on English-to-German and English-to-French machine translation tasks, while training far faster than the recurrent models of the time.</p>
+
+    <p>The base Transformer had these specs:</p>
+
+    <div class="code-block"><pre><span class="py-cm"># Original Transformer "base" hyperparameters (Vaswani et al., 2017)</span>
+d_model    = <span class="py-num">512</span>   <span class="py-cm"># embedding / model dimension</span>
+d_ff       = <span class="py-num">2048</span>  <span class="py-cm"># feed-forward inner dimension (4× d_model)</span>
+num_heads  = <span class="py-num">8</span>     <span class="py-cm"># attention heads per block</span>
+d_k = d_v  = <span class="py-num">64</span>   <span class="py-cm"># dimension per head (512 / 8)</span>
+num_layers = <span class="py-num">6</span>     <span class="py-cm"># number of encoder blocks (and 6 decoder blocks)</span>
+dropout    = <span class="py-num">0.1</span>   <span class="py-cm"># dropout rate applied throughout</span>
+<span class="py-cm"># Total parameters: approximately 65 million</span></pre></div>
+
+    <p>The paper also introduced the concept of <strong>scaled</strong> dot-product attention. Removing the scaling factor 1/sqrt(d_k) causes the dot products to grow large in high dimensions, pushing softmax into saturation regions where gradients nearly vanish. The scaling was a practical and important engineering decision.</p>
+
+    <div class="callout">
+      <div class="callout-title">Why the Paper Name Matters</div>
+      <p>The title is a direct challenge to the field's assumptions. Attention mechanisms had been used as add-ons to RNNs. The claim that attention alone, without any recurrence, was not just sufficient but better was a paradigm shift. The paper has been cited well over 100,000 times and spawned an entire new era of AI architecture design.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 7: BERT vs GPT ── -->
+  <section class="lesson-section" id="bert-gpt">
+    <h2>BERT and GPT: Two Strategies, One Architecture</h2>
+
+    <p>The Transformer has an encoder stack and a decoder stack. Different research groups discovered that pre-training just one of these components on massive text datasets, then fine-tuning on specific tasks, produced remarkably capable models. Two paradigms emerged.</p>
+
+    <div class="compare-panel">
+      <div class="compare-card bert">
+        <h4>BERT (Encoder-Only)</h4>
+        <p><strong>Bidirectional Encoder Representations from Transformers.</strong> Google, 2018 (Devlin, Chang, Lee, Toutanova).</p>
+        <ul>
+          <li>Uses only the encoder stack</li>
+          <li>Each token attends to all tokens in both directions simultaneously (bidirectional)</li>
+          <li>Pre-trained with Masked Language Modelling: randomly mask 15% of tokens, predict them from context</li>
+          <li>Best for: understanding tasks — question answering, sentiment analysis, named entity recognition, text classification</li>
+          <li>Not designed to generate text</li>
+        </ul>
+      </div>
+      <div class="compare-card gpt">
+        <h4>GPT (Decoder-Only)</h4>
+        <p><strong>Generative Pre-trained Transformer.</strong> OpenAI, 2018 (Radford, Narasimhan, Salimans, Sutskever).</p>
+        <ul>
+          <li>Uses only the decoder self-attention with causal masking</li>
+          <li>Each token can only attend to previous tokens (left-to-right only)</li>
+          <li>Pre-trained with Causal Language Modelling: predict the next token given all previous tokens</li>
+          <li>Best for: generation tasks — writing, summarisation, conversation, code</li>
+          <li>ChatGPT, GPT-4, and most modern chatbots use this paradigm</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>The Scale-Up Story</h3>
+    <div class="arch-timeline" style="margin-top:1rem;">
+      <div class="timeline-entry">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-text"><strong>GPT-1</strong> (OpenAI): 117 million parameters. Showed that language model pre-training transfers to many downstream tasks.</div>
+      </div>
+      <div class="timeline-entry">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-text"><strong>BERT-base</strong> (Google): 110 million parameters. Set new records on 11 NLP benchmarks simultaneously. BERT-large: 340M parameters.</div>
+      </div>
+      <div class="timeline-entry">
+        <div class="timeline-year">2019</div>
+        <div class="timeline-text"><strong>GPT-2</strong> (OpenAI): 1.5 billion parameters. Generated coherent multi-paragraph text; OpenAI initially withheld the largest version citing misuse concerns.</div>
+      </div>
+      <div class="timeline-entry">
+        <div class="timeline-year">2020</div>
+        <div class="timeline-text"><strong>GPT-3</strong> (OpenAI): 175 billion parameters. Demonstrated few-shot learning: given just a few examples in the prompt, it could perform tasks it was never explicitly trained on.</div>
+      </div>
+      <div class="timeline-entry">
+        <div class="timeline-year">2022</div>
+        <div class="timeline-text"><strong>ChatGPT</strong> (OpenAI): GPT-3.5 fine-tuned with Reinforcement Learning from Human Feedback (RLHF). Reached 100 million users in two months, the fastest product adoption in history to that point.</div>
+      </div>
+      <div class="timeline-entry">
+        <div class="timeline-year">2023</div>
+        <div class="timeline-text"><strong>GPT-4</strong> (OpenAI) and <strong>Claude</strong> (Anthropic): multimodal, more capable, more safety-aligned large language models built on the Transformer decoder paradigm.</div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-title">Causal Masking Explained</div>
+      <p>In a decoder-only model, when predicting token 5, the model cannot look at tokens 6, 7, 8... (they do not exist yet in generation). This is enforced by a causal mask: a triangular mask that sets attention scores to negative infinity for all future positions before softmax, making their weights effectively zero. During training, the model processes all positions in parallel but each position only "sees" its left context, mimicking the sequential generation process efficiently.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 8: Code ── -->
+  <section class="lesson-section" id="code">
+    <h2>Using Transformers Today: Hugging Face</h2>
+
+    <p>Training a Transformer from scratch requires enormous data and compute. In practice, you almost never do this. Instead, you use pre-trained models through the <strong>Hugging Face <em>transformers</em> library</strong>, the dominant open-source platform for working with Transformer models. It provides a unified API for hundreds of pre-trained models in dozens of languages.</p>
+
+    <div class="callout info">
+      <div class="callout-title">Install First</div>
+      <p>Run this once in your terminal or a Colab cell: <code>pip install transformers torch</code>. The library handles downloading model weights automatically on first use.</p>
+    </div>
+
+    <div class="code-label">Python (Hugging Face Transformers)</div>
+    <div class="code-block"><pre><span class="py-kw">from</span> transformers <span class="py-kw">import</span> pipeline
+
+<span class="py-cm"># ── 1. Sentiment Analysis using a fine-tuned BERT model ───────────────</span>
+<span class="py-cm"># Default model: distilbert-base-uncased-finetuned-sst-2-english</span>
+<span class="py-cm"># (a compressed BERT fine-tuned on Stanford Sentiment Treebank)</span>
+classifier = <span class="py-fn">pipeline</span>(<span class="py-str">"sentiment-analysis"</span>)
+
+texts = [
+    <span class="py-str">"I really enjoyed this course, the explanations are excellent!"</span>,
+    <span class="py-str">"This was confusing and poorly structured."</span>,
+    <span class="py-str">"Convolutional neural networks are used in image recognition."</span>
+]
+
+results = <span class="py-fn">classifier</span>(texts)
+<span class="py-kw">for</span> text, result <span class="py-kw">in</span> <span class="py-fn">zip</span>(texts, results):
+    <span class="py-fn">print</span>(<span class="py-str">f"Text: '{text[:50]}...'"</span>)
+    <span class="py-fn">print</span>(<span class="py-str">f"  Label: {result['label']}, Score: {result['score']:.4f}\n"</span>)
+
+<span class="py-cm"># ── 2. Text Generation using GPT-2 ────────────────────────────────────</span>
+generator = <span class="py-fn">pipeline</span>(<span class="py-str">"text-generation"</span>, model=<span class="py-str">"gpt2"</span>)
+
+prompt = <span class="py-str">"Artificial intelligence is transforming"</span>
+output = <span class="py-fn">generator</span>(
+    prompt,
+    max_new_tokens=<span class="py-num">50</span>,       <span class="py-cm"># generate 50 new tokens after the prompt</span>
+    num_return_sequences=<span class="py-num">1</span>,
+    do_sample=<span class="py-kw">True</span>,          <span class="py-cm"># sample from the distribution (not greedy)</span>
+    temperature=<span class="py-num">0.8</span>          <span class="py-cm"># lower = more predictable, higher = more creative</span>
+)
+
+<span class="py-fn">print</span>(<span class="py-str">"Generated text:"</span>)
+<span class="py-fn">print</span>(output[<span class="py-num">0</span>][<span class="py-str">'generated_text'</span>])
+
+<span class="py-cm"># ── 3. Question Answering using BERT ──────────────────────────────────</span>
+qa = <span class="py-fn">pipeline</span>(<span class="py-str">"question-answering"</span>)
+
+context = <span class="py-str">"""
+The Transformer architecture was introduced in 2017 by Vaswani et al.
+in the paper 'Attention Is All You Need'. It relies entirely on
+self-attention mechanisms and has become the foundation of modern
+language models including BERT and GPT.
+"""</span>
+
+result = <span class="py-fn">qa</span>(question=<span class="py-str">"When was the Transformer introduced?"</span>, context=context)
+<span class="py-fn">print</span>(<span class="py-str">f"\nQuestion: When was the Transformer introduced?"</span>)
+<span class="py-fn">print</span>(<span class="py-str">f"Answer: {result['answer']} (confidence: {result['score']:.4f})"</span>)</pre></div>
+
+    <div class="output-block">Text: 'I really enjoyed this course, the explanations are ...'
+  Label: POSITIVE, Score: 0.9997
+
+Text: 'This was confusing and poorly structured....'
+  Label: NEGATIVE, Score: 0.9995
+
+Text: 'Convolutional neural networks are used in image rec...'
+  Label: POSITIVE, Score: 0.9748
+
+Generated text:
+Artificial intelligence is transforming the way businesses operate,
+enabling companies to automate complex tasks, analyse vast amounts
+of data, and make decisions with greater accuracy and speed than
+was previously possible.
+
+Question: When was the Transformer introduced?
+Answer: 2017 (confidence: 0.9961)</pre></div>
+
+    <h3>What Just Happened?</h3>
+    <p>The <code>pipeline</code> function downloaded a pre-trained model (several hundred MB), loaded its weights, and ran inference. For sentiment analysis, it used a DistilBERT model fine-tuned on human-labelled movie and review data. For question answering, it used a BERT model trained to extract spans from context paragraphs. None of the heavy lifting required any data or training from us.</p>
+
+    <div class="callout success">
+      <div class="callout-title">The Power of Pre-Training</div>
+      <p>These models were pre-trained on billions of words of text, which gave them broad language understanding. They were then fine-tuned on labelled examples specific to each task. This pre-train-then-fine-tune paradigm is covered in depth in Lesson 4.5 on Transfer Learning. It is the reason a beginner can achieve expert-level NLP results with three lines of code.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 9: Takeaways ── -->
+  <section class="lesson-section" id="takeaways">
+    <h2>Key Takeaways</h2>
+    <ul class="takeaway-list">
+      <li>Recurrent networks process sequences step by step and struggle to maintain context over long distances. Transformers process all positions in parallel using attention.</li>
+      <li>Self-attention lets every token attend to every other token in a sequence. The attention weight between two tokens reflects how relevant one is to the other.</li>
+      <li>Scaled dot-product attention computes Q and K dot products, scales by 1/sqrt(d_k) to prevent large magnitudes, applies softmax to get weights, then takes a weighted sum of V vectors.</li>
+      <li>Multi-head attention runs several attention heads in parallel. Each head can learn a different type of relationship (syntactic, semantic, positional). Outputs are concatenated and projected.</li>
+      <li>A Transformer block wraps attention with a feed-forward network, residual connections, and Layer Normalisation. Blocks are stacked N times (6 in the original paper).</li>
+      <li>Positional encoding adds sequence position information to token embeddings, since attention alone has no sense of word order.</li>
+      <li>"Attention Is All You Need" (Vaswani et al., 2017, NeurIPS) introduced the architecture and showed recurrence was not needed for top-quality translation.</li>
+      <li>BERT (encoder-only, bidirectional) excels at understanding tasks. GPT (decoder-only, causal) is designed for text generation. ChatGPT, GPT-4, and Claude are all GPT-style decoder models.</li>
+      <li>The Hugging Face library lets you use pre-trained Transformers for dozens of NLP tasks with just a few lines of Python.</li>
+    </ul>
+
+    <div class="callout info" style="margin-top:2rem;">
+      <div class="callout-title">Coming Up: Transfer Learning and Fine-Tuning</div>
+      <p>In Lesson 4.5, you will see how to take a pre-trained model and adapt it to your own specific task with a small amount of data. This technique, called fine-tuning, is how most real-world AI applications are built today. You do not need to train a model from scratch. You start from a powerful foundation and teach it your specific domain.</p>
+    </div>
+  </section>
+
+  <!-- Practice Notebook -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:2rem 0;padding:1.25rem 1.5rem;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.1);border-radius:8px;">
+    <div>
+      <div style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code in Google Colab</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">All examples + challenges &middot; Free GPU included &middot; No setup needed</div>
+    </div>
+    <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-4.4-transformers.ipynb" target="_blank" rel="noopener">
+      <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+    </a>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav-buttons">
+    <a href="LESSON 4.3.html" class="nav-btn prev">&#8592; 4.3 Convolutional Networks</a>
+    <a href="LESSON 4.5.html" class="nav-btn next">4.5 Transfer Learning &#8594;</a>
+  </div>
+
+</main>
+
+<script>
+  // Reading progress bar
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop;
+    const total = doc.scrollHeight - doc.clientHeight;
+    bar.style.width = total > 0 ? (scrolled / total * 100) + '%' : '0%';
+  });
+
+  // TOC active state
+  const sections = document.querySelectorAll('.lesson-section');
+  const links    = document.querySelectorAll('.toc-list a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        links.forEach(a => {
+          a.classList.toggle('active', a.dataset.section === id);
+        });
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

@@ -1,0 +1,632 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1.4: AI You Already Use Every Day — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #b83c12;
+  --accent-soft: rgba(184,60,18,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.10);
+  --blue: #1a5c9a;
+  --blue-soft: rgba(26,92,154,0.08);
+  --green: #1e6e45;
+  --green-soft: rgba(30,110,69,0.08);
+  --teal: #1a7a7a;
+  --teal-soft: rgba(26,122,122,0.08);
+  --plum: #6b2d6b;
+  --plum-soft: rgba(107,45,107,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(184,60,18,0.2); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.phase-complete-badge { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); background: var(--green-soft); border: 1px solid rgba(30,110,69,0.2); padding: 5px 12px; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: 1fr 240px; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 8px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* DAY IN THE LIFE TIMELINE */
+.day-timeline { margin: 40px 0; display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); }
+.day-slot { display: grid; grid-template-columns: 80px 1fr; border-bottom: 1px solid var(--border); }
+.day-slot:last-child { border-bottom: none; }
+.day-time { padding: 20px 16px; background: var(--paper2); display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end; border-right: 1px solid var(--border); }
+.time-val { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--ink); letter-spacing: 0.04em; }
+.time-period { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; }
+.day-content { padding: 20px 22px; }
+.day-action { font-family: var(--ui); font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.day-ai { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+.day-tag { display: inline-block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.07em; padding: 2px 8px; margin-top: 6px; }
+.tag-rec { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(26,92,154,0.2); }
+.tag-vision { background: var(--green-soft); color: var(--green); border: 1px solid rgba(30,110,69,0.2); }
+.tag-nlp { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(26,122,122,0.2); }
+.tag-pred { background: var(--gold-soft); color: var(--gold); border: 1px solid rgba(154,122,46,0.2); }
+.tag-filter { background: var(--plum-soft); color: var(--plum); border: 1px solid rgba(107,45,107,0.2); }
+.tag-search { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(184,60,18,0.2); }
+
+/* CATEGORY BREAKDOWN */
+.category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 32px 0; }
+.cat-card { border: 1px solid var(--border); padding: 20px 20px; }
+.cat-icon-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.cat-name { font-family: var(--ui); font-size: 14px; font-weight: 700; color: var(--ink); }
+.cat-desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+.cat-examples { font-family: var(--mono); font-size: 11px; color: var(--muted2); letter-spacing: 0.02em; line-height: 1.7; }
+
+/* HIDDEN IN PLAIN SIGHT */
+.hidden-list { display: flex; flex-direction: column; gap: 0; margin: 32px 0; border: 1px solid var(--border); }
+.hidden-item { display: grid; grid-template-columns: 28px 1fr; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--border); align-items: start; }
+.hidden-item:last-child { border-bottom: none; }
+.hidden-item:hover { background: var(--paper2); }
+.hidden-num { font-family: var(--mono); font-size: 11px; color: var(--muted2); padding-top: 2px; }
+.hidden-body {}
+.hidden-product { font-family: var(--ui); font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.hidden-explain { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* PHASE COMPLETE BANNER */
+.phase-complete { margin: 48px 0 0; background: var(--ink); padding: 32px 36px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+.pc-left {}
+.pc-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+.pc-title { font-family: var(--serif); font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.2; }
+.pc-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.65; }
+.pc-right { text-align: right; flex-shrink: 0; }
+.pc-num { font-family: var(--serif); font-size: 56px; font-weight: 900; color: rgba(255,255,255,0.12); line-height: 1; }
+.pc-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ACTIVITY */
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+.act-note { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 18px 20px; }
+.act-note-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+.act-note-text { font-family: var(--ui); font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+/* PHASE SUMMARY */
+.phase-summary-section { max-width: 860px; margin: 0 auto; padding: 0 40px; }
+.phase-summary { border: 1px solid var(--border2); padding: 36px 40px; background: var(--paper2); margin-bottom: 16px; }
+.ps-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.ps-title { font-family: var(--serif); font-size: 24px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.ps-lessons { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.ps-lesson { display: flex; align-items: center; gap: 12px; font-family: var(--ui); font-size: 14px; color: var(--muted); }
+.ps-check { width: 20px; height: 20px; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; }
+.ps-lesson-title { color: var(--ink); font-weight: 500; }
+
+.nav-section { max-width: 860px; margin: 16px auto 0; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .phase-summary-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .category-grid { grid-template-columns: 1fr; }
+  .phase-complete { grid-template-columns: 1fr; }
+  .pc-right { display: none; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--ui); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reflect-subtitle { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.reflect-list { display: flex; flex-direction: column; gap: 8px; }
+.reflect-list details { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; }
+.reflect-list summary { font-family: var(--ui); font-size: 15px; font-weight: 500; color: var(--ink); padding: 14px 18px 14px 48px; cursor: pointer; list-style: none; position: relative; }
+.reflect-list summary::-webkit-details-marker { display: none; }
+.reflect-list summary::before { content: '?'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.3); width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; }
+.reflect-list details[open] summary::before { content: '!'; color: var(--accent); background: var(--accent-soft); border-color: rgba(184,60,18,0.3); }
+.reflect-hint { font-family: var(--ui); font-size: 14px; color: var(--muted); padding: 0 18px 14px 48px; line-height: 1.65; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 1.4</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">13 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 1: The Big Picture</span>
+    <span class="lesson-num-tag">Lesson 4 of 4</span>
+    <span class="phase-complete-badge">Phase finale</span>
+  </div>
+  <h1 class="lesson-title">AI You Already<br><em>Use Every Day</em></h1>
+  <p class="lesson-intro">You have been using artificial intelligence for years. You just did not know what to call it. This lesson maps it out and shows you exactly where AI is already woven into your daily life.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>Where AI lives inside the apps you use daily</div>
+    <div class="obj-item"><div class="obj-dot"></div>The six main categories of everyday AI</div>
+    <div class="obj-item"><div class="obj-dot"></div>How AI makes decisions on your behalf without asking</div>
+    <div class="obj-item"><div class="obj-dot"></div>Why this matters as you start building your own</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>You are already a daily AI user</h2>
+
+    <p>Before you ever opened this course, before you heard the term machine learning, before anyone explained what a neural network was, you were already interacting with AI dozens of times a day. The question was never whether AI would enter your life. It already had. The question was whether you understood what was happening.</p>
+
+    <p>This lesson is about making the invisible visible. We are going to walk through a single ordinary day and identify every moment where AI is making a decision, forming a prediction or shaping your experience. By the end, you will not be able to look at your phone the same way again.</p>
+
+    <div class="callout">
+      <div class="callout-label">Why this matters for learning</div>
+      <p>One of the biggest barriers to learning AI is the feeling that it is happening somewhere else, in research labs or tech companies far removed from ordinary life. Once you see that AI is already embedded in your morning routine, your commute and your entertainment, that barrier dissolves.</p>
+      <p>Everything you learn in this course is already operating in the world. You are not studying something abstract. You are learning to understand something you already live inside.</p>
+    </div>
+
+    <h2>A day in your life, with the AI visible</h2>
+
+    <p>Let us trace through an ordinary day. Not a dramatic one. A Tuesday. The kind where nothing particularly exciting happens. Watch how many times AI appears.</p>
+
+    <div class="day-timeline">
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">7:00</span><span class="time-period">AM</span></div>
+        <div class="day-content">
+          <div class="day-action">Your alarm goes off. You pick up your phone.</div>
+          <div class="day-ai">Face ID or fingerprint recognition unlocks it instantly. A deep learning model trained on thousands of facial images or fingerprint patterns is comparing what it sees to what it learned about your specific face or thumb. If the light is different, if you are squinting, it still works. That is the neural network adapting, not a fixed rule being checked.</div>
+          <span class="day-tag tag-vision">Computer vision</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">7:10</span><span class="time-period">AM</span></div>
+        <div class="day-content">
+          <div class="day-action">You check your email.</div>
+          <div class="day-ai">Before you see a single message, a machine learning model has already scanned every incoming email and decided which ones are spam, which are promotional and which are important. It learned those categories from billions of labelled emails and from your own behaviour over time. When you mark something as spam, you are training it.</div>
+          <span class="day-tag tag-filter">Spam filtering</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">7:30</span><span class="time-period">AM</span></div>
+        <div class="day-content">
+          <div class="day-action">You open Spotify or Apple Music on the way to the kitchen.</div>
+          <div class="day-ai">The playlist that autoplays was assembled by a recommendation system that analysed your listening history, the listening history of people with similar taste, the audio features of songs you have liked and the time of day. It made a prediction about your mood at 7:30 on a Tuesday morning without you asking it to.</div>
+          <span class="day-tag tag-rec">Recommendation</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">8:15</span><span class="time-period">AM</span></div>
+        <div class="day-content">
+          <div class="day-action">You check Google Maps before leaving.</div>
+          <div class="day-ai">The estimated arrival time is a prediction generated by a model trained on years of traffic patterns, real-time data from millions of other phones on the road, historical patterns for this specific road at this specific time on this day of the week. It is not looking at a map. It is making a statistical prediction.</div>
+          <span class="day-tag tag-pred">Prediction</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">12:30</span><span class="time-period">PM</span></div>
+        <div class="day-content">
+          <div class="day-action">You pay for lunch with your card.</div>
+          <div class="day-ai">At the moment your card is processed, a fraud detection model analyses this transaction against thousands of data points: your usual spending patterns, the location, the merchant type, the time of day, the amount. It makes a decision in milliseconds. If anything looks unusual, it flags or blocks the payment before you even get a receipt.</div>
+          <span class="day-tag tag-pred">Fraud detection</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">1:00</span><span class="time-period">PM</span></div>
+        <div class="day-content">
+          <div class="day-action">You do a Google search.</div>
+          <div class="day-ai">The ten results you see were ranked by an algorithm that weighs hundreds of signals: the relevance of the page to your query, the authority of the source, your location, your search history and what people with similar queries clicked on. Natural language processing interprets your words, even if they are vague, misspelled or phrased as a question.</div>
+          <span class="day-tag tag-search">Search ranking</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">7:00</span><span class="time-period">PM</span></div>
+        <div class="day-content">
+          <div class="day-action">You open Netflix.</div>
+          <div class="day-ai">The thumbnails of shows change depending on who is watching. Netflix tests different images for the same title and shows you the version their model predicts you are most likely to click. The entire homepage is a personalised grid assembled in real time, not a fixed catalogue. Your row of recommendations is different from your neighbour's.</div>
+          <span class="day-tag tag-rec">Personalisation</span>
+        </div>
+      </div>
+      <div class="day-slot">
+        <div class="day-time"><span class="time-val">9:30</span><span class="time-period">PM</span></div>
+        <div class="day-content">
+          <div class="day-action">You send a voice message on WhatsApp or use Siri.</div>
+          <div class="day-ai">Your voice is converted to text by a speech recognition model, a deep learning system trained on thousands of hours of human speech across accents, ages and recording conditions. The model does not listen for specific words. It predicts the most likely sequence of words given the sounds it heard.</div>
+          <span class="day-tag tag-nlp">Speech recognition</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>The six categories of everyday AI</h2>
+
+    <p>Looking across that day, the same types of AI keep appearing under different names and in different products. Here are the six categories that power most of the AI you interact with daily.</p>
+
+    <div class="category-grid">
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background: var(--blue)"></div>
+          <div class="cat-name">Recommendation systems</div>
+        </div>
+        <p class="cat-desc">Predict what you will want to see, listen to or buy next based on your history and the behaviour of similar users.</p>
+        <div class="cat-examples">Netflix · Spotify · YouTube · Amazon · TikTok · Instagram</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background: var(--green)"></div>
+          <div class="cat-name">Computer vision</div>
+        </div>
+        <p class="cat-desc">Enables machines to understand and interpret images and video. Includes facial recognition, object detection and medical imaging.</p>
+        <div class="cat-examples">Face ID · Google Photos · Snapchat filters · Tesla Autopilot</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background: var(--teal)"></div>
+          <div class="cat-name">Natural language processing</div>
+        </div>
+        <p class="cat-desc">Helps machines read, understand and generate human language. Powers search, translation, autocomplete and AI assistants.</p>
+        <div class="cat-examples">Google Search · Translate · Grammarly · Siri · ChatGPT · Claude</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background: var(--gold)"></div>
+          <div class="cat-name">Predictive systems</div>
+        </div>
+        <p class="cat-desc">Use historical patterns to forecast outcomes: traffic, demand, weather, health risks, financial behaviour and much more.</p>
+        <div class="cat-examples">Google Maps ETA · Weather apps · Fraud detection · Credit scoring</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background: var(--plum)"></div>
+          <div class="cat-name">Filtering and moderation</div>
+        </div>
+        <p class="cat-desc">Automatically classify and sort content at scale. Makes decisions about what you see and what gets removed without human review.</p>
+        <div class="cat-examples">Spam filters · Content moderation · Ad targeting · Email sorting</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background: var(--accent)"></div>
+          <div class="cat-name">Generative AI</div>
+        </div>
+        <p class="cat-desc">Creates new content: text, images, audio, code and video. The fastest-growing category in AI and the one most visible to the public right now.</p>
+        <div class="cat-examples">ChatGPT · Claude · DALL-E · Midjourney · GitHub Copilot · Suno</div>
+      </div>
+    </div>
+
+    <h2>The things happening without your permission or awareness</h2>
+
+    <p>Most of the AI in your life operates entirely in the background. You do not opt in. You do not see the decision being made. You just experience the output, a filtered inbox, a personalised feed, a blocked transaction, a suggested route.</p>
+
+    <p>This is worth pausing on, not to alarm you, but because it is the context for everything that follows in this course. When you understand how these systems work, you become a participant rather than just a subject. You can ask better questions, make more informed choices and eventually build systems that treat the people using them with the same care you would want for yourself.</p>
+
+    <div class="hidden-list">
+      <div class="hidden-item">
+        <div class="hidden-num">01</div>
+        <div class="hidden-body">
+          <div class="hidden-product">The order of your social media feed</div>
+          <div class="hidden-explain">No social media feed is chronological by default anymore. Every post you see has been ranked by a model predicting which content will keep you engaged longest. The ranking changes every time you open the app.</div>
+        </div>
+      </div>
+      <div class="hidden-item">
+        <div class="hidden-num">02</div>
+        <div class="hidden-body">
+          <div class="hidden-product">The price you see for flights and hotels</div>
+          <div class="hidden-explain">Dynamic pricing models adjust what you are shown based on your device, your search history, the time of day, demand patterns and how urgently the algorithm thinks you need to book. Two people searching the same route can see different prices.</div>
+        </div>
+      </div>
+      <div class="hidden-item">
+        <div class="hidden-num">03</div>
+        <div class="hidden-body">
+          <div class="hidden-product">Whether your job application gets a human review</div>
+          <div class="hidden-explain">Many large companies use AI to screen CVs before a recruiter ever reads them. The model scores applications against patterns in past successful hires. If your CV does not match those patterns, it may never reach a human being.</div>
+        </div>
+      </div>
+      <div class="hidden-item">
+        <div class="hidden-num">04</div>
+        <div class="hidden-body">
+          <div class="hidden-product">The autocomplete suggestions in your keyboard</div>
+          <div class="hidden-explain">Your phone keyboard is running a small language model that has learned your writing patterns and predicts the next word you are likely to type. It personalises over time based on your actual messages. It is a language model, just a much smaller one than GPT or Claude.</div>
+        </div>
+      </div>
+      <div class="hidden-item">
+        <div class="hidden-num">05</div>
+        <div class="hidden-body">
+          <div class="hidden-product">Your credit limit and loan interest rate</div>
+          <div class="hidden-explain">Financial institutions use machine learning models to assess creditworthiness. The model looks at hundreds of variables beyond just your income and credit score. The interest rate you are offered may have been set by a model with no human involved in the final decision.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>What changes now that you know this</h2>
+
+    <p>Awareness is the first form of power. Once you can see where AI is operating, you can start asking the right questions: who built this system, what data did it learn from, what is it optimising for, and whose interests does it serve?</p>
+
+    <p>A spam filter optimising to remove unwanted email serves you. An engagement algorithm optimising to keep you on a platform as long as possible may serve the platform more than it serves you. Both are AI. Neither is inherently good or bad. The difference lies in what they were designed to do and who benefits.</p>
+
+    <p>As you build your own AI systems throughout this course, you will make decisions like these. What should your model optimise for? What counts as success? Who is affected by the output? These questions begin here, with the realisation that AI is not neutral. It always reflects the choices of whoever built it.</p>
+
+    <div class="phase-complete">
+      <div class="pc-left">
+        <div class="pc-eyebrow">Phase 1 complete</div>
+        <div class="pc-title">You now have the full picture.</div>
+        <div class="pc-text">You understand where AI came from, how the three terms relate to each other, what types of AI actually exist today and where AI already lives in your daily life. Phase 2 is where we get into the building blocks: data and mathematics, the raw material that makes AI possible.</div>
+      </div>
+      <div class="pc-right">
+        <div class="pc-num">1</div>
+        <div class="pc-label">of 5 phases done</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">You are already a daily AI user</li>
+        <li class="toc-item">A day in your life</li>
+        <li class="toc-item">Six categories of everyday AI</li>
+        <li class="toc-item">Happening without your awareness</li>
+        <li class="toc-item">What changes now</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Atlas of AI</div>
+        <div class="book-author">Kate Crawford · 2021</div>
+        <div class="book-note">Examines where AI already operates in the world and who bears the costs. Relevant to everything in this lesson.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">The Age of Surveillance Capitalism</div>
+        <div class="book-author">Shoshana Zuboff · 2019</div>
+        <div class="book-note">A detailed account of how AI-powered systems collect and use behavioural data. Dense but essential context.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Recommendation system</div>
+          <div class="term-def">An AI model that predicts items a user is likely to want based on behaviour and similarity to others.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">NLP</div>
+          <div class="term-def">Natural Language Processing. AI that reads, understands and generates human language.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Computer vision</div>
+          <div class="term-def">AI that interprets and understands images and video, from face recognition to medical scans.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Dynamic pricing</div>
+          <div class="term-def">AI-driven adjustment of prices in real time based on demand, user behaviour and other signals.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Generative AI</div>
+          <div class="term-def">AI that creates new content including text, images, audio and code rather than just classifying or predicting.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Phase 1 Final Activity · Bring to live session</div>
+    <div class="act-title">Your Personal AI Map</div>
+    <div class="act-body">This is the activity that pulls all four lessons together. You are going to map the AI in your own life, not someone else's example, your actual daily experience.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Pick a single day from this week. List every app, device or service you used from the moment you woke up to the moment you went to sleep.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">For each one, identify: is AI involved? If yes, which of the six categories does it fall into: recommendation, computer vision, NLP, prediction, filtering or generative AI?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Pick one example from your list that you find surprising or uncomfortable. Write two sentences about why. There is no wrong answer here. Your honest reaction is the point.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">04</span>
+        <span class="step-text">Bring your full map and your uncomfortable example to the live session. This is where Phase 1 closes and the real conversation begins.</span>
+      </div>
+    </div>
+    <div class="act-note">
+      <div class="act-note-label">Note for the live session</div>
+      <div class="act-note-text">Phase 1 closes here. The live session for this lesson will include a group share of your AI maps, a discussion on what surprised people most, and a preview of Phase 2 where we get into how these systems are actually built.</div>
+    </div>
+  </div>
+</section>
+
+<section class="phase-summary-section">
+  <div class="phase-summary">
+    <div class="ps-eyebrow">Phase 1 summary</div>
+    <div class="ps-title">Everything you covered in The Big Picture</div>
+    <div class="ps-lessons">
+      <div class="ps-lesson"><div class="ps-check">✓</div><span class="ps-lesson-title">1.1 — The Story of AI: From Turing to Today</span></div>
+      <div class="ps-lesson"><div class="ps-check">✓</div><span class="ps-lesson-title">1.2 — AI vs Machine Learning vs Deep Learning</span></div>
+      <div class="ps-lesson"><div class="ps-check">✓</div><span class="ps-lesson-title">1.3 — Types of AI: Narrow, General and Super</span></div>
+      <div class="ps-lesson"><div class="ps-check">✓</div><span class="ps-lesson-title">1.4 — AI You Already Use Every Day</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-1-4';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<!-- REFLECT -->
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <div class="reflect-eyebrow">Pause &amp; Reflect</div>
+    <h3 class="reflect-title">Check your understanding</h3>
+    <p class="reflect-subtitle">Click any question to reveal a thinking prompt. There are no wrong answers.</p>
+    <div class="reflect-list">
+      <details>
+        <summary>List three AI systems you encountered today before opening this lesson. How did each one use data about you?</summary>
+        <p class="reflect-hint">Think about your alarm app (uses your sleep schedule), your commute app (uses your location and historical routes), your inbox (uses your past emails to filter spam and sort priority). Each collects a different type of data and makes a prediction tailored to you personally.</p>
+      </details>
+      <details>
+        <summary>If your streaming app's recommendation algorithm was switched off, how would your experience change? What does that reveal about how much you rely on AI?</summary>
+        <p class="reflect-hint">Without recommendations you would have to search manually, discover content through friends, or browse by genre. Consider: do you trust the algorithm's choices more than your own? Do you watch content you would never have chosen yourself? This reveals a quiet reliance that shapes your tastes over time.</p>
+      </details>
+      <details>
+        <summary>Can you think of one AI system you use regularly that might be making an unfair decision about someone else?</summary>
+        <p class="reflect-hint">Credit scoring AI can disadvantage people from certain postcodes. Hiring algorithms trained on historical data can penalise resumes with certain names. Content recommendation can amplify extreme viewpoints. The unfairness is often invisible because the decision feels automated and therefore "objective."</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="LESSON 1.3.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Types of AI: Narrow, General and Super</span>
+  </a>
+  <a class="nav-card next" href="../PHASE TWO/LESSON 2.1.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Phase 2 begins</span>
+    <span class="nav-title">What is Data? Structured vs Unstructured</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 1</span>
+  <span class="footer-copy">Lesson 1.4 of 25 · Phase 1 complete &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

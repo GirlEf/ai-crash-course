@@ -1,0 +1,556 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.2: Statistics Intuition for AI — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #1a6bc8;
+  --accent-soft: rgba(26,107,200,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --green: #1e6e45;
+  --green-soft: rgba(30,110,69,0.08);
+  --red: #b83c12;
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(26,107,200,0.25); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* STAT CARDS */
+.stat-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 32px 0; }
+.stat-card { background: var(--paper2); border: 1px solid var(--border); padding: 22px 20px; text-align: center; }
+.stat-card-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.stat-card-value { font-family: var(--serif); font-size: 36px; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 10px; }
+.stat-card-desc { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* BAR CHART */
+.bar-chart { margin: 32px 0; background: var(--paper2); border: 1px solid var(--border); padding: 24px 24px 16px; }
+.bar-chart-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 20px; }
+.bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+.bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.bar { width: 100%; border-radius: 1px 1px 0 0; transition: opacity 0.2s; }
+.bar:hover { opacity: 0.8; }
+.bar-val { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.bar-label { font-family: var(--mono); font-size: 9px; color: var(--muted); text-align: center; }
+.chart-annotation { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 16px; line-height: 1.6; }
+
+/* DISTRIBUTION VISUAL */
+.distribution-wrap { margin: 32px 0; }
+.dist-chart { position: relative; height: 100px; margin-bottom: 8px; }
+.dist-curve { width: 100%; height: 100%; }
+.dist-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
+.dist-caption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+
+/* SCATTER */
+.scatter-wrap { margin: 32px 0; background: var(--paper2); border: 1px solid var(--border); padding: 24px; }
+.scatter-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 16px; }
+.scatter-svg { width: 100%; height: 180px; }
+.scatter-caption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ACTIVITY */
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .stat-cards { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--ui); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reflect-subtitle { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.reflect-list { display: flex; flex-direction: column; gap: 8px; }
+.reflect-list details { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; }
+.reflect-list summary { font-family: var(--ui); font-size: 15px; font-weight: 500; color: var(--ink); padding: 14px 18px 14px 48px; cursor: pointer; list-style: none; position: relative; }
+.reflect-list summary::-webkit-details-marker { display: none; }
+.reflect-list summary::before { content: '?'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.3); width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; }
+.reflect-list details[open] summary::before { content: '!'; color: var(--accent); background: var(--accent-soft); border-color: rgba(184,60,18,0.3); }
+.reflect-hint { font-family: var(--ui); font-size: 14px; color: var(--muted); padding: 0 18px 14px 48px; line-height: 1.65; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 2.2</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">13 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 2: Data &amp; Mathematics</span>
+    <span class="lesson-num-tag">Lesson 2 of 5</span>
+  </div>
+  <h1 class="lesson-title">Statistics<br><em>Intuition for AI</em></h1>
+  <p class="lesson-intro">AI models are, at their core, very sophisticated statistics engines. You do not need to derive any formulas. But you do need to understand what statistics is actually telling you, and why that matters enormously for building AI that works.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>Mean, median and mode, and when each one matters</div>
+    <div class="obj-item"><div class="obj-dot"></div>Variance and standard deviation as measures of spread</div>
+    <div class="obj-item"><div class="obj-dot"></div>How distributions shape AI behaviour</div>
+    <div class="obj-item"><div class="obj-dot"></div>Correlation and why it is not causation</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>Why does statistics matter for AI?</h2>
+
+    <p>Before you write your first machine learning model, here is something important to understand: every model you train is making statistical decisions. When a model decides whether an email is spam, it is essentially asking, "Based on the patterns in thousands of past emails, what is the most likely category for this one?" That is a statistical question.</p>
+
+    <p>When a model predicts a house price, it is finding the statistical relationship between features like square footage, location and number of bedrooms and the prices of similar houses sold in the past. Statistics is not a separate subject from AI. It is the language AI speaks.</p>
+
+    <p>The good news is that for an intuitive understanding of AI, you do not need to be able to derive these formulas from scratch. You need to understand what they are telling you about your data.</p>
+
+    <div class="pullquote">
+      <p>"Statistics is the grammar of science."</p>
+      <cite>Karl Pearson, mathematician</cite>
+    </div>
+
+    <h2>Measuring the centre: mean, median and mode</h2>
+
+    <p>The first question you ask about any dataset is: what is a typical value? There are three ways to answer that, and they can give you very different answers.</p>
+
+    <p>Consider the ages of passengers on the Titanic: 22, 38, 26, 35, 35, 31, 54, 2, 27, 14.</p>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-card-name">Mean (average)</div>
+        <div class="stat-card-value">28.4</div>
+        <div class="stat-card-desc">Add all values and divide by the count. Affected by extreme values (outliers). The millionaire who joins a room raises the average wealth of everyone in it.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-name">Median (middle)</div>
+        <div class="stat-card-value">29</div>
+        <div class="stat-card-desc">The middle value when sorted. Resistant to outliers. House price reports use median rather than mean because a few mansions would completely distort the average.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-name">Mode (most common)</div>
+        <div class="stat-card-value">35</div>
+        <div class="stat-card-desc">The value that appears most often. Most useful for categorical data. What is the most common class of ticket? The most common country of origin?</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">This is where AI bias can start</div>
+      <p>If your training data is skewed toward one group, the mean will be pulled toward that group. An AI model trained on this data will then perform better for that group and worse for others. Understanding measures of centre is not just a statistics exercise. It is a bias detection skill.</p>
+    </div>
+
+    <h2>Measuring spread: variance and standard deviation</h2>
+
+    <p>Knowing the average is not enough. You also need to know how spread out the data is. Consider two test score results where both classes had an average score of 70:</p>
+
+    <div class="bar-chart" id="barChart">
+      <div class="bar-chart-title">Test scores: both classes average 70, but with very different distributions</div>
+      <div class="bars" id="bars"></div>
+      <div class="chart-annotation">Class A: scores cluster tightly around 70. Class B: scores range widely from 35 to 97. Both classes average exactly 70, yet they are completely different in character. A model that only sees the average would treat them identically, which would be a serious mistake.</div>
+    </div>
+
+    <p><strong>Variance</strong> measures how far, on average, each data point is from the mean. A high variance means the data is spread out. A low variance means values are clustered close to the mean.</p>
+
+    <p><strong>Standard deviation</strong> is simply the square root of variance. It puts the spread back in the same units as the original data, making it easier to interpret. If house prices have a mean of £300,000 and a standard deviation of £80,000, you know that most houses fall between about £220,000 and £380,000.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Think of it this way</div>
+      <p>Imagine two archers. Both hit the target in the same average position, dead centre. But one archer's arrows are all clustered in a tight group. The other's are scattered randomly across the board. Mean tells you where the arrows land on average. Standard deviation tells you how consistent the archer is. You want both pieces of information.</p>
+    </div>
+
+    <h2>Distributions: the shape of your data</h2>
+
+    <p>A distribution shows how values are spread across the range of a dataset. The shape of that distribution tells you a lot about what is happening, and it has a direct effect on which AI algorithms will work well.</p>
+
+    <p>The most famous distribution is the <strong>normal distribution</strong>, also called the bell curve. Many natural phenomena follow this pattern: human heights, IQ scores, measurement errors, the weight of objects from a production line. Most values cluster around the middle. Extreme values are rare at both ends.</p>
+
+    <div class="distribution-wrap">
+      <div class="dist-chart">
+        <svg class="dist-curve" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bellGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="rgba(26,107,200,0.3)"/>
+              <stop offset="100%" stop-color="rgba(26,107,200,0.02)"/>
+            </linearGradient>
+          </defs>
+          <!-- Bell curve fill -->
+          <path d="M 20 98 Q 60 96 100 80 Q 140 50 160 20 Q 180 5 200 2 Q 220 5 240 20 Q 260 50 300 80 Q 340 96 380 98 Z" fill="url(#bellGrad)" stroke="none"/>
+          <!-- Bell curve line -->
+          <path d="M 20 98 Q 60 96 100 80 Q 140 50 160 20 Q 180 5 200 2 Q 220 5 240 20 Q 260 50 300 80 Q 340 96 380 98" fill="none" stroke="rgba(26,107,200,0.8)" stroke-width="2"/>
+          <!-- Mean line -->
+          <line x1="200" y1="2" x2="200" y2="98" stroke="rgba(26,24,20,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+          <!-- Std dev markers -->
+          <line x1="136" y1="40" x2="136" y2="98" stroke="rgba(154,122,46,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="264" y1="40" x2="264" y2="98" stroke="rgba(154,122,46,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
+          <!-- Labels -->
+          <text x="200" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="rgba(26,24,20,0.5)">μ (mean)</text>
+          <text x="136" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(154,122,46,0.8)">−1σ</text>
+          <text x="264" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(154,122,46,0.8)">+1σ</text>
+        </svg>
+      </div>
+      <p class="dist-caption">The normal distribution (bell curve). About 68% of values fall within one standard deviation (σ) of the mean. About 95% fall within two standard deviations. This rule is called the 68-95-99.7 rule and it appears constantly in AI and statistics.</p>
+    </div>
+
+    <p>Not all data is normally distributed. Income is right-skewed, meaning most people earn moderate amounts while a small number earn enormous sums, pulling the tail to the right. Age at retirement is left-skewed. Social media engagement is heavily right-skewed: most posts get few views, a tiny number get millions. Knowing the shape of your data's distribution helps you choose the right model and understand its limitations.</p>
+
+    <h2>Correlation: how features relate to each other</h2>
+
+    <p>One of the most powerful ideas in statistics for AI is correlation. Two variables are correlated when they tend to move together. As one goes up, the other tends to go up (positive correlation) or down (negative correlation).</p>
+
+    <div class="scatter-wrap">
+      <div class="scatter-title">Study hours vs exam score: a positive correlation</div>
+      <svg class="scatter-svg" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+        <!-- Axes -->
+        <line x1="40" y1="10" x2="40" y2="150" stroke="rgba(26,24,20,0.2)" stroke-width="1"/>
+        <line x1="40" y1="150" x2="380" y2="150" stroke="rgba(26,24,20,0.2)" stroke-width="1"/>
+        <!-- Axis labels -->
+        <text x="210" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(26,24,20,0.5)">Hours studied</text>
+        <text x="14" y="80" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(26,24,20,0.5)" transform="rotate(-90 14 80)">Exam score</text>
+        <!-- Trend line -->
+        <line x1="55" y1="135" x2="370" y2="20" stroke="rgba(26,107,200,0.3)" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- Data points -->
+        <circle cx="70"  cy="130" r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="100" cy="120" r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="130" cy="108" r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="150" cy="95"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="180" cy="90"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="210" cy="82"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="230" cy="70"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="260" cy="65"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="290" cy="55"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="310" cy="45"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="340" cy="38"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <circle cx="360" cy="28"  r="4" fill="rgba(26,107,200,0.7)"/>
+        <!-- Outlier -->
+        <circle cx="200" cy="140" r="4" fill="rgba(184,60,18,0.7)"/>
+        <text x="208" y="144" font-family="JetBrains Mono, monospace" font-size="8" fill="rgba(184,60,18,0.8)">outlier</text>
+      </svg>
+      <p class="scatter-caption">Each dot is one student. As hours studied increases, exam scores tend to rise, showing a clear positive correlation. The red dot is an outlier. Notice how even with an outlier, the overall trend is still visible. The dashed line is a regression line. You will build one of these yourself in Lesson 3.3.</p>
+    </div>
+
+    <p>Correlation is measured from −1 to +1. A value of +1 means perfect positive correlation. A value of −1 means perfect negative correlation (as one rises, the other falls reliably). A value near 0 means no linear relationship.</p>
+
+    <div class="callout">
+      <div class="callout-label">The most important warning in all of statistics</div>
+      <p>Correlation does not imply causation. Ice cream sales and drowning rates are positively correlated. Both rise in summer. That does not mean eating ice cream causes drowning. A third variable (hot weather) drives both. AI models can find and exploit correlations powerfully, but they have no concept of cause and effect unless you explicitly build that understanding in. This is one reason why AI systems can be confidently wrong.</p>
+    </div>
+
+    <h2>Probability: the engine underneath</h2>
+
+    <p>Every prediction an AI model makes is really a probability statement. A spam classifier does not say "this email IS spam." It says "there is a 94% probability this email is spam." An image classifier does not say "this IS a cat." It says "this image is 87% likely to be a cat, 9% likely to be a dog, 4% something else."</p>
+
+    <p>Probability runs from 0 (impossible) to 1 (certain). A probability of 0.5 means the model genuinely does not know. It is a coin flip. When you evaluate AI models, you will often set a threshold: if probability is above 0.5, classify as positive. Changing that threshold changes which errors you make more often, a trade-off you will explore in Lesson 3.6 on evaluation metrics.</p>
+
+    <p>Understanding that AI outputs are probabilities, not certainties, is one of the most important conceptual shifts for any beginner. It changes how you use AI, how much you trust it, and how you build systems around it.</p>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">Why statistics matters for AI</li>
+        <li class="toc-item">Mean, median and mode</li>
+        <li class="toc-item">Variance and standard deviation</li>
+        <li class="toc-item">Distributions</li>
+        <li class="toc-item">Correlation</li>
+        <li class="toc-item">Probability</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Naked Statistics</div>
+        <div class="book-author">Charles Wheelan · 2013</div>
+        <div class="book-note">Makes statistics genuinely entertaining. Covers all of today's concepts with real-world stories.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">How to Lie With Statistics</div>
+        <div class="book-author">Darrell Huff · 1954</div>
+        <div class="book-note">Still completely relevant. A short, witty book on how data can mislead. Essential reading for any AI practitioner.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Mean</div>
+          <div class="term-def">The average. Sum all values, divide by count. Sensitive to outliers.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Median</div>
+          <div class="term-def">The middle value when sorted. Robust to extreme outliers.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Standard deviation</div>
+          <div class="term-def">How spread out values are around the mean. Higher = more spread.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Normal distribution</div>
+          <div class="term-def">The bell curve. Values cluster around the mean with symmetric tails.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Correlation</div>
+          <div class="term-def">How strongly two variables move together. Ranges from −1 to +1.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Probability</div>
+          <div class="term-def">A number from 0 to 1 expressing the likelihood of an event.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Lesson Activity · No code required</div>
+    <div class="act-title">Spot the Misleading Stat</div>
+    <div class="act-body">Statistics can be used to tell accurate truths or misleading half-truths. This exercise builds the critical eye you will need to evaluate AI model results honestly.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Find one statistic in the news this week. Look for any headline that quotes a number, a percentage, or a "study shows..." claim.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Ask three questions about it: What is the sample size? Is this a mean or median? Could a third variable explain the finding? Does the statistic actually support the headline?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Write two sentences: what the statistic actually shows, and what conclusion would be a mistake to draw from it. Bring it to the live session.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-2-2';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <p class="reflect-eyebrow">Reflect</p>
+    <h2 class="reflect-title">Before you move on</h2>
+    <p class="reflect-sub">No right answers here. These questions are for you.</p>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">A hospital reports that the "average patient wait time is 12 minutes." Why might that number mislead you, and what would you ask to see instead?</summary>
+        <div class="reflect-a">
+          <p>The average collapses the full distribution into one number. A handful of patients waiting 4 hours can coexist with a median of 8 minutes. In AI, models trained to minimise average error can still perform terribly for edge cases or minority groups. Ask for the distribution, not just the mean.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">A coin lands heads 7 times in a row. You feel certain the next flip must be tails. An AI trained on this logic would do what, and why is that a problem?</summary>
+        <div class="reflect-a">
+          <p>This is the gambler's fallacy. Each flip is independent; past outcomes do not change future probabilities. An AI that falls into this trap is confusing correlation in a sample with a causal rule. Real probability reasoning requires knowing whether events are truly independent before drawing conclusions.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">Cities with more cinemas tend to have higher crime rates. Should the government build fewer cinemas to reduce crime? What is the statistical concept at play?</summary>
+        <div class="reflect-a">
+          <p>Both cinema counts and crime rates are driven by a third variable: population size. Larger cities have more of both. This is a classic case of correlation without causation, compounded by a lurking variable. Acting on it would waste resources and miss the real factors driving crime.</p>
+        </div>
+      </details>
+    </div>
+
+  </div>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="LESSON 2.1.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">What is Data? Structured vs Unstructured</span>
+  </a>
+  <a class="nav-card next" href="LESSON 2.3.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Vectors and Matrices: Without the Pain</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 2</span>
+  <span class="footer-copy">Lesson 2.2 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+
+// Bar chart
+const barsEl = document.getElementById('bars');
+const classA = [62,65,68,70,70,70,71,72,74,78];
+const classB = [35,42,55,62,70,75,82,87,95,97];
+
+function makeBar(value, color, label) {
+  const col = document.createElement('div');
+  col.className = 'bar-col';
+  const bar = document.createElement('div');
+  bar.className = 'bar';
+  bar.style.height = (value / 100 * 110) + 'px';
+  bar.style.background = color;
+  const val = document.createElement('div');
+  val.className = 'bar-val';
+  val.textContent = value;
+  const lbl = document.createElement('div');
+  lbl.className = 'bar-label';
+  lbl.textContent = label;
+  col.appendChild(val);
+  col.appendChild(bar);
+  col.appendChild(lbl);
+  barsEl.appendChild(col);
+}
+
+classA.forEach((v,i) => makeBar(v, 'rgba(26,107,200,0.7)', 'A'+(i+1)));
+classB.forEach((v,i) => makeBar(v, 'rgba(30,110,69,0.7)', 'B'+(i+1)));
+</script>
+</body>
+</html>

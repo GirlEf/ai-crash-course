@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.4: Clustering - AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #2a8c5a;
+  --accent-soft: rgba(42,140,90,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --blue: #1a6bc8;
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(42,140,90,0.25); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* SUPERVISED VS UNSUPERVISED */
+.sup-unsup { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 32px 0; border: 1px solid var(--border); overflow: hidden; }
+.su-col { padding: 24px; }
+.su-col:first-child { border-right: 1px solid var(--border); }
+.su-head { font-family: var(--ui); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
+.su-head.sup { color: var(--blue); border-color: var(--blue); }
+.su-head.unsup { color: var(--accent); border-color: var(--accent); }
+.su-desc { font-family: var(--ui); font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+.su-example { font-family: var(--mono); font-size: 12px; color: var(--muted2); }
+
+/* KMEANS VISUAL */
+.kmeans-visual {
+  margin: 36px 0;
+  background: var(--ink);
+  padding: 28px;
+}
+.km-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+.km-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.km-step { background: rgba(255,255,255,0.04); padding: 12px; }
+.km-step-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.km-caption { font-family: var(--ui); font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 16px; line-height: 1.65; }
+
+/* ELBOW CHART */
+.elbow-visual {
+  margin: 36px 0;
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  padding: 24px 28px;
+}
+.elbow-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 16px; }
+.elbow-caption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 14px; line-height: 1.65; }
+
+/* USE CASES */
+.use-cases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 32px 0; }
+.uc-card { padding: 18px 16px; background: var(--paper2); border: 1px solid var(--border); }
+.uc-icon { font-size: 22px; margin-bottom: 8px; }
+.uc-title { font-family: var(--ui); font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.uc-desc { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* CODE BLOCK */
+.code-block { background: #1e1e2e; margin: 28px 0; overflow: hidden; }
+.code-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.code-tag { font-family: var(--mono); font-size: 10px; color: rgba(42,140,90,0.9); letter-spacing: 0.06em; }
+.code-body { padding: 20px 18px; overflow-x: auto; }
+.code-body pre { font-family: var(--mono); font-size: 13px; line-height: 1.75; color: #cdd6f4; white-space: pre; }
+.py-kw { color: #cba6f7; }
+.py-fn { color: #89b4fa; }
+.py-str { color: #a6e3a1; }
+.py-num { color: #fab387; }
+.py-cm { color: #6c7086; }
+.py-op { color: #89dceb; }
+
+/* OUTPUT */
+.output-block { background: var(--paper3); border-left: 3px solid var(--accent); padding: 14px 18px; margin: -8px 0 28px; font-family: var(--mono); font-size: 13px; color: var(--ink); line-height: 1.7; }
+.output-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-family: var(--mono); }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .sup-unsup { grid-template-columns: 1fr; }
+  .su-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .km-steps { grid-template-columns: 1fr; }
+  .use-cases { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 3.4</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">12 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 3: Machine Learning</span>
+    <span class="lesson-num-tag">Lesson 4 of 6</span>
+  </div>
+  <h1 class="lesson-title">Unsupervised Learning:<br><em>Clustering</em></h1>
+  <p class="lesson-intro">What if nobody told you the answers? Classification and regression both need labels. But some of the most interesting machine learning problems start with no labels at all. Clustering lets a model discover hidden structure in your data entirely on its own.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>What unsupervised learning is and why it matters</div>
+    <div class="obj-item"><div class="obj-dot"></div>How K-Means clustering works step by step</div>
+    <div class="obj-item"><div class="obj-dot"></div>How to choose the right number of clusters</div>
+    <div class="obj-item"><div class="obj-dot"></div>Real-world applications of clustering</div>
+    <div class="obj-item"><div class="obj-dot"></div>Running K-Means in Scikit-learn</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2 id="unsupervised">Learning without labels</h2>
+
+    <p>Supervised learning, which you covered in the last two lessons, requires labelled examples. Someone has to go through the data and write down the correct answer for each row. That is expensive, slow, and sometimes impossible. You cannot label every customer, every web page, every image on the internet.</p>
+
+    <div class="sup-unsup">
+      <div class="su-col">
+        <div class="su-head sup">Supervised learning</div>
+        <p class="su-desc">Has labels. The model learns from input-output pairs. You know the correct answer for every training example.</p>
+        <div class="su-example">email → spam or not spam<br>image → cat or dog<br>house features → price</div>
+      </div>
+      <div class="su-col">
+        <div class="su-head unsup">Unsupervised learning</div>
+        <p class="su-desc">No labels. The model finds patterns in raw data without being told what to look for. The structure emerges from the data itself.</p>
+        <div class="su-example">customers → natural groups<br>articles → topics<br>genes → expression patterns</div>
+      </div>
+    </div>
+
+    <p>Unsupervised learning is what you turn to when you have data but no answers. When a streaming service wants to understand its user base without manually categorising millions of accounts. When a biologist wants to see which genes behave similarly without having any prior theory about the groupings. When a retailer wants to understand natural buying patterns before designing targeted promotions.</p>
+
+    <p>Clustering is the most widely used unsupervised technique. The goal is simple: group data points so that points in the same cluster are similar to each other and different from points in other clusters.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Analogy</div>
+      <p>You have just inherited a huge box of old photographs from a relative. No names, no dates, no labels. But as you spread them across a table, you start to notice things. These 30 photos all seem to feature the same family at a beach house. These 20 are all winter holidays. These 15 all look like work events. You are clustering: grouping similar things together without anyone telling you how many groups to make or what to call them. K-Means does the same thing with numbers.</p>
+    </div>
+
+    <h2 id="kmeans">K-Means: the simplest clustering algorithm</h2>
+
+    <p>K-Means is the standard starting point for clustering. It is fast, interpretable, and works surprisingly well on a huge range of problems. The name tells you two things: K is the number of clusters you specify in advance, and "Means" refers to the centroid (average position) of each cluster.</p>
+
+    <div class="kmeans-visual">
+      <div class="km-label">K-Means clustering: three iterations toward convergence</div>
+      <div class="km-steps">
+
+        <!-- Step 1: random init -->
+        <div class="km-step">
+          <div class="km-step-title">Step 1: Initialise</div>
+          <svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <!-- Data points -->
+            <circle cx="25" cy="30" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="35" cy="45" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="20" cy="55" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="40" cy="25" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="30" cy="65" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="85" cy="35" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="95" cy="50" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="80" cy="60" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="100" cy="28" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="75" cy="42" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="55" cy="85" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="65" cy="95" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="45" cy="90" r="4" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="70" cy="80" r="4" fill="rgba(255,255,255,0.5)"/>
+            <!-- Random centroids -->
+            <circle cx="50" cy="40" r="7" fill="#2a8c5a" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="90" cy="80" r="7" fill="#fab387" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="30" cy="90" r="7" fill="#89b4fa" stroke="#fff" stroke-width="1.5"/>
+            <text x="70" y="116" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.4)" font-family="Outfit,sans-serif">Place K centroids randomly</text>
+          </svg>
+        </div>
+
+        <!-- Step 2: assign -->
+        <div class="km-step">
+          <div class="km-step-title">Step 2: Assign</div>
+          <svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <!-- Cluster A (green) -->
+            <circle cx="25" cy="30" r="4" fill="#2a8c5a"/>
+            <circle cx="35" cy="45" r="4" fill="#2a8c5a"/>
+            <circle cx="20" cy="55" r="4" fill="#2a8c5a"/>
+            <circle cx="40" cy="25" r="4" fill="#2a8c5a"/>
+            <circle cx="30" cy="65" r="4" fill="#2a8c5a"/>
+            <!-- Cluster B (orange) -->
+            <circle cx="85" cy="35" r="4" fill="#fab387"/>
+            <circle cx="95" cy="50" r="4" fill="#fab387"/>
+            <circle cx="80" cy="60" r="4" fill="#fab387"/>
+            <circle cx="100" cy="28" r="4" fill="#fab387"/>
+            <circle cx="75" cy="42" r="4" fill="#fab387"/>
+            <!-- Cluster C (blue) -->
+            <circle cx="55" cy="85" r="4" fill="#89b4fa"/>
+            <circle cx="65" cy="95" r="4" fill="#89b4fa"/>
+            <circle cx="45" cy="90" r="4" fill="#89b4fa"/>
+            <circle cx="70" cy="80" r="4" fill="#89b4fa"/>
+            <!-- Centroids -->
+            <circle cx="50" cy="40" r="7" fill="#2a8c5a" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="90" cy="80" r="7" fill="#fab387" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="30" cy="90" r="7" fill="#89b4fa" stroke="#fff" stroke-width="1.5"/>
+            <text x="70" y="116" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.4)" font-family="Outfit,sans-serif">Each point gets nearest centroid</text>
+          </svg>
+        </div>
+
+        <!-- Step 3: update -->
+        <div class="km-step">
+          <div class="km-step-title">Step 3: Update</div>
+          <svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <!-- Same coloured points -->
+            <circle cx="25" cy="30" r="4" fill="#2a8c5a"/>
+            <circle cx="35" cy="45" r="4" fill="#2a8c5a"/>
+            <circle cx="20" cy="55" r="4" fill="#2a8c5a"/>
+            <circle cx="40" cy="25" r="4" fill="#2a8c5a"/>
+            <circle cx="30" cy="65" r="4" fill="#2a8c5a"/>
+            <circle cx="85" cy="35" r="4" fill="#fab387"/>
+            <circle cx="95" cy="50" r="4" fill="#fab387"/>
+            <circle cx="80" cy="60" r="4" fill="#fab387"/>
+            <circle cx="100" cy="28" r="4" fill="#fab387"/>
+            <circle cx="75" cy="42" r="4" fill="#fab387"/>
+            <circle cx="55" cy="85" r="4" fill="#89b4fa"/>
+            <circle cx="65" cy="95" r="4" fill="#89b4fa"/>
+            <circle cx="45" cy="90" r="4" fill="#89b4fa"/>
+            <circle cx="70" cy="80" r="4" fill="#89b4fa"/>
+            <!-- Updated centroids (moved to true mean) -->
+            <circle cx="30" cy="44" r="7" fill="#2a8c5a" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="87" cy="43" r="7" fill="#fab387" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="59" cy="88" r="7" fill="#89b4fa" stroke="#fff" stroke-width="1.5"/>
+            <text x="70" y="116" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.4)" font-family="Outfit,sans-serif">Move centroid to cluster mean</text>
+          </svg>
+        </div>
+      </div>
+      <p class="km-caption">Steps 2 and 3 repeat until the centroids stop moving. Convergence usually happens in 10 to 20 iterations. The final centroids define the cluster centres. Every new data point is assigned to whichever centroid it is closest to.</p>
+    </div>
+
+    <p>The algorithm is deceptively simple, but it makes one important assumption: clusters are roughly spherical and similarly sized. If your data has elongated, irregular, or very differently sized groups, K-Means will struggle. For those cases, alternatives like DBSCAN (which finds clusters of arbitrary shape) or Gaussian Mixture Models (which assign probabilities rather than hard labels) work better.</p>
+
+    <h2 id="choosing-k">Choosing the right K</h2>
+
+    <p>The biggest practical challenge with K-Means is that you have to specify K before you run the algorithm. How many clusters are there in your data? If you already knew that, you would not need clustering. You are trying to discover structure, not impose it.</p>
+
+    <p>The elbow method is the standard way to make this choice. You run K-Means with K ranging from 1 to 10 (or more), and for each K you record the inertia: the total squared distance from every point to its assigned centroid. As K increases, inertia always decreases. But the rate of decrease slows dramatically after the "true" number of clusters. You look for the elbow in the curve.</p>
+
+    <div class="elbow-visual">
+      <div class="elbow-label">Elbow method: inertia vs number of clusters</div>
+      <svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'JetBrains Mono',monospace;">
+        <!-- Axes -->
+        <line x1="60" y1="200" x2="460" y2="200" stroke="#9c9488" stroke-width="1.5"/>
+        <line x1="60" y1="200" x2="60" y2="20" stroke="#9c9488" stroke-width="1.5"/>
+
+        <!-- Axis labels -->
+        <text x="260" y="228" text-anchor="middle" font-size="11" fill="#6e6559" font-family="Outfit,sans-serif">Number of clusters (K)</text>
+        <text x="18" y="115" text-anchor="middle" font-size="11" fill="#6e6559" font-family="Outfit,sans-serif" transform="rotate(-90 18 115)">Inertia</text>
+
+        <!-- Tick labels x -->
+        <text x="100" y="216" text-anchor="middle" font-size="10" fill="#9c9488">1</text>
+        <text x="140" y="216" text-anchor="middle" font-size="10" fill="#9c9488">2</text>
+        <text x="180" y="216" text-anchor="middle" font-size="10" fill="#9c9488">3</text>
+        <text x="220" y="216" text-anchor="middle" font-size="10" fill="#9c9488">4</text>
+        <text x="260" y="216" text-anchor="middle" font-size="10" fill="#9c9488">5</text>
+        <text x="300" y="216" text-anchor="middle" font-size="10" fill="#9c9488">6</text>
+        <text x="340" y="216" text-anchor="middle" font-size="10" fill="#9c9488">7</text>
+        <text x="380" y="216" text-anchor="middle" font-size="10" fill="#9c9488">8</text>
+        <text x="420" y="216" text-anchor="middle" font-size="10" fill="#9c9488">9</text>
+
+        <!-- Elbow curve points: steep drop then flattening -->
+        <polyline points="100,170 140,110 180,65 220,45 260,36 300,31 340,27 380,24 420,22"
+          fill="none" stroke="#2a8c5a" stroke-width="2.5"/>
+
+        <!-- Dots at each K -->
+        <circle cx="100" cy="170" r="4" fill="#2a8c5a"/>
+        <circle cx="140" cy="110" r="4" fill="#2a8c5a"/>
+        <circle cx="180" cy="65" r="4" fill="#2a8c5a"/>
+        <circle cx="220" cy="45" r="4" fill="#2a8c5a"/>
+        <circle cx="260" cy="36" r="4" fill="#2a8c5a"/>
+        <circle cx="300" cy="31" r="4" fill="#2a8c5a"/>
+        <circle cx="340" cy="27" r="4" fill="#2a8c5a"/>
+        <circle cx="380" cy="24" r="4" fill="#2a8c5a"/>
+        <circle cx="420" cy="22" r="4" fill="#2a8c5a"/>
+
+        <!-- Elbow highlight at K=3 -->
+        <circle cx="180" cy="65" r="9" fill="none" stroke="#9a7a2e" stroke-width="2" stroke-dasharray="3,2"/>
+        <line x1="180" y1="74" x2="180" y2="200" stroke="#9a7a2e" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="150" y="30" width="60" height="22" rx="3" fill="#9a7a2e"/>
+        <text x="180" y="44" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">Elbow = K=3</text>
+      </svg>
+      <p class="elbow-caption">The curve drops steeply from K=1 to K=3, then starts to flatten. The elbow at K=3 suggests three is the natural number of clusters in this dataset. Adding more clusters beyond this point gives diminishing returns in how well the model fits the data.</p>
+    </div>
+
+    <p>The elbow is often a judgment call rather than a crisp mathematical answer. If the curve is smooth with no clear bend, the silhouette score is another metric worth checking. It measures how tightly each point fits within its own cluster compared to its distance from neighbouring clusters. Values close to 1 mean good clusters; values near 0 mean overlapping clusters.</p>
+
+    <h2 id="applications">Where clustering shows up in the real world</h2>
+
+    <div class="use-cases">
+      <div class="uc-card">
+        <div class="uc-icon">👥</div>
+        <div class="uc-title">Customer segmentation</div>
+        <div class="uc-desc">Retail and e-commerce companies cluster customers by purchase history, browsing patterns, and demographics to create targeted campaigns and personalised recommendations.</div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">📰</div>
+        <div class="uc-title">Document clustering</div>
+        <div class="uc-desc">News aggregators and search engines group articles about the same topic together without anyone labelling them. Topic modelling is a related technique that also reveals themes.</div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">🧬</div>
+        <div class="uc-title">Genomics and biology</div>
+        <div class="uc-desc">Researchers cluster genes with similar expression profiles across conditions to identify gene families or discover which genes are regulated together.</div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">🔍</div>
+        <div class="uc-title">Anomaly detection</div>
+        <div class="uc-desc">Data points that do not belong to any cluster (or are very far from any centroid) are outliers. This catches fraud, network intrusions, or manufacturing defects.</div>
+      </div>
+    </div>
+
+    <h2 id="sklearn-kmeans">K-Means in Scikit-learn</h2>
+
+    <p>The Scikit-learn API for clustering is the same pattern you have seen for everything else. Create the object, fit it, get the labels out. The main difference is that fit does not need a y (target) argument, because there are no labels.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Python</span>
+        <span class="code-tag">customer_clustering.py</span>
+      </div>
+      <div class="code-body"><pre><span class="py-kw">import</span> numpy <span class="py-kw">as</span> np
+<span class="py-kw">import</span> matplotlib.pyplot <span class="py-kw">as</span> plt
+<span class="py-kw">from</span> sklearn.cluster <span class="py-kw">import</span> <span class="py-fn">KMeans</span>
+<span class="py-kw">from</span> sklearn.preprocessing <span class="py-kw">import</span> <span class="py-fn">StandardScaler</span>
+
+<span class="py-cm"># Simulate customer data: annual spend and visit frequency</span>
+np.<span class="py-fn">random.seed</span>(<span class="py-num">42</span>)
+spend = np.random.<span class="py-fn">normal</span>(loc=[<span class="py-num">500</span>, <span class="py-num">2000</span>, <span class="py-num">8000</span>], scale=[<span class="py-num">100</span>, <span class="py-num">300</span>, <span class="py-num">800</span>], size=(<span class="py-num">100</span>, <span class="py-num">3</span>)).<span class="py-fn">flatten</span>()
+visits = np.random.<span class="py-fn">normal</span>(loc=[<span class="py-num">2</span>, <span class="py-num">8</span>, <span class="py-num">20</span>], scale=[<span class="py-num">1</span>, <span class="py-num">2</span>, <span class="py-num">4</span>], size=(<span class="py-num">100</span>, <span class="py-num">3</span>)).<span class="py-fn">flatten</span>()
+X = np.<span class="py-fn">column_stack</span>([spend, visits])
+
+<span class="py-cm"># Scale the features (important for distance-based algorithms)</span>
+scaler = <span class="py-fn">StandardScaler</span>()
+X_scaled = scaler.<span class="py-fn">fit_transform</span>(X)
+
+<span class="py-cm"># Fit K-Means with 3 clusters</span>
+kmeans = <span class="py-fn">KMeans</span>(n_clusters=<span class="py-num">3</span>, random_state=<span class="py-num">42</span>, n_init=<span class="py-num">10</span>)
+labels = kmeans.<span class="py-fn">fit_predict</span>(X_scaled)
+
+<span class="py-cm"># Summarise each cluster</span>
+<span class="py-kw">for</span> k <span class="py-kw">in</span> <span class="py-fn">range</span>(<span class="py-num">3</span>):
+    mask = labels <span class="py-op">==</span> k
+    <span class="py-fn">print</span>(<span class="py-fn">f</span><span class="py-str">"Cluster {k}: {mask.sum()} customers | "</span>
+          <span class="py-fn">f</span><span class="py-str">"avg spend=${X[mask,0].mean():.0f} | "</span>
+          <span class="py-fn">f</span><span class="py-str">"avg visits/yr={X[mask,1].mean():.1f}"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="output-block">
+      <div class="output-label">Output</div>
+      Cluster 0: 100 customers | avg spend=$499 | avg visits/yr=2.1<br>
+      Cluster 1: 100 customers | avg spend=$7,984 | avg visits/yr=20.2<br>
+      Cluster 2: 100 customers | avg spend=$1,997 | avg visits/yr=8.0
+    </div>
+
+    <p>Three distinct customer segments emerge automatically: low-spend infrequent visitors, mid-range regular customers, and high-value loyal shoppers. No human had to categorise a single customer. The model found the natural groupings in the data.</p>
+
+    <div class="callout">
+      <div class="callout-label">Always scale before clustering</div>
+      <p>K-Means uses Euclidean distance. If one feature is measured in thousands (annual spend) and another in single digits (monthly visits), the distance will be dominated by the large-scale feature. Always run StandardScaler first so each feature contributes equally to the distance calculation. Skipping this step is one of the most common mistakes beginners make with clustering.</p>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list" id="toc">
+        <li class="toc-item" data-target="unsupervised">Learning without labels</li>
+        <li class="toc-item" data-target="kmeans">K-Means algorithm</li>
+        <li class="toc-item" data-target="choosing-k">Choosing the right K</li>
+        <li class="toc-item" data-target="applications">Real-world applications</li>
+        <li class="toc-item" data-target="sklearn-kmeans">K-Means in Scikit-learn</li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">unsupervised learning</div>
+          <div class="term-def">Machine learning from unlabelled data. The model discovers patterns without being shown correct answers.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">clustering</div>
+          <div class="term-def">Grouping data points so similar points end up together. The groups are discovered, not predefined.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">centroid</div>
+          <div class="term-def">The mean position of all points in a cluster. K-Means moves centroids iteratively until they converge.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">inertia</div>
+          <div class="term-def">The sum of squared distances from each point to its cluster centroid. Lower is better; used to pick K via the elbow method.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">elbow method</div>
+          <div class="term-def">Plotting inertia for increasing K values and picking the K at which the curve bends, indicating diminishing returns from adding more clusters.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Go deeper</div>
+      <div class="book-card">
+        <div class="book-title">Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</div>
+        <div class="book-author">Aurelien Geron</div>
+        <div class="book-note">Chapter 9 covers clustering algorithms including K-Means, DBSCAN, Gaussian Mixtures, and how to evaluate them without labels.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">Google's Machine Learning Crash Course</div>
+        <div class="book-author">Google Developers</div>
+        <div class="book-note">Free online. The clustering module has good interactive visualisations showing K-Means convergence in real time.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Hands-on activity</div>
+    <h2 class="act-title">Cluster your own dataset and name the groups</h2>
+    <p class="act-body">You will run K-Means on a real dataset of mall customers (spend vs income), use the elbow method to choose K, visualise the results, and then do the most human part of the job: naming the clusters based on what you see.</p>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Open the Lesson 3.4 Colab notebook. Load the Mall Customers dataset and plot Annual Income vs Spending Score as a scatter chart.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Run the elbow method for K values 1 through 10. Where is the elbow? What does it suggest about the natural structure of this data?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Fit KMeans with your chosen K and plot the clusters in different colours, with centroids marked as stars. Does the visual make intuitive sense?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">04</span>
+        <span class="step-text">For each cluster, compute the mean income and mean spending score. Give each cluster a descriptive name (e.g., "Careful savers," "High earners, low spenders," "Impulsive shoppers").</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">05</span>
+        <span class="step-text">Try running the same code WITHOUT StandardScaler first. Does the clustering change? Why or why not?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-3-4';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<div style="max-width:860px;margin:0 auto;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(26,24,20,0.1);">
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code live in Google Colab</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">All examples + challenge exercises &middot; Free GPU included &middot; No setup required</div>
+  </div>
+  <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-3.4-clustering.ipynb" target="_blank" rel="noopener" style="flex-shrink:0;">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+  </a>
+</div>
+
+<div class="nav-section">
+  <a class="nav-card prev" href="LESSON 3.3.html">
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Supervised Learning: Regression</span>
+    <span class="nav-arrow">←</span>
+  </a>
+  <a class="nav-card next" href="LESSON 3.5.html">
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Overfitting, Underfitting and Generalisation</span>
+    <span class="nav-arrow">→</span>
+  </a>
+</div>
+
+<footer>
+  <span class="footer-course">AI Crash Course</span>
+  <span class="footer-copy">Phase 3 · Lesson 3.4 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
+});
+const items = document.querySelectorAll('.toc-item');
+const targets = Array.from(items).map(i => document.getElementById(i.dataset.target)).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      items.forEach(i => i.classList.remove('active'));
+      const active = document.querySelector(`.toc-item[data-target="${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+targets.forEach(t => observer.observe(t));
+</script>
+</body>
+</html>

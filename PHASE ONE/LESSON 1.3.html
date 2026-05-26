@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1.3: Types of AI — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #b83c12;
+  --accent-soft: rgba(184,60,18,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.10);
+  --blue: #1a5c9a;
+  --blue-soft: rgba(26,92,154,0.08);
+  --green: #1e6e45;
+  --green-soft: rgba(30,110,69,0.08);
+  --purple: #5a2d8c;
+  --purple-soft: rgba(90,45,140,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(184,60,18,0.2); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: 1fr 240px; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 8px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* SPECTRUM VISUAL */
+.spectrum-wrap { margin: 40px 0; }
+.spectrum-track {
+  height: 8px;
+  background: linear-gradient(90deg, #1e6e45, #1a5c9a, #b83c12);
+  border-radius: 0;
+  margin-bottom: 0;
+  position: relative;
+}
+.spectrum-markers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 24px;
+}
+.spectrum-marker { padding-top: 12px; }
+.spectrum-marker:nth-child(2) { text-align: center; }
+.spectrum-marker:nth-child(3) { text-align: right; }
+.marker-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.marker-label.narrow { color: var(--green); }
+.marker-label.general { color: var(--blue); }
+.marker-label.super { color: var(--accent); }
+.marker-name { font-family: var(--serif); font-size: 17px; font-weight: 700; line-height: 1.2; }
+
+/* TYPE CARDS */
+.type-cards { display: flex; flex-direction: column; gap: 16px; margin: 36px 0; }
+.type-card { border: 1px solid var(--border); overflow: hidden; }
+.type-card-head {
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+.type-num { font-family: var(--serif); font-size: 40px; font-weight: 900; line-height: 1; opacity: 0.15; }
+.type-head-text {}
+.type-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.type-name { font-family: var(--serif); font-size: 20px; font-weight: 700; line-height: 1.2; }
+.type-status-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; white-space: nowrap; }
+
+.type-card-body { padding: 0 24px 24px; }
+.type-card-desc { font-family: var(--ui); font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+.type-examples { display: flex; flex-wrap: wrap; gap: 6px; }
+.type-ex { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--border2); color: var(--muted); }
+
+.card-narrow { background: var(--paper); }
+.card-narrow .type-category { color: var(--green); }
+.card-narrow .type-name { color: var(--green); }
+.card-narrow .type-num { color: var(--green); }
+.card-narrow .type-status-badge { background: var(--green-soft); color: var(--green); border: 1px solid rgba(30,110,69,0.25); }
+
+.card-general { background: var(--paper); }
+.card-general .type-category { color: var(--blue); }
+.card-general .type-name { color: var(--blue); }
+.card-general .type-num { color: var(--blue); }
+.card-general .type-status-badge { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(26,92,154,0.25); }
+
+.card-super { background: var(--paper); }
+.card-super .type-category { color: var(--accent); }
+.card-super .type-name { color: var(--accent); }
+.card-super .type-num { color: var(--accent); }
+.card-super .type-status-badge { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(184,60,18,0.25); }
+
+/* MYTH BUSTERS */
+.myths { display: flex; flex-direction: column; gap: 0; margin: 32px 0; border: 1px solid var(--border); }
+.myth-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+.myth-row:last-child { border-bottom: none; }
+.myth-cell { padding: 18px 20px; font-family: var(--ui); font-size: 14px; line-height: 1.6; }
+.myth-cell.head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: var(--paper2); color: var(--muted2); padding: 12px 20px; }
+.myth-cell.wrong { border-right: 1px solid var(--border); color: var(--muted); }
+.myth-cell.right { color: var(--ink); background: rgba(30,110,69,0.04); }
+.myth-wrong-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; }
+.myth-right-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--green); margin-bottom: 6px; text-transform: uppercase; }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ACTIVITY */
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .myth-row { grid-template-columns: 1fr; }
+  .myth-cell.wrong { border-right: none; border-bottom: 1px solid var(--border); }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .type-card-head { grid-template-columns: auto 1fr; }
+  .type-status-badge { display: none; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--ui); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reflect-subtitle { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.reflect-list { display: flex; flex-direction: column; gap: 8px; }
+.reflect-list details { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; }
+.reflect-list summary { font-family: var(--ui); font-size: 15px; font-weight: 500; color: var(--ink); padding: 14px 18px 14px 48px; cursor: pointer; list-style: none; position: relative; }
+.reflect-list summary::-webkit-details-marker { display: none; }
+.reflect-list summary::before { content: '?'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.3); width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; }
+.reflect-list details[open] summary::before { content: '!'; color: var(--accent); background: var(--accent-soft); border-color: rgba(184,60,18,0.3); }
+.reflect-hint { font-family: var(--ui); font-size: 14px; color: var(--muted); padding: 0 18px 14px 48px; line-height: 1.65; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 1.3</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">11 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 1: The Big Picture</span>
+    <span class="lesson-num-tag">Lesson 3 of 4</span>
+  </div>
+  <h1 class="lesson-title">Types of AI: Narrow,<br><em>General and Super</em></h1>
+  <p class="lesson-intro">Not all AI is the same kind of intelligent. There are three types, and right now only one of them actually exists. Understanding the difference will help you cut through a lot of noise and fear.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>The three types of AI and what separates them</div>
+    <div class="obj-item"><div class="obj-dot"></div>Which type we actually have today</div>
+    <div class="obj-item"><div class="obj-dot"></div>Why the other two types matter to understand</div>
+    <div class="obj-item"><div class="obj-dot"></div>How to separate real AI progress from science fiction</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>Before we talk about types, let us talk about fear</h2>
+
+    <p>A lot of people come to AI with anxiety already built in. They have watched films where AI becomes self-aware, decides humans are a threat and takes over. They have read headlines about AI taking every job, ending privacy or becoming impossible to control.</p>
+
+    <p>Some of those concerns deserve serious discussion. But a lot of the fear comes from not knowing which kind of AI is actually being talked about. There is a massive difference between the AI that recommends your next video on YouTube and the hypothetical AI that could genuinely think for itself. They share a name but almost nothing else.</p>
+
+    <p>This lesson exists to make that distinction clear. Once you know the three types, you will be able to hear any claim about AI, whether in a news article, a boardroom or a conversation, and immediately understand what level of intelligence is actually being described.</p>
+
+    <div class="spectrum-wrap">
+      <div class="spectrum-track"></div>
+      <div class="spectrum-markers">
+        <div class="spectrum-marker">
+          <div class="marker-label narrow">Exists today</div>
+          <div class="marker-name">Narrow AI</div>
+        </div>
+        <div class="spectrum-marker">
+          <div class="marker-label general">Theoretical</div>
+          <div class="marker-name">General AI</div>
+        </div>
+        <div class="spectrum-marker">
+          <div class="marker-label super">Hypothetical</div>
+          <div class="marker-name">Super AI</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>The three types in full</h2>
+
+    <div class="type-cards">
+
+      <div class="type-card card-narrow">
+        <div class="type-card-head">
+          <div class="type-num">01</div>
+          <div class="type-head-text">
+            <div class="type-category">Type one</div>
+            <div class="type-name">Narrow AI</div>
+          </div>
+          <div class="type-status-badge">Exists right now</div>
+        </div>
+        <div class="type-card-body">
+          <p class="type-card-desc">Also called Weak AI, though that name is misleading. Narrow AI is not weak at all. It is extremely powerful at the one specific thing it was built to do. The word "narrow" means it operates within a defined boundary. Ask it to do something outside that boundary and it is completely lost.</p>
+          <p class="type-card-desc">Every single AI product you have ever used is Narrow AI. ChatGPT is narrow: it processes and generates text. Face ID is narrow: it recognises your face. AlphaGo is narrow: it plays Go. None of them can cross over into the other's territory. ChatGPT cannot unlock your phone. Face ID cannot write an essay.</p>
+          <div class="type-examples">
+            <span class="type-ex">ChatGPT</span>
+            <span class="type-ex">Face ID</span>
+            <span class="type-ex">Spotify Discover</span>
+            <span class="type-ex">Tesla Autopilot</span>
+            <span class="type-ex">Google Translate</span>
+            <span class="type-ex">Fraud detection</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-card card-general">
+        <div class="type-card-head">
+          <div class="type-num">02</div>
+          <div class="type-head-text">
+            <div class="type-category">Type two</div>
+            <div class="type-name">General AI</div>
+          </div>
+          <div class="type-status-badge">Does not exist yet</div>
+        </div>
+        <div class="type-card-body">
+          <p class="type-card-desc">Also called Artificial General Intelligence or AGI. This is a system that can perform any intellectual task a human being can do. Not just one task. Any task. It could write software in the morning, diagnose a medical condition in the afternoon and compose music in the evening, all without being specifically trained for each.</p>
+          <p class="type-card-desc">AGI does not exist today. It is the subject of serious research and serious disagreement. Some researchers think we are decades away. Some think we are closer. Some think the current approach of scaling up language models will never get us there. Nobody knows. What is certain is that nothing available today qualifies.</p>
+          <div class="type-examples">
+            <span class="type-ex">Not yet built</span>
+            <span class="type-ex">Active research area</span>
+            <span class="type-ex">Deeply debated timeline</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-card card-super">
+        <div class="type-card-head">
+          <div class="type-num">03</div>
+          <div class="type-head-text">
+            <div class="type-category">Type three</div>
+            <div class="type-name">Super AI</div>
+          </div>
+          <div class="type-status-badge">Purely hypothetical</div>
+        </div>
+        <div class="type-card-body">
+          <p class="type-card-desc">Also called Artificial Superintelligence or ASI. This is a system that surpasses human intelligence in every dimension: creative thinking, problem solving, emotional understanding, scientific reasoning, everything. By definition it would be better at improving itself than humans would be at improving it.</p>
+          <p class="type-card-desc">This is the version of AI that appears in films and in philosophy seminars. It is a legitimate topic for long-term thinking about the future, but it exists nowhere outside of theoretical discussion. Treating it as a present-day concern is like worrying about what happens when we colonise Mars before we have sent anyone back to the Moon.</p>
+          <div class="type-examples">
+            <span class="type-ex">Science fiction today</span>
+            <span class="type-ex">Long-term safety research</span>
+            <span class="type-ex">Philosophical debate</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h2>Why narrow AI is more impressive than it sounds</h2>
+
+    <p>The word "narrow" can make Narrow AI sound like a consolation prize. It is not. The systems we have built within that narrow category are genuinely astonishing by any historical measure.</p>
+
+    <p>Twenty years ago, the idea that a computer could hold a fluent conversation in any language, generate a photorealistic image from a text description, diagnose cancer from a scan more accurately than most radiologists, or beat any human alive at chess, Go and most video games would have sounded like science fiction. All of that is Narrow AI. All of it exists today.</p>
+
+    <div class="pullquote">
+      <p>The question is not whether machines can think. The question is whether what they do is useful.</p>
+      <cite>Paraphrased from decades of AI debate</cite>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The boundary that matters most</div>
+      <p>Narrow AI systems do not have goals of their own. They do not want anything. They do not get bored, frustrated or ambitious. A spam filter does not decide one day that it wants to read your private emails. It processes what it is given, produces an output and stops. Understanding this distinction cuts through most of the fear that surrounds AI in the media.</p>
+      <p>The legitimate concerns about AI, and there are real ones, tend to be about who controls these systems and for what purpose. Not about the systems themselves developing sinister intentions.</p>
+    </div>
+
+    <h2>Separating real concerns from noise</h2>
+
+    <p>Now that you understand the three types, you can apply a simple filter to every claim you hear about AI.</p>
+
+    <p>When someone says AI is going to take your job, they are talking about Narrow AI. That is a real economic discussion worth having. When someone says AI is going to decide to eliminate humanity, they are jumping several decades ahead to a hypothetical version of Superintelligence that does not exist and may never exist in the form they are imagining. Those are completely different conversations.</p>
+
+    <div class="myths">
+      <div class="myth-row">
+        <div class="myth-cell head">What people say</div>
+        <div class="myth-cell head">What is actually true</div>
+      </div>
+      <div class="myth-row">
+        <div class="myth-cell wrong">
+          <div class="myth-wrong-label">Common claim</div>
+          AI is about to become conscious and make its own decisions.
+        </div>
+        <div class="myth-cell right">
+          <div class="myth-right-label">Reality</div>
+          Narrow AI has no consciousness, goals or awareness. It runs a calculation and produces output. Consciousness is not part of the equation.
+        </div>
+      </div>
+      <div class="myth-row">
+        <div class="myth-cell wrong">
+          <div class="myth-wrong-label">Common claim</div>
+          ChatGPT is close to AGI because it can do so many things.
+        </div>
+        <div class="myth-cell right">
+          <div class="myth-right-label">Reality</div>
+          ChatGPT is an extremely capable text system. It cannot act in the world, form persistent memories, or learn from a conversation after it ends. AGI requires far more than text fluency.
+        </div>
+      </div>
+      <div class="myth-row">
+        <div class="myth-cell wrong">
+          <div class="myth-wrong-label">Common claim</div>
+          AI will soon be smarter than humans in every way.
+        </div>
+        <div class="myth-cell right">
+          <div class="myth-right-label">Reality</div>
+          AI is already superhuman in narrow tasks. But general human intelligence involves embodiment, social understanding, lived experience and common sense that current AI cannot replicate in any integrated way.
+        </div>
+      </div>
+      <div class="myth-row">
+        <div class="myth-cell wrong">
+          <div class="myth-wrong-label">Common claim</div>
+          Worrying about AI safety means worrying about robot uprisings.
+        </div>
+        <div class="myth-cell right">
+          <div class="myth-right-label">Reality</div>
+          Most AI safety research today is about making Narrow AI systems reliable, fair and resistant to misuse. Robot uprisings are a science fiction concern, not a near-term technical one.
+        </div>
+      </div>
+    </div>
+
+    <h2>Where we actually are today</h2>
+
+    <p>We are firmly in the era of Narrow AI, and it is an extraordinary time to be paying attention. The tools available now would have seemed miraculous ten years ago. Language models that can write, reason and converse. Vision systems that can see better than human eyes in specific tasks. Drug discovery tools that are accelerating medical research. Climate models running faster and more accurately than ever.</p>
+
+    <p>None of this requires AGI. None of it requires superintelligence. Narrow AI, applied thoughtfully and built responsibly, is already reshaping industries, creating new jobs and eliminating others, and raising genuinely important questions about how society should be organised.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">A useful frame</div>
+      <p>Think of the different types of AI the way you might think about different stages of a vehicle. A bicycle is real, useful and already changing how people get around. A flying car is theoretically possible and researchers are working on it. A teleporter remains firmly in science fiction. The existence of teleporters as a concept does not make bicycles less remarkable or less worth understanding.</p>
+    </div>
+
+    <p>As you move through this course, every technique you learn, every model you build and every tool you use will be Narrow AI. That is not a limitation. That is where the real work, the real opportunity and the real responsibility lives right now.</p>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">Before we talk types</li>
+        <li class="toc-item">The three types in full</li>
+        <li class="toc-item">Why narrow AI is impressive</li>
+        <li class="toc-item">Separating real concerns from noise</li>
+        <li class="toc-item">Where we actually are today</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Human Compatible</div>
+        <div class="book-author">Stuart Russell · 2019</div>
+        <div class="book-note">The clearest serious book on what AGI might mean and why the transition from narrow to general intelligence matters so much.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">The Alignment Problem</div>
+        <div class="book-author">Brian Christian · 2020</div>
+        <div class="book-note">Focuses on the real, present-day safety challenges of narrow AI. Grounding for anyone worried the conversation is all sci-fi.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Narrow AI</div>
+          <div class="term-def">AI that excels at one specific task. Every AI system that exists today is narrow.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">AGI</div>
+          <div class="term-def">Artificial General Intelligence. A system that can do any intellectual task a human can. Does not exist yet.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">ASI</div>
+          <div class="term-def">Artificial Superintelligence. A hypothetical system that surpasses human intelligence in every domain.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">AI Safety</div>
+          <div class="term-def">The field focused on making AI systems reliable, aligned with human values and resistant to misuse.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Lesson Activity · Reflection exercise</div>
+    <div class="act-title">The AI Headlines Test</div>
+    <div class="act-body">Now that you know the three types, you have a filter for every AI claim you encounter. This activity puts that filter to work on real headlines from the last two years.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Find three recent news headlines about AI. They can be from any source. A newspaper, a tech blog, a social media post, a conversation you overheard.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">For each headline, ask: which type of AI is this actually talking about? Narrow, General or Super? And does the headline make that clear, or does it blur the lines?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Write one sentence for each headline explaining whether you think the claim is grounded in what AI actually is today, or whether it is projecting into the future without saying so. Bring your three headlines to the live session.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-1-3';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<!-- REFLECT -->
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <div class="reflect-eyebrow">Pause &amp; Reflect</div>
+    <h3 class="reflect-title">Check your understanding</h3>
+    <p class="reflect-subtitle">Click any question to reveal a thinking prompt. There are no wrong answers.</p>
+    <div class="reflect-list">
+      <details>
+        <summary>Name two things Narrow AI does better than humans today. Now name one thing it still cannot do at all.</summary>
+        <p class="reflect-hint">Narrow AI excels at pattern recognition in huge datasets: medical image diagnosis, chess, weather forecasting. What it cannot do is transfer learning spontaneously. A chess AI has zero ability to play draughts without being retrained. Humans apply common sense across domains effortlessly.</p>
+      </details>
+      <details>
+        <summary>Some experts say AGI could arrive within 10 years. Others say 100 years. What would change most about human society if either timeline were correct?</summary>
+        <p class="reflect-hint">A 10-year AGI timeline would mean most white-collar jobs face disruption before today's students graduate. A 100-year timeline means several generations of humans will live alongside increasingly powerful Narrow AI tools without ever encountering a general intelligence. Consider education, law, healthcare, and political systems in each scenario.</p>
+      </details>
+      <details>
+        <summary>If an AI can pass every human test for intelligence, does that mean it actually "thinks"? Why or why not?</summary>
+        <p class="reflect-hint">This is the heart of the Turing Test debate. Passing a test proves behaviour, not inner experience. A very good search-and-replace algorithm could potentially fool humans in narrow tests. The philosophical question is whether "thinking" requires consciousness, understanding, or just input-output behaviour.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="LESSON 1.2.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">AI vs Machine Learning vs Deep Learning</span>
+  </a>
+  <a class="nav-card next" href="LESSON 1.4.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">AI You Already Use Every Day</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 1</span>
+  <span class="footer-copy">Lesson 1.3 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

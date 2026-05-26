@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 5.5 — The Future of AI | AI Crash Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#1a1a2e; --ink-soft:#4a4a6a; --paper:#fafaf7; --surface:#fff; --surface-raised:#f4f4f0; --accent:#8c1a5a; --accent-light:#f5d0e8; --accent-dark:#6a1044; --border:#e2e2da; --radius:10px; --sidebar-w:260px; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Lora',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.8;display:flex;}
+    #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0%;z-index:9999;transition:width .1s linear;}
+    .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--surface);border-right:1px solid var(--border);padding:2rem 1.25rem;overflow-y:auto;z-index:100;display:flex;flex-direction:column;gap:2rem;}
+    .sidebar-brand{font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:.5rem;}
+    .sidebar-brand .phase-badge{background:var(--accent);color:#fff;font-size:.7rem;padding:.15rem .5rem;border-radius:99px;font-weight:600;}
+    .toc-label{font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.5rem;}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:.15rem;}
+    .toc-list a{font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink-soft);text-decoration:none;padding:.3rem .6rem;border-radius:6px;display:block;transition:all .2s;border-left:2px solid transparent;}
+    .toc-list a:hover{color:var(--accent);background:var(--accent-light);}
+    .toc-list a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);background:var(--accent-light);}
+    .sidebar-footer{margin-top:auto;font-family:'Outfit',sans-serif;font-size:.75rem;color:var(--ink-soft);padding-top:1rem;border-top:1px solid var(--border);}
+    .sidebar-footer a{color:var(--accent);text-decoration:none;}
+    .main{margin-left:var(--sidebar-w);max-width:820px;width:100%;padding:3rem 3rem 6rem;}
+    .lesson-hero{background:linear-gradient(135deg,#1a0010 0%,#3a0828 60%,#5a1040 100%);border-radius:16px;padding:3rem;margin-bottom:3rem;color:#fff;position:relative;overflow:hidden;}
+    .lesson-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(140,26,90,.4) 0%,transparent 60%);}
+    .lesson-hero-content{position:relative;z-index:1;}
+    .lesson-tag{font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#f5d0e8;margin-bottom:.75rem;}
+    .lesson-hero h1{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:700;line-height:1.2;margin-bottom:1rem;}
+    .lesson-hero p{font-size:1rem;color:rgba(255,255,255,.8);max-width:540px;font-family:'Outfit',sans-serif;}
+    .hero-meta{display:flex;gap:1.5rem;margin-top:1.5rem;font-family:'Outfit',sans-serif;font-size:.82rem;color:rgba(255,255,255,.6);}
+    .lesson-section{margin-bottom:3.5rem;scroll-margin-top:2rem;}
+    .lesson-section h2{font-family:'Outfit',sans-serif;font-size:1.55rem;font-weight:700;color:var(--ink);margin-bottom:1.25rem;padding-bottom:.6rem;border-bottom:2px solid var(--accent-light);}
+    .lesson-section h3{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:600;color:var(--ink);margin:1.5rem 0 .75rem;}
+    p{margin-bottom:1rem;}
+    strong{font-weight:600;}
+    em{font-style:italic;}
+    .callout{border-left:4px solid var(--accent);background:var(--accent-light);padding:1rem 1.25rem;border-radius:0 var(--radius) var(--radius) 0;margin:1.5rem 0;font-size:.95rem;}
+    .callout.info{border-color:#2a6ab5;background:#e8f0fb;}
+    .callout.success{border-color:#2a8c5a;background:#e5f5ed;}
+    .callout.warning{border-color:#c07800;background:#fff3d6;}
+    .callout-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;color:var(--accent-dark);}
+    .callout.info .callout-title{color:#1a4a8a;}
+    .callout.success .callout-title{color:#1a6040;}
+    .callout.warning .callout-title{color:#7a4800;}
+    .code-block{background:#0f1117;border-radius:var(--radius);padding:1.5rem;overflow-x:auto;margin:1.5rem 0;border:1px solid #2a2a3a;}
+    .code-block pre{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#c9d1d9;}
+    .code-label{font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.4rem;}
+    .py-kw{color:#ff79c6;}.py-fn{color:#50fa7b;}.py-str{color:#f1fa8c;}.py-num{color:#bd93f9;}.py-cm{color:#6272a4;font-style:italic;}.py-op{color:#ff79c6;}
+    .param-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+    .param-table th{background:var(--ink);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;padding:.7rem 1rem;text-align:left;font-size:.8rem;}
+    .param-table td{padding:.65rem 1rem;border-bottom:1px solid var(--border);line-height:1.5;font-family:'Outfit',sans-serif;}
+    .param-table tr:last-child td{border-bottom:none;}
+    .param-table tr:nth-child(even) td{background:var(--surface-raised);}
+    .svg-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.5rem 0;overflow-x:auto;}
+    .svg-caption{text-align:center;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink-soft);margin-top:.75rem;font-style:italic;}
+    .takeaway-list{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin:1rem 0;}
+    .takeaway-list li{display:flex;align-items:flex-start;gap:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;font-size:.92rem;}
+    .takeaway-list li::before{content:'✓';color:var(--accent);font-weight:700;font-family:'Outfit',sans-serif;flex-shrink:0;}
+    .modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.5rem 0;}
+    .modal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;border-top:3px solid var(--accent);}
+    .modal-card h4{font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:.4rem;color:var(--ink);}
+    .modal-card p{font-size:.82rem;color:var(--ink-soft);margin:0;line-height:1.5;}
+    .agent-step{display:flex;align-items:flex-start;gap:.85rem;padding:.8rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:.4rem 0;font-size:.9rem;}
+    .agent-step .step-badge{background:var(--accent);color:#fff;padding:.2rem .65rem;border-radius:99px;font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:.15rem;}
+    .open-vs-closed{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+    .ovc-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;}
+    .ovc-panel h4{font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:2px solid var(--border);}
+    .ovc-panel ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+    .ovc-panel ul li{font-size:.85rem;color:var(--ink-soft);padding-left:1rem;position:relative;}
+    .ovc-panel ul li::before{content:'&#183;';position:absolute;left:0;color:var(--accent);font-size:1.2rem;line-height:1;}
+    .next-steps-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+    .next-step-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;}
+    .next-step-card .ns-icon{font-size:1.5rem;margin-bottom:.4rem;}
+    .next-step-card h4{font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:.4rem;color:var(--ink);}
+    .next-step-card p{font-size:.84rem;color:var(--ink-soft);margin:0;line-height:1.6;}
+    .completion-banner{background:linear-gradient(135deg,#1a0010 0%,#3a0828 60%,#5a1040 100%);border-radius:16px;padding:3rem;margin:3rem 0;color:#fff;text-align:center;position:relative;overflow:hidden;}
+    .completion-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(140,26,90,.5) 0%,transparent 65%);}
+    .completion-content{position:relative;z-index:1;}
+    .completion-banner h2{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:700;margin-bottom:.75rem;}
+    .completion-banner p{font-size:1rem;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 1.5rem;font-family:'Outfit',sans-serif;line-height:1.7;}
+    .completion-badge{display:inline-block;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:99px;font-family:'Outfit',sans-serif;font-weight:700;font-size:.9rem;padding:.5rem 1.5rem;color:#fff;letter-spacing:.05em;margin-bottom:1rem;}
+    .phase-pills{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:1.5rem 0;}
+    .phase-pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:.35rem 1rem;font-family:'Outfit',sans-serif;font-size:.78rem;color:rgba(255,255,255,.85);}
+    .home-btn{display:inline-block;background:#fff;color:var(--accent-dark);font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:var(--radius);text-decoration:none;transition:all .2s;}
+    .home-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25);}
+    .nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);}
+    .nav-btn{font-family:'Outfit',sans-serif;font-weight:600;font-size:.9rem;padding:.75rem 1.5rem;border-radius:var(--radius);text-decoration:none;transition:all .2s;}
+    .nav-btn.prev{background:var(--surface-raised);color:var(--ink);border:1px solid var(--border);}
+    .nav-btn.home{background:var(--accent);color:#fff;}
+    .nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12);}
+    @media(max-width:900px){.sidebar{display:none;}.main{margin-left:0;padding:2rem 1.25rem 5rem;}.modal-grid,.next-steps-grid,.open-vs-closed{grid-template-columns:1fr;}.mobile-toc{display:block;}}
+    .mobile-toc{display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2rem;overflow:hidden;}
+    .mobile-toc summary{font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;color:var(--ink);padding:.9rem 1.25rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+    .mobile-toc summary::-webkit-details-marker{display:none;}
+    .mobile-toc summary::after{content:"▾";font-size:.75rem;color:var(--ink-soft);}
+    details.mobile-toc[open] summary::after{content:"▴";}
+    .mobile-toc-links{padding:.5rem 0 .75rem;border-top:1px solid var(--border);}
+    .mobile-toc-links a{display:block;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink-soft);text-decoration:none;padding:.3rem 1.25rem;}
+    .mobile-toc-links a:hover{color:var(--accent);}
+    /* GOING DEEPER */
+    .deeper-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-top:2.5rem;}
+    .deeper-eyebrow{font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.5rem;font-weight:700;}
+    .deeper-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin:0 0 1.25rem;}
+    .deeper-resources{display:flex;flex-direction:column;gap:.75rem;}
+    .deeper-item{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;background:var(--surface-raised);border-radius:8px;border:1px solid var(--border);text-decoration:none;transition:border-color .2s;}
+    .deeper-item:hover{border-color:var(--accent);}
+    .deeper-item-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+    .deeper-item-label{font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;color:var(--ink);display:block;margin-bottom:2px;}
+    .deeper-item-desc{font-family:'Outfit',sans-serif;font-size:.78rem;color:var(--ink-soft);line-height:1.5;}
+    /* REFLECT SECTION */
+    .reflect-block { background: var(--accent-light); border: 1px solid rgba(140,26,90,0.15); border-left: 4px solid var(--accent); border-radius: 12px; padding: 2rem 2rem 1.25rem; margin-top: 2.5rem; margin-bottom: 0; }
+    .reflect-eyebrow { font-family: 'Outfit', sans-serif; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; font-weight: 700; }
+    .reflect-title { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--ink); margin: 0 0 0.3rem; }
+    .reflect-sub { font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); margin: 0 0 1.5rem; }
+    .reflect-card { border-top: 1px solid rgba(140,26,90,0.12); padding: 1rem 0; }
+    .reflect-card:last-child { border-bottom: 1px solid rgba(140,26,90,0.12); }
+    .reflect-q { font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--ink); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+    .reflect-q::-webkit-details-marker { display: none; }
+    .reflect-q::after { content: "+"; font-size: 1.1rem; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+    details[open] .reflect-q::after { content: "−"; }
+    .reflect-a { padding: 0.75rem 0 0.25rem; }
+    .reflect-a p { font-family: 'Lora', Georgia, serif; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.75; margin: 0; }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<aside class="sidebar">
+  <a href="../ai_crash_course_pro.html" class="sidebar-brand">
+    <span class="phase-badge">PHASE 5</span> AI in Practice
+  </a>
+  <nav>
+    <div class="toc-label">In this lesson</div>
+    <ul class="toc-list">
+      <li><a href="#intro" data-section="intro">Looking Ahead</a></li>
+      <li><a href="#multimodal" data-section="multimodal">Multimodal AI</a></li>
+      <li><a href="#agents" data-section="agents">AI Agents</a></li>
+      <li><a href="#reasoning" data-section="reasoning">Reasoning Models</a></li>
+      <li><a href="#open-closed" data-section="open-closed">Open vs Closed Models</a></li>
+      <li><a href="#safety" data-section="safety">AI Safety and Alignment</a></li>
+      <li><a href="#impact" data-section="impact">Economic and Societal Impact</a></li>
+      <li><a href="#next-steps" data-section="next-steps">What You Should Do Next</a></li>
+      <li><a href="#takeaways" data-section="takeaways">Key Takeaways</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer"><p style="margin-bottom:.5rem;"><a href="../glossary.html" style="color:var(--accent);text-decoration:none;font-size:.75rem;">&#128218; Glossary</a></p>
+    <p>Phase 5 of 5 &middot; Lesson 5 of 5</p>
+    <p style="margin-top:.4rem"><a href="../ai_crash_course_pro.html">&#127968; Return to home</a></p>
+  </div>
+</aside>
+
+<main class="main">
+
+  <details class="mobile-toc">
+    <summary>In this lesson</summary>
+    <nav class="mobile-toc-links">
+      <a href="#intro">Looking Ahead</a>
+      <a href="#multimodal">Multimodal AI</a>
+      <a href="#agents">AI Agents</a>
+      <a href="#reasoning">Reasoning Models</a>
+      <a href="#open-closed">Open vs Closed Models</a>
+      <a href="#safety">AI Safety and Alignment</a>
+      <a href="#impact">Economic and Societal Impact</a>
+      <a href="#next-steps">What You Should Do Next</a>
+      <a href="#takeaways">Key Takeaways</a>
+    </nav>
+  </details>
+
+  <div class="lesson-hero">
+    <div class="lesson-hero-content">
+      <div class="lesson-tag">Phase 5 &middot; Lesson 5.5 &middot; Final Lesson</div>
+      <h1>The Future of AI: What Is Coming Next</h1>
+      <p>We are at an inflection point. The systems that exist today are already remarkable. The systems being built right now will be more capable still. Understanding where the field is heading equips you to make better decisions, build more responsibly, and position yourself well for what comes next.</p>
+      <div class="hero-meta">
+        <span>&#128337; 35 min read</span>
+        <span>&#127760; Frontier research</span>
+        <span>&#127942; Final lesson</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section class="lesson-section" id="intro">
+    <h2>Looking Ahead</h2>
+    <p>Predicting the future of a fast-moving technology field is difficult, and anyone who claims certainty about where AI will be in five or ten years should be viewed sceptically. What we can do is identify the trajectories that are already under way, understand the forces driving them, and think carefully about their implications.</p>
+    <p>Several themes are shaping the near-term future of AI. Models are becoming <strong>multimodal</strong>, able to process and generate text, images, audio, and video in an integrated way. Systems are gaining the ability to take <strong>actions in the world</strong> through tools and external APIs, moving from passive responders to active agents. <strong>Reasoning capabilities</strong> are improving dramatically, with dedicated architectures trained specifically to think through problems step by step. The ecosystem is splitting along an <strong>open versus closed</strong> axis. And the field is grappling seriously with <strong>safety and alignment</strong> as capabilities advance.</p>
+    <p>This final lesson surveys each of these areas, grounding the discussion in research and systems that already exist, while being honest about what remains uncertain.</p>
+    <div class="callout info">
+      <div class="callout-title">This Lesson Is Different</div>
+      <p>Earlier lessons built conceptual foundations with well-established techniques. This lesson deals with an area of active development where understanding is still forming. Some of what is described here as "near-term" may already have changed by the time you read it. Treat this as a structured orientation to a living conversation rather than a static reference.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="lesson-section" id="multimodal">
+    <h2>Multimodal AI</h2>
+    <p>For most of deep learning's history, models were trained on a single modality: text, images, or audio. A language model understood text but was blind to images. A vision model could classify photographs but could not answer questions about them. <strong>Multimodal AI</strong> breaks down these barriers, enabling a single model to reason across different types of input.</p>
+
+    <h3>From Specialist to Generalist</h3>
+    <p>The progression has been rapid. CLIP (Contrastive Language-Image Pre-training, Radford et al., OpenAI 2021) showed that a model trained on 400 million image-text pairs from the internet could learn a shared embedding space for vision and language. This meant you could find images using natural language queries and vice versa, without any task-specific fine-tuning.</p>
+    <p>GPT-4V (OpenAI 2023) demonstrated that a large language model could accept images as input and reason about them with the same fluency it applied to text. Gemini 1.5 (Google DeepMind 2024) extended this to video, audio, and documents, with a context window of one million tokens capable of processing an entire feature film. The underlying architecture fuses different modalities through shared transformer layers and cross-attention mechanisms.</p>
+
+    <div class="modal-grid">
+      <div class="modal-card">
+        <h4>Vision + Language</h4>
+        <p>Describe image contents, answer questions about photos, read charts and screenshots, generate image captions, and extract structured data from visual documents. Models: GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro.</p>
+      </div>
+      <div class="modal-card">
+        <h4>Audio + Language</h4>
+        <p>Speech-to-text transcription, real-time voice conversation, audio question answering, and speech translation without a separate ASR pipeline. Models: Whisper (OpenAI 2022), Gemini 1.5, GPT-4o audio.</p>
+      </div>
+      <div class="modal-card">
+        <h4>Text to Image / Video</h4>
+        <p>Generate images from text descriptions using diffusion models (DALL-E 3, Stable Diffusion, Midjourney). Video generation from text prompts (Sora, OpenAI 2024; Veo, Google DeepMind 2024).</p>
+      </div>
+    </div>
+
+    <h3>Diffusion Models</h3>
+    <p>Text-to-image generation is powered by a separate class of model from transformers: <strong>diffusion models</strong>. The core idea (Sohl-Dickstein et al. 2015; Ho et al. 2020) is to train a neural network to reverse a gradual noising process. Starting from pure noise, the model iteratively denoises the image, guided at each step by a text prompt embedded through a language model. <strong>Stable Diffusion</strong> (Rombach et al., Stability AI 2022) introduced latent diffusion, which performs the denoising in a compressed latent space rather than pixel space, making generation dramatically faster.</p>
+    <p>DALL-E 3 (OpenAI 2023) further integrated language understanding by training the image generator to condition on detailed captions generated by GPT-4. This made prompt-following far more reliable and reduced the need for the elaborate prompt engineering that earlier text-to-image systems required.</p>
+
+    <div class="callout">
+      <div class="callout-title">Why Multimodality Matters for Practitioners</div>
+      <p>Multimodal capabilities change what is buildable. A medical imaging assistant that reads both the scan and the clinical notes. A document processing system that understands tables, charts, and prose together. An education platform that answers questions about diagrams and worked examples. If your application involves multiple types of information, multimodal models can often handle the task in a single call rather than requiring separate pipelines stitched together.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="lesson-section" id="agents">
+    <h2>AI Agents</h2>
+    <p>A language model in isolation can answer questions and generate text, but it cannot take actions. It cannot search the web for current information, execute code, send an email, interact with a website, or query a database. <strong>AI agents</strong> extend language models with the ability to use tools and act in the world across a sequence of steps.</p>
+
+    <h3>What Makes an Agent?</h3>
+    <p>An agent has three components beyond a base language model: <strong>tools</strong> it can invoke (functions, APIs, browsers, code interpreters), a <strong>planning loop</strong> that decides which tool to use and when, and <strong>memory</strong> that preserves state across multiple steps. The ReAct pattern (Yao et al. 2022) interleaves reasoning and acting: at each step, the model reasons about what it knows and what it needs, selects a tool, observes the result, and reasons again. This loop continues until the task is complete.</p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;">
+        <rect width="680" height="200" fill="#fafaf7" rx="8"/>
+        <defs>
+          <marker id="aarr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#8c1a5a"/>
+          </marker>
+        </defs>
+
+        <!-- User box -->
+        <rect x="15" y="80" width="90" height="40" fill="#2d1a3d" rx="6"/>
+        <text x="60" y="104" font-family="'Outfit',sans-serif" font-size="12" font-weight="700" fill="#f5d0e8" text-anchor="middle">User</text>
+
+        <!-- Arrow to agent -->
+        <path d="M106 100 L145 100" stroke="#8c1a5a" stroke-width="2" fill="none" marker-end="url(#aarr)"/>
+
+        <!-- Agent box -->
+        <rect x="148" y="55" width="120" height="90" fill="#8c1a5a" rx="8"/>
+        <text x="208" y="88" font-family="'Outfit',sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">LLM Agent</text>
+        <text x="208" y="106" font-family="'Outfit',sans-serif" font-size="10" fill="#f5d0e8" text-anchor="middle">Plan + Reason</text>
+        <text x="208" y="120" font-family="'Outfit',sans-serif" font-size="10" fill="#f5d0e8" text-anchor="middle">Select tool</text>
+        <text x="208" y="134" font-family="'Outfit',sans-serif" font-size="10" fill="#f5d0e8" text-anchor="middle">Observe result</text>
+
+        <!-- Arrows to tools -->
+        <path d="M268 75 L340 55" stroke="#8c1a5a" stroke-width="1.5" fill="none" marker-end="url(#aarr)"/>
+        <path d="M268 100 L340 100" stroke="#8c1a5a" stroke-width="1.5" fill="none" marker-end="url(#aarr)"/>
+        <path d="M268 125 L340 148" stroke="#8c1a5a" stroke-width="1.5" fill="none" marker-end="url(#aarr)"/>
+
+        <!-- Tools -->
+        <rect x="343" y="30" width="110" height="36" fill="#e8f0fb" stroke="#2a6ab5" stroke-width="1.5" rx="6"/>
+        <text x="398" y="52" font-family="'Outfit',sans-serif" font-size="11" fill="#1a4a8a" text-anchor="middle">&#127760; Web Search</text>
+
+        <rect x="343" y="82" width="110" height="36" fill="#e5f5ed" stroke="#2a8c5a" stroke-width="1.5" rx="6"/>
+        <text x="398" y="104" font-family="'Outfit',sans-serif" font-size="11" fill="#1a6040" text-anchor="middle">&#128187; Code Interpreter</text>
+
+        <rect x="343" y="133" width="110" height="36" fill="#fff3d6" stroke="#c07800" stroke-width="1.5" rx="6"/>
+        <text x="398" y="155" font-family="'Outfit',sans-serif" font-size="11" fill="#7a4800" text-anchor="middle">&#128196; File / Database</text>
+
+        <!-- Observation arrows back -->
+        <path d="M453 48 L540 80" stroke="#aaa" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#aarr)"/>
+        <path d="M453 100 L540 100" stroke="#aaa" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#aarr)"/>
+        <path d="M453 150 L540 120" stroke="#aaa" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#aarr)"/>
+
+        <!-- Memory box -->
+        <rect x="543" y="60" width="120" height="80" fill="#f5d0e8" stroke="#8c1a5a" stroke-width="1.5" rx="6"/>
+        <text x="603" y="88" font-family="'Outfit',sans-serif" font-size="11" font-weight="700" fill="#6a1044" text-anchor="middle">Memory</text>
+        <text x="603" y="104" font-family="'Outfit',sans-serif" font-size="10" fill="#6a1044" text-anchor="middle">Conversation</text>
+        <text x="603" y="118" font-family="'Outfit',sans-serif" font-size="10" fill="#6a1044" text-anchor="middle">Tool results</text>
+        <text x="603" y="132" font-family="'Outfit',sans-serif" font-size="10" fill="#6a1044" text-anchor="middle">Scratchpad</text>
+
+        <!-- Loop arrow from memory back to agent -->
+        <path d="M543 100 L290 170 L208 148" stroke="#aaa" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#aarr)"/>
+        <text x="370" y="185" font-family="'Outfit',sans-serif" font-size="10" fill="#4a4a6a" text-anchor="middle">loop until task complete</text>
+      </svg>
+      <div class="svg-caption">An AI agent loops through planning, tool selection, execution, and observation until the task is complete. Memory persists state across multiple steps.</div>
+    </div>
+
+    <h3>Function Calling</h3>
+    <p>Modern LLM APIs expose agents through <strong>function calling</strong> (also called tool use). You define a set of functions with JSON schemas describing their names, parameters, and descriptions. The model decides when to call a function, generates the arguments, and you execute the function in your code and return the result. The model incorporates the result and continues reasoning.</p>
+
+    <div class="code-label">Python &mdash; OpenAI function calling (tool use)</div>
+    <div class="code-block"><pre><span class="py-kw">from</span> openai <span class="py-kw">import</span> OpenAI
+<span class="py-kw">import</span> json
+
+client <span class="py-op">=</span> <span class="py-fn">OpenAI</span>()
+
+<span class="py-cm"># Define the tools (functions) available to the model</span>
+tools <span class="py-op">=</span> [
+    {
+        <span class="py-str">"type"</span>: <span class="py-str">"function"</span>,
+        <span class="py-str">"function"</span>: {
+            <span class="py-str">"name"</span>: <span class="py-str">"get_weather"</span>,
+            <span class="py-str">"description"</span>: <span class="py-str">"Returns current weather for a given city"</span>,
+            <span class="py-str">"parameters"</span>: {
+                <span class="py-str">"type"</span>: <span class="py-str">"object"</span>,
+                <span class="py-str">"properties"</span>: {
+                    <span class="py-str">"city"</span>: {<span class="py-str">"type"</span>: <span class="py-str">"string"</span>, <span class="py-str">"description"</span>: <span class="py-str">"City name, e.g. 'London'"</span>}
+                },
+                <span class="py-str">"required"</span>: [<span class="py-str">"city"</span>]
+            }
+        }
+    }
+]
+
+messages <span class="py-op">=</span> [{<span class="py-str">"role"</span>: <span class="py-str">"user"</span>, <span class="py-str">"content"</span>: <span class="py-str">"What is the weather like in Accra right now?"</span>}]
+
+<span class="py-cm"># First call: model decides to call the tool</span>
+response <span class="py-op">=</span> client.chat.completions.<span class="py-fn">create</span>(
+    model<span class="py-op">=</span><span class="py-str">"gpt-4o-mini"</span>, messages<span class="py-op">=</span>messages, tools<span class="py-op">=</span>tools
+)
+
+tool_call <span class="py-op">=</span> response.choices[<span class="py-num">0</span>].message.tool_calls[<span class="py-num">0</span>]
+args <span class="py-op">=</span> json.<span class="py-fn">loads</span>(tool_call.<span class="py-fn">function</span>.arguments)
+<span class="py-fn">print</span>(<span class="py-str">f"Model wants to call: {tool_call.function.name}({args})"</span>)
+
+<span class="py-cm"># Execute the real function and return the result to the model</span>
+<span class="py-cm"># (in a real system, this would call a weather API)</span>
+weather_result <span class="py-op">=</span> <span class="py-str">'{"temperature": 31, "condition": "Sunny", "humidity": 72}'</span>
+
+messages <span class="py-op">+=</span> [response.choices[<span class="py-num">0</span>].message,
+            {<span class="py-str">"role"</span>: <span class="py-str">"tool"</span>, <span class="py-str">"tool_call_id"</span>: tool_call.id, <span class="py-str">"content"</span>: weather_result}]
+
+<span class="py-cm"># Second call: model now answers the user using the tool result</span>
+final <span class="py-op">=</span> client.chat.completions.<span class="py-fn">create</span>(model<span class="py-op">=</span><span class="py-str">"gpt-4o-mini"</span>, messages<span class="py-op">=</span>messages)
+<span class="py-fn">print</span>(final.choices[<span class="py-num">0</span>].message.content)</pre></div>
+
+    <div class="callout info">
+      <div class="callout-title">Agent Frameworks</div>
+      <p><strong>LangChain</strong> (Harrison Chase, 2022) and <strong>LlamaIndex</strong> are popular Python frameworks for building agent pipelines with pre-built tool integrations, memory backends, and retrieval utilities. The <strong>Anthropic Agent SDK</strong>, <strong>OpenAI Agents SDK</strong>, and <strong>Microsoft AutoGen</strong> (2023) provide higher-level abstractions for multi-agent systems where multiple specialised agents collaborate on a task. Google's <strong>Agent Development Kit (ADK)</strong> was released in 2025. For production use, these frameworks significantly reduce boilerplate.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="lesson-section" id="reasoning">
+    <h2>Reasoning Models</h2>
+    <p>Standard language models generate responses token by token in a single forward pass. For complex problems requiring multi-step logical deduction, mathematical proof, or careful planning, this is limiting. The model has, in effect, a fixed amount of "thinking time" proportional to the length of the answer.</p>
+    <p><strong>Reasoning models</strong> are trained specifically to think before they answer, generating extensive internal reasoning traces (sometimes called "thinking tokens") before producing a final response. This gives the model time to explore multiple paths, backtrack when an approach fails, and verify its own conclusions.</p>
+
+    <h3>OpenAI o1 and Beyond</h3>
+    <p>OpenAI's o1 model (released September 2024) was the first widely available reasoning model. It was trained using reinforcement learning to produce internal chain-of-thought reasoning that is longer and more structured than the chain-of-thought prompting technique covered in Lesson 5.3. On the AIME 2024 mathematics competition, o1 scored 74% compared to 13% for GPT-4o. On the International Mathematics Olympiad qualification exam, it scored 83%. These results represent a qualitative jump in formal reasoning capability.</p>
+
+    <p><strong>DeepSeek-R1</strong> (DeepSeek AI, January 2025) replicated and in some benchmarks exceeded o1's reasoning performance while being open-weight and at a fraction of the training cost. This was a notable demonstration that state-of-the-art reasoning capability was not restricted to the largest, most resource-rich labs. <strong>OpenAI o3</strong> (December 2024 preview) set a new record on ARC-AGI, a benchmark specifically designed to resist pattern matching and require genuine generalisation.</p>
+
+    <h3>How Reasoning Models Are Trained</h3>
+    <p>The key insight is to reward the <em>quality of the final answer</em> rather than supervising the intermediate steps. The model is trained with reinforcement learning where it receives a reward signal based on whether its final answer is correct. Over many training iterations, the model discovers that producing a long, structured thinking process before answering leads to better final answers and higher rewards. This self-discovered reasoning is in many ways richer than the hand-crafted chain-of-thought prompting strategies described in Lesson 5.3.</p>
+
+    <div class="callout warning">
+      <div class="callout-title">Reasoning Models and Cost</div>
+      <p>Generating long thinking traces increases the number of tokens produced substantially. Reasoning model API calls are significantly more expensive than standard model calls for the same final answer length. For tasks where the problem is well-defined and straightforward, a standard model with a good prompt will often be more cost-effective. Reasoning models are most valuable for tasks that genuinely require multi-step deduction: mathematics, code debugging, logical analysis, and research.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="lesson-section" id="open-closed">
+    <h2>Open vs Closed Models</h2>
+    <p>A significant structural divide has emerged in the AI landscape between <strong>closed models</strong> accessed only through proprietary APIs and <strong>open-weight models</strong> whose parameters are publicly released and can be run locally.</p>
+
+    <div class="open-vs-closed">
+      <div class="ovc-panel">
+        <h4 style="color:var(--accent-dark);">Closed / Proprietary</h4>
+        <ul>
+          <li>Accessed via API only; weights not released</li>
+          <li>Examples: GPT-4o (OpenAI), Claude 3.5 Sonnet (Anthropic), Gemini Ultra (Google)</li>
+          <li>Typically strongest benchmark performance at launch</li>
+          <li>No data privacy guarantees; data sent to third-party servers</li>
+          <li>No customisation beyond fine-tuning APIs</li>
+          <li>Ongoing API costs; risk of model deprecation or price changes</li>
+          <li>Alignment and safety work done by provider, not visible to user</li>
+        </ul>
+      </div>
+      <div class="ovc-panel">
+        <h4 style="color:#1a6040;">Open-Weight</h4>
+        <ul>
+          <li>Weights publicly released; can run locally</li>
+          <li>Examples: Llama 3 (Meta), Mistral 7B / Mixtral (Mistral AI), Phi-3 (Microsoft), Gemma (Google), DeepSeek-R1</li>
+          <li>Can be fine-tuned on proprietary data without sending data to a third party</li>
+          <li>Suitable for air-gapped and regulated environments (healthcare, finance, defence)</li>
+          <li>Requires local compute; smaller models trail frontier closed models on benchmarks</li>
+          <li>Community ecosystem of fine-tuned variants (Hugging Face Hub)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>The Efficiency Frontier</h3>
+    <p>For most of 2023, the gap between the best closed models and the best open models was substantial. That gap has narrowed significantly. <strong>Llama 3.1 405B</strong> (Meta, July 2024) matched GPT-4 on several benchmarks. <strong>Mistral Large 2</strong> competed with GPT-4o on coding tasks. More importantly, smaller open models have improved dramatically: <strong>Phi-3-mini</strong> (Microsoft 2024, 3.8B parameters) achieved performance comparable to GPT-3.5 on many tasks while fitting on a mobile device.</p>
+    <p>Parameter-efficient fine-tuning techniques, particularly <strong>LoRA</strong> (Low-Rank Adaptation, Hu et al. 2021) and its variants, make it possible to adapt open-weight models to specific tasks with modest GPU resources. A 7B model fine-tuned on domain-specific data can outperform a 70B general model on that domain.</p>
+
+    <div class="callout success">
+      <div class="callout-title">Practical Guidance</div>
+      <p>For prototyping and tasks without strict data privacy requirements, closed model APIs offer the fastest path to a working system. For production systems in regulated industries, or when fine-tuning on proprietary data is critical, open-weight models running on your own infrastructure are often the better long-term choice. The decision is not purely technical; it involves cost, compliance, and risk tolerance.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="lesson-section" id="safety">
+    <h2>AI Safety and Alignment</h2>
+    <p>As AI systems become more capable, the question of whether they will behave as intended across all circumstances becomes increasingly consequential. <strong>AI safety</strong> is the research field concerned with ensuring that AI systems are reliable, controllable, and aligned with human values even as they become more powerful.</p>
+
+    <h3>The Alignment Problem</h3>
+    <p>A system is <strong>aligned</strong> when it reliably pursues the goals its designers intend, including in situations not explicitly anticipated during training. Alignment is hard because it is difficult to fully specify what we want, training objectives are imperfect proxies for our actual goals, and distributional shift means models encounter situations in deployment that were not present in training.</p>
+    <p><strong>RLHF</strong>, covered in Lesson 5.2, is currently the primary alignment technique in production systems. It is effective but has known limitations: the reward model that guides RL training can itself be gamed (reward hacking), and aligning to the preferences of a small pool of labellers may not generalise to all users and contexts.</p>
+
+    <h3>Current Safety Approaches</h3>
+    <table class="param-table">
+      <thead>
+        <tr><th>Approach</th><th>Description</th><th>Limitations</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>RLHF</td><td>Fine-tune using human preference feedback via a reward model</td><td>Reward hacking; labeller subjectivity; expensive at scale</td></tr>
+        <tr><td>Constitutional AI (Anthropic)</td><td>Model critiques and revises its own responses using a set of principles</td><td>Principles must be carefully specified; model may find loopholes</td></tr>
+        <tr><td>DPO</td><td>Direct Preference Optimisation: fine-tune directly from preference pairs without a separate reward model</td><td>Still depends on quality of preference data</td></tr>
+        <tr><td>Interpretability</td><td>Understand what is happening inside the model (Anthropic's mechanistic interpretability; sparse autoencoders)</td><td>Extremely difficult at scale; most circuits not yet understood</td></tr>
+        <tr><td>Red-teaming</td><td>Systematic adversarial probing to find failure modes before deployment</td><td>Cannot cover all possible inputs; attacker-defender asymmetry</td></tr>
+        <tr><td>Evals</td><td>Structured evaluation benchmarks for dangerous capabilities (bioweapons uplift, cyberoffense, deception)</td><td>Hard to design comprehensive evals; models improve faster than evals</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Mechanistic Interpretability</h3>
+    <p>A growing research direction called <strong>mechanistic interpretability</strong> attempts to reverse-engineer the internal workings of neural networks, identifying the circuits (groups of neurons and attention heads) responsible for specific capabilities. Anthropic's research in this area has identified features corresponding to concepts like "the Golden Gate Bridge" or "DNA" in Claude's internal activations, and has found evidence of deliberate planning in the residual stream of transformer models. This work is foundational for building AI systems we can genuinely inspect and verify, rather than only test empirically.</p>
+
+    <div class="callout">
+      <div class="callout-title">Responsible Scaling Policies</div>
+      <p>Several frontier AI labs have published <strong>responsible scaling policies</strong> (Anthropic) or <strong>preparedness frameworks</strong> (OpenAI) that define thresholds of dangerous capability. The policies commit to pausing development or deployment if models cross certain thresholds on assessments of autonomy, cyberoffense capability, biological and chemical weapons uplift, and deception. These frameworks represent an attempt to build safety gates into the development process rather than evaluating safety only at deployment time.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="lesson-section" id="impact">
+    <h2>Economic and Societal Impact</h2>
+    <p>The economic effects of AI are already measurable and will intensify. Understanding them is important both for making career decisions and for thinking about the policy frameworks needed to manage the transition well.</p>
+
+    <h3>Productivity and Labour</h3>
+    <p>Studies of AI tools in professional settings show consistent productivity gains for workers who adopt them. A GitHub Copilot study (Peng et al. 2023) found that developers using AI code completion completed tasks 55% faster. A study of customer service agents using AI assistance (Brynjolfsson, Li, and Raymond 2023) found a 14% increase in resolutions per hour, with the largest gains for less experienced workers. A randomised trial of consultants using GPT-4 (Noy and Zhang, 2023) found AI users completed tasks 25% faster with 40% higher quality ratings.</p>
+    <p>These productivity gains are real, but they are not evenly distributed. The tasks most easily automated tend to be the structured, routine parts of knowledge work: first drafts of reports, boilerplate code, straightforward customer queries, and data extraction. The tasks that remain require judgment, relationship-building, ethical reasoning, novel problem-solving, and contextual expertise. This shifts the premium from information access and execution speed toward these harder-to-automate qualities.</p>
+
+    <h3>The Education and Credentialling Challenge</h3>
+    <p>AI significantly changes what skill gaps matter and what skills are worth developing. The ability to use AI tools effectively is becoming as fundamental as the ability to use a search engine. At the same time, the deep domain knowledge that allows you to evaluate AI outputs, catch errors, and direct AI effectively remains valuable precisely because it is not easily automated. The people best positioned in an AI-integrated world are those who combine domain expertise with practical AI literacy.</p>
+
+    <h3>Geopolitical Dimensions</h3>
+    <p>AI capability has become a matter of national strategic interest. The United States, China, and the European Union are all pursuing distinct approaches to AI development and governance. US export controls on advanced semiconductors (Nvidia A100 and H100 chips, and subsequent generations) are an attempt to maintain an advantage in AI training capacity. China's domestic AI investment includes state-sponsored labs and significant open-weight contributions (DeepSeek, Qwen). The EU AI Act represents the first comprehensive regulatory framework for AI systems globally, likely to influence AI governance internationally.</p>
+
+    <div class="callout info">
+      <div class="callout-title">What Is Not Changing</div>
+      <p>Amidst the rapid change, some things remain constant. Good problem formulation, intellectual honesty, and the ability to communicate clearly are more valuable than ever. Understanding why a model produces a certain output, not just how to get it to produce one, is a durable advantage. And building things that are actually useful to real people, rather than technically impressive without practical value, remains the measure of whether the work matters.</p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="lesson-section" id="next-steps">
+    <h2>What You Should Do Next</h2>
+    <p>You have now completed the entire AI Crash Course. You have built a conceptual map of the field from the mathematics of a single neuron through to the frontier of reasoning models and AI agents. The question now is how to keep building on this foundation.</p>
+
+    <div class="next-steps-grid">
+      <div class="next-step-card">
+        <div class="ns-icon">&#128187;</div>
+        <h4>Build Something</h4>
+        <p>The fastest way to solidify understanding is to apply it to a problem you care about. Pick a small project: a document Q&amp;A system using RAG, a fine-tuned classifier on a dataset from your field, or an OpenCV pipeline for a visual problem you find interesting. Encountering real obstacles teaches things no lesson can.</p>
+      </div>
+      <div class="next-step-card">
+        <div class="ns-icon">&#128218;</div>
+        <h4>Go Deeper on Foundations</h4>
+        <p>This course has given you breadth. For depth, consider: "Deep Learning" by Goodfellow, Bengio, and Courville (free online) for the mathematics; "Hands-On Machine Learning" by Géron (O'Reilly) for practical implementation; and the fast.ai practical deep learning course for a project-first approach.</p>
+      </div>
+      <div class="next-step-card">
+        <div class="ns-icon">&#128202;</div>
+        <h4>Engage with Research</h4>
+        <p>Papers cited in this course are freely available on arXiv (arxiv.org). Subscribe to weekly digests like "The Batch" (Andrew Ng, deeplearning.ai) or "Import AI" (Jack Clark) to track developments. Following researchers on social platforms lets you engage with ideas before they become mainstream.</p>
+      </div>
+      <div class="next-step-card">
+        <div class="ns-icon">&#127758;</div>
+        <h4>Connect with the Community</h4>
+        <p>The AI community is unusually open and collaborative. Hugging Face forums, Reddit (r/MachineLearning, r/LocalLLaMA), local ML meetups, and university reading groups are accessible regardless of your background. Being a beginner is not a barrier; contributing thoughtfully is.</p>
+      </div>
+      <div class="next-step-card">
+        <div class="ns-icon">&#9881;</div>
+        <h4>Practice on Competitions</h4>
+        <p>Kaggle competitions provide structured problems with real data, evaluation metrics, and a community of solutions you can learn from. Completing a competition end-to-end, even if you do not place highly, teaches the full pipeline: exploration, feature engineering, modelling, and submission.</p>
+      </div>
+      <div class="next-step-card">
+        <div class="ns-icon">&#127932;</div>
+        <h4>Specialise Deliberately</h4>
+        <p>AI is broad enough that generalist knowledge is a starting point, not a destination. Pick a domain that aligns with your existing expertise or interests: healthcare AI, NLP, computer vision, robotics, AI safety, or AI policy. Deep specialisation in one area combined with broad literacy in the field is the most valuable combination.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="lesson-section" id="takeaways">
+    <h2>Key Takeaways</h2>
+    <ul class="takeaway-list">
+      <li>Multimodal AI integrates text, images, audio, and video in unified models. CLIP, GPT-4V, and Gemini represent a shift from specialist to generalist systems. Diffusion models (Stable Diffusion, DALL-E 3) power text-to-image generation through iterative denoising.</li>
+      <li>AI agents extend language models with tools, planning loops, and memory, enabling multi-step task completion. Function calling (tool use) is the API mechanism that makes agents practical. Frameworks like LangChain, LlamaIndex, and AutoGen reduce the boilerplate of building agent systems.</li>
+      <li>Reasoning models (OpenAI o1, o3; DeepSeek-R1) are trained with reinforcement learning to generate extensive internal thinking before answering. They show qualitative improvements on formal reasoning tasks but cost more per call.</li>
+      <li>Open-weight models (Llama 3, Mistral, Phi-3) have closed the gap with frontier closed models significantly. LoRA fine-tuning makes domain adaptation practical on consumer hardware. The right choice between open and closed models depends on privacy requirements, regulatory constraints, and resource availability.</li>
+      <li>AI alignment remains an unsolved research problem. Current approaches (RLHF, Constitutional AI, DPO, red-teaming, interpretability) each address part of the problem. Mechanistic interpretability is a promising long-term direction for understanding model behaviour from first principles.</li>
+      <li>Measured productivity gains from AI in professional settings are real and consistent across studies. The premium shifts toward judgment, domain expertise, and the ability to evaluate and direct AI outputs effectively.</li>
+      <li>The best position in an AI-integrated world combines deep domain knowledge with practical AI literacy. Build things, engage with research, and specialise deliberately.</li>
+    </ul>
+  </section>
+
+  <!-- Completion Banner -->
+  <div class="completion-banner">
+    <div class="completion-content">
+      <div class="completion-badge">&#127942; Course Complete</div>
+      <h2>You Did It.</h2>
+      <p>You have completed all 25 lessons across 5 phases of the AI Crash Course. You now have a genuine, grounded understanding of how modern AI systems work, where they come from, and where they are going.</p>
+      <div class="phase-pills">
+        <span class="phase-pill">&#10003; Phase 1: Foundations</span>
+        <span class="phase-pill">&#10003; Phase 2: Machine Learning</span>
+        <span class="phase-pill">&#10003; Phase 3: Deep Learning</span>
+        <span class="phase-pill">&#10003; Phase 4: Advanced Architectures</span>
+        <span class="phase-pill">&#10003; Phase 5: AI in Practice</span>
+      </div>
+      <p style="margin-bottom:1.75rem;">This is the beginning, not the end. The field moves fast and the best way to keep up is to keep building. Take what you have learned here and make something with it.</p>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <a href="../certificate.html" class="home-btn" style="background:linear-gradient(135deg,#b5820a 0%,#8a6008 100%);color:#fff;width:100%;max-width:320px;text-align:center;">&#127941; Claim Your Certificate</a>
+        <a href="../ai_crash_course_pro.html" class="home-btn" style="width:100%;max-width:320px;text-align:center;">&#127968; Back to Course Home</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="deeper-block">
+    <p class="deeper-eyebrow">Going Deeper</p>
+    <h2 class="deeper-title">Want to think seriously about where AI is heading? Start here.</h2>
+    <div class="deeper-resources">
+      <a class="deeper-item" href="https://80000hours.org/problem-profiles/artificial-intelligence/" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">🎯</span>
+        <div>
+          <span class="deeper-item-label">80,000 Hours — AI as a Global Priority</span>
+          <span class="deeper-item-desc">Career-focused guide to the AI safety field, why leading researchers consider it one of the most important problems of our time, and how to contribute.</span>
+        </div>
+      </a>
+      <a class="deeper-item" href="https://www.alignmentforum.org" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">🧠</span>
+        <div>
+          <span class="deeper-item-label">AI Alignment Forum</span>
+          <span class="deeper-item-desc">Where alignment researchers publish technical work and debate open problems in AI safety. Start with the highlighted posts. Dense, but worth it.</span>
+        </div>
+      </a>
+      <a class="deeper-item" href="https://situational-awareness.ai" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">📡</span>
+        <div>
+          <span class="deeper-item-label">Situational Awareness — Leopold Aschenbrenner</span>
+          <span class="deeper-item-desc">A long-form essay on the trajectory of AI capabilities written by a former OpenAI researcher. Controversial, detailed, and worth reading with critical eyes.</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="reflect-block">
+    <p class="reflect-eyebrow">Reflect</p>
+    <h2 class="reflect-title">Before you move on</h2>
+    <p class="reflect-sub">No right answers here. These questions are for you.</p>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">Throughout history, new technologies have disrupted old jobs and created new ones. Is AI different from the printing press or the industrial revolution, and if so, how?</summary>
+        <div class="reflect-a">
+          <p>Previous disruptions replaced physical labour or narrow clerical tasks. AI can now perform cognitive work that spans language, reasoning, and creativity. The speed of displacement may also be faster than past transitions, leaving less time for workers and institutions to adapt. That said, humans have consistently found new roles after prior transitions. Whether AI follows the same pattern is one of the most important open questions of this era.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">Multiple AI labs say they believe they are building potentially dangerous technology but press on anyway, citing the logic that "if we don't, someone else will." Is that reasoning sound?</summary>
+        <div class="reflect-a">
+          <p>This is one of the central tensions in AI development. The argument has some strategic validity if unregulated actors would indeed proceed without safety investment. But it can also become a self-fulfilling justification for any level of risk. It also assumes that being first confers enough control to mitigate harm, which is unproven. Recognising the logic as a pressure on behaviour, rather than an airtight justification, is an important step in thinking critically about how the field operates.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">You have just completed this course. What is one concrete thing you want to build, change, or question because of what you have learned?</summary>
+        <div class="reflect-a">
+          <p>This is yours to answer. There is no model response here. The point of the course was not to make you feel informed about AI in the abstract; it was to give you enough understanding to act on it in your own context. Write the answer down somewhere. Come back to it in six months.</p>
+        </div>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <a href="LESSON 5.4.html" class="nav-btn prev">&larr; Lesson 5.4: Computer Vision in Practice</a>
+    <a href="../ai_crash_course_pro.html" class="nav-btn home">&#127968; Course Home</a>
+  </div>
+</main>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('progress-bar').style.width = (scrolled * 100) + '%';
+  });
+
+  // Sidebar TOC active state via IntersectionObserver
+  const sections = document.querySelectorAll('.lesson-section');
+  const links    = document.querySelectorAll('.toc-list a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[data-section="${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

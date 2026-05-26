@@ -1,0 +1,576 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.3: Regression - AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #2a8c5a;
+  --accent-soft: rgba(42,140,90,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --blue: #1a6bc8;
+  --blue-soft: rgba(26,107,200,0.08);
+  --red: #b83c12;
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(42,140,90,0.25); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* REGRESSION VS CLASSIFICATION COMPARE */
+.reg-class-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 32px 0; }
+.rc-card { border: 1px solid var(--border); padding: 22px; }
+.rc-head { font-family: var(--ui); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid; }
+.rc-head.reg { color: var(--accent); border-color: var(--accent); }
+.rc-head.cls { color: var(--blue); border-color: var(--blue); }
+.rc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.rc-list li { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 14px; position: relative; }
+.rc-list li::before { content: '→'; position: absolute; left: 0; color: var(--muted2); font-size: 11px; top: 2px; }
+
+/* LINEAR REGRESSION VISUAL */
+.linreg-visual {
+  margin: 36px 0;
+  background: var(--ink);
+  padding: 28px;
+}
+.linreg-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.linreg-caption { font-family: var(--ui); font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 14px; line-height: 1.65; }
+
+/* ERROR METRICS */
+.metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 32px 0; }
+.metric-card { background: var(--paper2); border: 1px solid var(--border); padding: 18px 16px; }
+.metric-abbr { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--accent); margin-bottom: 6px; letter-spacing: 0.04em; }
+.metric-name { font-family: var(--ui); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+.metric-desc { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* CODE BLOCK */
+.code-block { background: #1e1e2e; margin: 28px 0; overflow: hidden; }
+.code-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.code-tag { font-family: var(--mono); font-size: 10px; color: rgba(42,140,90,0.9); letter-spacing: 0.06em; }
+.code-body { padding: 20px 18px; overflow-x: auto; }
+.code-body pre { font-family: var(--mono); font-size: 13px; line-height: 1.75; color: #cdd6f4; white-space: pre; }
+.py-kw { color: #cba6f7; }
+.py-fn { color: #89b4fa; }
+.py-str { color: #a6e3a1; }
+.py-num { color: #fab387; }
+.py-cm { color: #6c7086; }
+.py-op { color: #89dceb; }
+
+/* OUTPUT */
+.output-block { background: var(--paper3); border-left: 3px solid var(--accent); padding: 14px 18px; margin: -8px 0 28px; font-family: var(--mono); font-size: 13px; color: var(--ink); line-height: 1.7; }
+.output-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-family: var(--mono); }
+
+/* EQUATION DISPLAY */
+.eq-display { background: var(--paper2); border: 1px solid var(--border); padding: 24px 28px; margin: 32px 0; text-align: center; }
+.eq-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.eq-main { font-family: var(--mono); font-size: 22px; color: var(--ink); letter-spacing: 0.06em; margin-bottom: 14px; }
+.eq-parts { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+.eq-part { font-family: var(--ui); font-size: 13px; color: var(--muted); }
+.eq-part strong { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .reg-class-compare { grid-template-columns: 1fr; }
+  .metric-row { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 3.3</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">13 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 3: Machine Learning</span>
+    <span class="lesson-num-tag">Lesson 3 of 6</span>
+  </div>
+  <h1 class="lesson-title">Supervised Learning:<br><em>Regression</em></h1>
+  <p class="lesson-intro">Not every prediction needs to be a category. Sometimes you need a number: a price, a temperature, a score. Regression is supervised learning for continuous outputs, and it is one of the oldest and most reliable tools in the entire field.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>The difference between regression and classification</div>
+    <div class="obj-item"><div class="obj-dot"></div>How linear regression works geometrically</div>
+    <div class="obj-item"><div class="obj-dot"></div>What loss functions measure in regression</div>
+    <div class="obj-item"><div class="obj-dot"></div>MAE, MSE, and R-squared explained</div>
+    <div class="obj-item"><div class="obj-dot"></div>Predicting house prices in Scikit-learn</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2 id="reg-vs-class">Regression versus classification</h2>
+
+    <p>The first question to ask when you start a machine learning project is: what kind of thing am I trying to predict? If the answer is a label or category, you reach for a classifier. If the answer is a number somewhere on a continuous scale, you reach for a regressor.</p>
+
+    <div class="reg-class-compare">
+      <div class="rc-card">
+        <div class="rc-head reg">Regression predicts...</div>
+        <ul class="rc-list">
+          <li>House price ($312,000)</li>
+          <li>Temperature tomorrow (23.4 °C)</li>
+          <li>Patient's blood pressure (128 mmHg)</li>
+          <li>Time a delivery will take (47 minutes)</li>
+          <li>Number of sales next quarter (8,420 units)</li>
+        </ul>
+      </div>
+      <div class="rc-card">
+        <div class="rc-head cls">Classification predicts...</div>
+        <ul class="rc-list">
+          <li>Will this loan default? (Yes / No)</li>
+          <li>What species is this? (Cat / Dog / Bird)</li>
+          <li>Is this email spam? (Spam / Not spam)</li>
+          <li>What digit is this? (0 through 9)</li>
+          <li>Is this tumour benign? (Benign / Malignant)</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>The boundary can get fuzzy. You can turn a regression problem into a classification one by bucketing the output: instead of predicting the exact house price, predict whether it is "cheap," "mid-range," or "expensive." But for anything where the exact number matters, regression is the right tool.</p>
+
+    <h2 id="linear-regression">Linear regression: fit a line, predict a number</h2>
+
+    <p>Linear regression is the simplest regression algorithm, and it is genuinely useful. The core idea is that you draw a straight line through your data in a way that minimises the total distance between the line and all your data points. Future predictions are just reading off the line at the relevant x-value.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Analogy</div>
+      <p>You are studying for an exam and you have records from previous students: how many hours each person studied and what score they got. You plot this as a scatter of dots. Linear regression draws the single best straight line through that scatter. Once the line is drawn, you can read off "if I study 7 hours, I should expect a score of about 74."</p>
+    </div>
+
+    <div class="eq-display">
+      <div class="eq-label">The equation of a line (linear regression)</div>
+      <div class="eq-main">y = mx + b</div>
+      <div class="eq-parts">
+        <span class="eq-part"><strong>y</strong> = the prediction (what we want)</span>
+        <span class="eq-part"><strong>x</strong> = the input feature</span>
+        <span class="eq-part"><strong>m</strong> = slope (how steep the line is)</span>
+        <span class="eq-part"><strong>b</strong> = intercept (where the line crosses y-axis)</span>
+      </div>
+    </div>
+
+    <p>The model's job during training is to find the values of <strong>m</strong> and <strong>b</strong> that make the line fit the training data as well as possible. These are the parameters of the model, the numbers the model learns. Once training is done, m and b are fixed. Predicting is then just plugging in any x and computing the result.</p>
+
+    <p>When you have multiple input features, the line becomes a hyperplane, but the principle is identical. Instead of one slope m, you have one weight (slope) for each feature. Still the same core idea: find the weights that minimise prediction error.</p>
+
+    <div class="linreg-visual">
+      <div class="linreg-label">Linear regression: study hours vs exam score</div>
+      <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+        <!-- Axes -->
+        <line x1="60" y1="240" x2="470" y2="240" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <line x1="60" y1="240" x2="60" y2="30" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+        <!-- Axis labels -->
+        <text x="265" y="270" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.5)" font-family="Outfit,sans-serif">Study hours</text>
+        <text x="20" y="140" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.5)" font-family="Outfit,sans-serif" transform="rotate(-90 20 140)">Score</text>
+
+        <!-- Tick labels -->
+        <text x="60" y="256" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">0</text>
+        <text x="143" y="256" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">2</text>
+        <text x="225" y="256" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">4</text>
+        <text x="307" y="256" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">6</text>
+        <text x="390" y="256" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">8</text>
+        <text x="460" y="256" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">10</text>
+
+        <!-- Regression line -->
+        <line x1="75" y1="220" x2="455" y2="55" stroke="#2a8c5a" stroke-width="2.5"/>
+
+        <!-- Scatter data points -->
+        <circle cx="90" cy="215" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="120" cy="200" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="143" cy="190" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="170" cy="182" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="195" cy="165" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="225" cy="155" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="250" cy="152" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="275" cy="138" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="307" cy="120" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="330" cy="112" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="360" cy="96" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="390" cy="88" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="415" cy="78" r="5" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="445" cy="65" r="5" fill="rgba(255,255,255,0.7)"/>
+
+        <!-- Residual lines (errors) shown for a few points -->
+        <line x1="143" y1="190" x2="143" y2="177" stroke="#fab387" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="225" y1="155" x2="225" y2="145" stroke="#fab387" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="307" y1="120" x2="307" y2="110" stroke="#fab387" stroke-width="1" stroke-dasharray="3,2"/>
+        <line x1="390" y1="88" x2="390" y2="81" stroke="#fab387" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- Legend -->
+        <line x1="300" y1="208" x2="330" y2="208" stroke="#2a8c5a" stroke-width="2.5"/>
+        <text x="338" y="212" font-size="11" fill="rgba(255,255,255,0.6)" font-family="Outfit,sans-serif">Best fit line</text>
+        <line x1="300" y1="225" x2="330" y2="225" stroke="#fab387" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="338" y="229" font-size="11" fill="rgba(255,255,255,0.6)" font-family="Outfit,sans-serif">Residuals (errors)</text>
+      </svg>
+      <p class="linreg-caption">The green line is the best fit through the data. The orange dashed lines are residuals: the vertical distance between each point and the line. Linear regression finds the line that minimises the total size of these residuals.</p>
+    </div>
+
+    <h2 id="loss-functions">Loss functions: measuring how wrong you are</h2>
+
+    <p>To fit the line, the model needs a way to measure how wrong its current parameters are. That measure is the loss function. In regression, the most common approach is to look at the residuals: the gap between each prediction and the actual value. The loss function summarises all those gaps into a single number.</p>
+
+    <p>Three metrics dominate regression evaluation. Understanding what each one rewards and what each one punishes will save you from misinterpreting your model's performance.</p>
+
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="metric-abbr">MAE</div>
+        <div class="metric-name">Mean Absolute Error</div>
+        <div class="metric-desc">Average of the absolute differences between predictions and actuals. Easy to interpret: an MAE of 5,000 means your predictions are wrong by $5,000 on average. Treats all errors equally.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-abbr">MSE</div>
+        <div class="metric-name">Mean Squared Error</div>
+        <div class="metric-desc">Average of the squared differences. Squaring penalises large errors much more harshly than small ones. Used during training because it is mathematically smooth to optimise. Harder to interpret in original units.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-abbr">R²</div>
+        <div class="metric-name">R-Squared</div>
+        <div class="metric-desc">Measures how much of the variance in the target the model explains. Ranges from 0 to 1 (higher is better). An R² of 0.85 means the model explains 85% of the variability in house prices.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Which metric to report?</div>
+      <p>Use MAE when you want an error in the same units as the target (dollars, degrees, minutes) and need to explain the result to a non-technical audience. Use MSE or RMSE (root of MSE) during model training and comparison. Report R-squared alongside MAE when presenting to stakeholders: "The model explains 85% of price variation and is off by an average of $12,000."</p>
+    </div>
+
+    <h2 id="polynomial-and-nonlinear">When a straight line is not enough</h2>
+
+    <p>Linear regression assumes the relationship between input and output is a straight line. Real-world relationships often curve. A student's scores might improve steadily with study hours up to a point, then plateau due to fatigue. A car's fuel efficiency might drop slowly at moderate speeds then plummet at highway speeds.</p>
+
+    <p>Polynomial regression handles this by adding powers of the feature as extra columns. Instead of just using x, you also include x squared, x cubed, and so on. The model is still linear in its parameters (it learns weights for each term) but the resulting curve can bend and flex to fit non-linear patterns.</p>
+
+    <p>More complex relationships call for more powerful algorithms. Decision trees can do regression (predict numbers at each leaf instead of class labels). Random Forests average the predictions of many trees. Gradient Boosting builds trees sequentially, each one correcting the errors of the last. These ensemble methods consistently rank among the best performers on tabular data with complex, non-linear relationships.</p>
+
+    <h2 id="sklearn-regression">Predicting house prices in Scikit-learn</h2>
+
+    <p>The classic regression toy problem is predicting house prices from features like size, location, number of rooms, and age. Here is a full pipeline using the California housing dataset that ships with Scikit-learn.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Python</span>
+        <span class="code-tag">house_price_regression.py</span>
+      </div>
+      <div class="code-body"><pre><span class="py-kw">from</span> sklearn.datasets <span class="py-kw">import</span> <span class="py-fn">fetch_california_housing</span>
+<span class="py-kw">from</span> sklearn.linear_model <span class="py-kw">import</span> <span class="py-fn">LinearRegression</span>
+<span class="py-kw">from</span> sklearn.model_selection <span class="py-kw">import</span> <span class="py-fn">train_test_split</span>
+<span class="py-kw">from</span> sklearn.metrics <span class="py-kw">import</span> <span class="py-fn">mean_absolute_error</span>, <span class="py-fn">r2_score</span>
+<span class="py-kw">import</span> numpy <span class="py-kw">as</span> np
+
+<span class="py-cm"># Load the built-in California housing dataset</span>
+data = <span class="py-fn">fetch_california_housing</span>()
+X, y = data.data, data.target
+
+<span class="py-cm"># Split into training and test sets</span>
+X_train, X_test, y_train, y_test = <span class="py-fn">train_test_split</span>(
+    X, y, test_size=<span class="py-num">0.2</span>, random_state=<span class="py-num">42</span>
+)
+
+<span class="py-cm"># Train a linear regression model</span>
+model = <span class="py-fn">LinearRegression</span>()
+model.<span class="py-fn">fit</span>(X_train, y_train)
+
+<span class="py-cm"># Predict on the test set</span>
+predictions = model.<span class="py-fn">predict</span>(X_test)
+
+<span class="py-cm"># Evaluate: MAE is in units of $100,000 (dataset scale)</span>
+mae = <span class="py-fn">mean_absolute_error</span>(y_test, predictions)
+r2  = <span class="py-fn">r2_score</span>(y_test, predictions)
+
+<span class="py-fn">print</span>(<span class="py-fn">f</span><span class="py-str">"MAE: ${mae * 100_000:,.0f}"</span>)
+<span class="py-fn">print</span>(<span class="py-fn">f</span><span class="py-str">"R-squared: {r2:.3f}"</span>)
+
+<span class="py-cm"># Check the learned weights for each feature</span>
+<span class="py-kw">for</span> name, coef <span class="py-kw">in</span> <span class="py-fn">zip</span>(data.feature_names, model.coef_):
+    <span class="py-fn">print</span>(<span class="py-fn">f</span><span class="py-str">"  {name}: {coef:.4f}"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="output-block">
+      <div class="output-label">Output</div>
+      MAE: $51,803<br>
+      R-squared: 0.576<br><br>
+      &nbsp; MedInc: 0.4487<br>
+      &nbsp; HouseAge: 0.0099<br>
+      &nbsp; AveRooms: -0.1073<br>
+      &nbsp; AveBedrms: 0.6451<br>
+      &nbsp; Population: -0.0000<br>
+      &nbsp; AveOccup: -0.0038<br>
+      &nbsp; Latitude: -0.4214<br>
+      &nbsp; Longitude: -0.4333
+    </div>
+
+    <p>The model is off by about $52,000 on average and explains 57.6% of the variation in house prices. For a linear model with no feature engineering, that is a reasonable starting point. The coefficients reveal something important: median income (MedInc) has the largest positive weight, meaning higher income areas are the strongest predictor of higher house prices. Latitude and longitude have large negative weights, encoding the fact that houses in coastal California tend to cost more.</p>
+
+    <p>You could improve this significantly. Polynomial features, better feature engineering, or switching to a gradient-boosted tree would likely get R-squared above 0.85. But for understanding the core idea, a simple linear model is always the right first step. Understand what a simple model says before reaching for something complex.</p>
+
+    <div class="pullquote">
+      <p>"All models are wrong, but some are useful."</p>
+      <cite>George Box, statistician</cite>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list" id="toc">
+        <li class="toc-item" data-target="reg-vs-class">Regression vs classification</li>
+        <li class="toc-item" data-target="linear-regression">Linear regression</li>
+        <li class="toc-item" data-target="loss-functions">Loss functions</li>
+        <li class="toc-item" data-target="polynomial-and-nonlinear">Non-linear relationships</li>
+        <li class="toc-item" data-target="sklearn-regression">House price prediction</li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">regression</div>
+          <div class="term-def">Supervised learning that predicts a continuous numerical output rather than a category.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">residual</div>
+          <div class="term-def">The difference between a model's prediction and the actual value for a given data point.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">MAE</div>
+          <div class="term-def">Mean Absolute Error. Average size of prediction errors in the original units of the target variable.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">R-squared</div>
+          <div class="term-def">The proportion of variance in the target that the model explains. 1.0 is perfect; 0.0 is no better than just guessing the mean.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">coefficient</div>
+          <div class="term-def">The weight the model assigns to a feature. A positive coefficient means more of that feature predicts a higher output.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Go deeper</div>
+      <div class="book-card">
+        <div class="book-title">Introduction to Statistical Learning</div>
+        <div class="book-author">James, Witten, Hastie, Tibshirani</div>
+        <div class="book-note">Free PDF online. Chapters 3 and 4 cover linear and logistic regression with clear visual explanations and no heavy math prerequisites.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">StatQuest: Linear Regression</div>
+        <div class="book-author">Josh Starmer (YouTube)</div>
+        <div class="book-note">The series on regression, R-squared, and p-values is the clearest walkthrough you will find anywhere. Start with "Linear Regression, Clearly Explained."</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Hands-on activity</div>
+    <h2 class="act-title">Predict California house prices and explain your results</h2>
+    <p class="act-body">You will train a linear regression model, inspect what it learned, plot the residuals, and then upgrade to a more powerful model to see how much better it gets. By the end, you will be able to explain in plain English what the model is doing and why its predictions look the way they do.</p>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Open the Lesson 3.3 Colab notebook. Run the linear regression pipeline and note the MAE and R-squared.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Plot predicted vs actual values using Matplotlib. What would a perfect model look like on this plot? How does yours differ?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Plot the residuals (prediction minus actual) against the predicted values. Are the errors random, or do you see a pattern?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">04</span>
+        <span class="step-text">Replace LinearRegression with RandomForestRegressor(n_estimators=100). Retrain and compare MAE and R-squared. How much did the score improve?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">05</span>
+        <span class="step-text">Use feature_importances_ from the Random Forest model to see which features matter most. Does the ranking match your intuition about what drives house prices?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-3-3';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<div style="max-width:860px;margin:0 auto;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(26,24,20,0.1);">
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code live in Google Colab</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">All examples + challenge exercises &middot; Free GPU included &middot; No setup required</div>
+  </div>
+  <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-3.3-regression.ipynb" target="_blank" rel="noopener" style="flex-shrink:0;">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+  </a>
+</div>
+
+<div class="nav-section">
+  <a class="nav-card prev" href="LESSON 3.2.html">
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Supervised Learning: Classification</span>
+    <span class="nav-arrow">←</span>
+  </a>
+  <a class="nav-card next" href="LESSON 3.4.html">
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Unsupervised Learning: Clustering</span>
+    <span class="nav-arrow">→</span>
+  </a>
+</div>
+
+<footer>
+  <span class="footer-course">AI Crash Course</span>
+  <span class="footer-copy">Phase 3 · Lesson 3.3 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
+});
+const items = document.querySelectorAll('.toc-item');
+const targets = Array.from(items).map(i => document.getElementById(i.dataset.target)).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      items.forEach(i => i.classList.remove('active'));
+      const active = document.querySelector(`.toc-item[data-target="${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+targets.forEach(t => observer.observe(t));
+</script>
+</body>
+</html>

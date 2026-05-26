@@ -1,0 +1,598 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.1: How Machines Learn — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #2a8c5a;
+  --accent-soft: rgba(42,140,90,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --blue: #1a6bc8;
+  --blue-soft: rgba(26,107,200,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(42,140,90,0.25); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* LEARNING LOOP */
+.learning-loop {
+  margin: 36px 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.loop-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 14px;
+  text-align: center;
+  background: var(--paper2);
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.loop-step:last-child { border-right: none; }
+.loop-step::after {
+  content: '→';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--accent);
+  z-index: 2;
+  background: var(--paper2);
+  padding: 2px;
+}
+.loop-step:last-child::after { display: none; }
+.loop-icon { font-size: 24px; margin-bottom: 10px; }
+.loop-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.loop-desc { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* GRADIENT DESCENT VISUAL */
+.gradient-visual {
+  margin: 36px 0;
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  padding: 24px 28px;
+}
+.gradient-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 16px; }
+.gradient-svg-wrap { width: 100%; }
+.gradient-caption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 14px; line-height: 1.65; }
+
+/* CONCEPT COMPARE */
+.concept-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 32px 0; }
+.cc-card { border: 1px solid var(--border); overflow: hidden; }
+.cc-head { padding: 12px 18px; font-family: var(--ui); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+.cc-params { background: var(--accent); }
+.cc-hyper { background: var(--blue); }
+.cc-body { padding: 16px 18px; background: var(--paper2); }
+.cc-example { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+.cc-example.blue { color: var(--blue); }
+.cc-desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* CODE BLOCK */
+.code-block { background: #1e1e2e; margin: 28px 0; overflow: hidden; }
+.code-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.code-tag { font-family: var(--mono); font-size: 10px; color: rgba(42,140,90,0.9); letter-spacing: 0.06em; }
+.code-body { padding: 20px 18px; overflow-x: auto; }
+.code-body pre { font-family: var(--mono); font-size: 13px; line-height: 1.75; color: #cdd6f4; white-space: pre; }
+.py-kw { color: #cba6f7; }
+.py-fn { color: #89b4fa; }
+.py-str { color: #a6e3a1; }
+.py-num { color: #fab387; }
+.py-cm { color: #6c7086; }
+.py-op { color: #89dceb; }
+
+/* OUTPUT */
+.output-block { background: var(--paper3); border-left: 3px solid var(--accent); padding: 14px 18px; margin: -8px 0 28px; font-family: var(--mono); font-size: 13px; color: var(--ink); line-height: 1.7; }
+.output-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-family: var(--mono); }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .learning-loop { grid-template-columns: 1fr; }
+  .loop-step::after { display: none; }
+  .concept-compare { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--serif); font-size: 22px; color: var(--ink); margin: 0 0 6px; }
+.reflect-sub { font-family: var(--ui); font-size: 13px; color: var(--ink2); margin: 0 0 28px; }
+.reflect-card { border-top: 1px solid rgba(154,122,46,0.15); padding: 18px 0; }
+.reflect-card:last-child { border-bottom: 1px solid rgba(154,122,46,0.15); }
+.reflect-q { font-family: var(--ui); font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.reflect-q::-webkit-details-marker { display: none; }
+.reflect-q::after { content: "+"; font-size: 18px; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+details[open] .reflect-q::after { content: "−"; }
+.reflect-a { padding: 14px 0 4px; }
+.reflect-a p { font-family: var(--ui); font-size: 14px; color: var(--ink2); line-height: 1.7; margin: 0; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 3.1</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">12 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 3: Machine Learning</span>
+    <span class="lesson-num-tag">Lesson 1 of 6</span>
+  </div>
+  <h1 class="lesson-title">How Machines Learn:<br><em>The Core Idea</em></h1>
+  <p class="lesson-intro">This is the lesson where everything clicks. You have seen what data is and how it is structured. Now you will see what a machine actually does with that data to get smarter over time.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>The machine learning loop in plain English</div>
+    <div class="obj-item"><div class="obj-dot"></div>What "training" a model actually means</div>
+    <div class="obj-item"><div class="obj-dot"></div>How gradient descent finds the best answer</div>
+    <div class="obj-item"><div class="obj-dot"></div>The difference between parameters and hyperparameters</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>What does it mean to learn?</h2>
+
+    <p>When you were learning to ride a bike, nobody wrote you a manual with instructions like "apply 2.3 Newtons of force to the left pedal at exactly 38 degrees." That would have been useless. Instead, you got on the bike, tried, fell, adjusted, tried again, and slowly your body figured out the balance. Trial, error, adjustment, repeat.</p>
+
+    <p>Machine learning works the same way. You do not program rules into the model. You give it data, let it make predictions, show it how wrong those predictions were, and let it adjust. Do that thousands or millions of times and the model gets good at the task. The machine is learning from feedback, exactly like you learned to ride that bike.</p>
+
+    <p>The difference is scale. A human might need a few hundred attempts to learn a skill. A machine can run through millions of examples in minutes.</p>
+
+    <div class="pullquote">
+      <p>"Machine learning is a field of study that gives computers the ability to learn without being explicitly programmed."</p>
+      <cite>Arthur Samuel, 1959 — the person who coined the term "machine learning"</cite>
+    </div>
+
+    <h2>The learning loop</h2>
+
+    <p>Every machine learning model, from the simplest linear regression to the largest language model, follows the same basic cycle. Understanding this loop is the most important conceptual foundation in this entire phase.</p>
+
+    <div class="learning-loop">
+      <div class="loop-step">
+        <div class="loop-icon">📦</div>
+        <div class="loop-name">Data in</div>
+        <div class="loop-desc">Feed a batch of training examples into the model</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon">🔮</div>
+        <div class="loop-name">Predict</div>
+        <div class="loop-desc">The model makes a prediction for each example</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon">📏</div>
+        <div class="loop-name">Measure error</div>
+        <div class="loop-desc">Compare prediction to the real answer, calculate the loss</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon">↩️</div>
+        <div class="loop-name">Adjust</div>
+        <div class="loop-desc">Tweak the model's internal numbers to reduce the error</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon">🔁</div>
+        <div class="loop-name">Repeat</div>
+        <div class="loop-desc">Run this cycle thousands of times until the error is small</div>
+      </div>
+    </div>
+
+    <p>That cycle runs over and over, adjusting the model slightly each time, until the predictions are good enough. The number of times you run the full loop is called an <strong>epoch</strong>. Running for 10 epochs means the model has seen the full training dataset 10 times.</p>
+
+    <h2>What the model is actually adjusting</h2>
+
+    <p>Inside every machine learning model there are numbers called <strong>parameters</strong> (also called weights and biases). These are the knobs the model turns during training. At the start, they are set randomly. By the end of training, they hold the learned pattern.</p>
+
+    <p>Think of a linear model predicting house prices. Its prediction might look like this:</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Concept</span><span class="code-tag">Linear model</span></div>
+      <div class="code-body"><pre>price = (w1 × size) + (w2 × bedrooms) + (w3 × location) + b
+
+<span class="py-cm"># w1, w2, w3 are the weights (parameters the model learns)
+# b is the bias (another learned parameter)
+# At the start: w1=0.1, w2=0.3, w3=-0.2, b=50
+# After training: w1=180, w2=25000, w3=42000, b=-15000</span></pre></div>
+    </div>
+
+    <p>The model starts with random values for all those weights. It is terrible at first. After training, those weights encode the actual relationship between features and price that the model discovered in the data. Training is nothing more than finding the right values for these numbers.</p>
+
+    <h2>How does it know which way to adjust?</h2>
+
+    <p>This is where gradient descent comes in. Gradient descent is the algorithm that figures out how to adjust the weights to reduce the error. The intuition is simple, even if the full mathematics runs deeper.</p>
+
+    <div class="gradient-visual">
+      <div class="gradient-label">Gradient descent: rolling toward the lowest point</div>
+      <svg class="gradient-svg-wrap" viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bowl curve -->
+        <path d="M 30 30 Q 130 170 240 140 Q 350 110 450 20" fill="none" stroke="rgba(26,24,20,0.15)" stroke-width="2"/>
+        <!-- Loss curve (U shape) -->
+        <path d="M 30 20 Q 80 140 140 155 Q 200 165 240 155 Q 280 145 340 120 Q 390 100 450 50" fill="none" stroke="rgba(42,140,90,0.6)" stroke-width="2.5"/>
+        <!-- Ball at high point -->
+        <circle cx="80" cy="128" r="8" fill="rgba(42,140,90,0.8)"/>
+        <!-- Arrow down the slope -->
+        <path d="M 80 128 Q 130 148 165 155" stroke="rgba(42,140,90,0.6)" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+        <defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(42,140,90,0.7)"/></marker></defs>
+        <!-- Ball at minimum -->
+        <circle cx="230" cy="157" r="8" fill="rgba(154,122,46,0.8)"/>
+        <!-- X axis label -->
+        <text x="240" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(26,24,20,0.4)">model weights</text>
+        <!-- Y axis label -->
+        <text x="12" y="90" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(26,24,20,0.4)" transform="rotate(-90 12 90)">error (loss)</text>
+        <!-- Labels -->
+        <text x="72" y="116" font-family="JetBrains Mono, monospace" font-size="8" fill="rgba(42,140,90,0.9)">start</text>
+        <text x="218" y="148" font-family="JetBrains Mono, monospace" font-size="8" fill="rgba(154,122,46,0.9)">minimum</text>
+      </svg>
+      <p class="gradient-caption">Imagine the curve as a valley. The ball starts somewhere random on the slope. Gradient descent figures out which way is downhill and takes a small step in that direction. Repeat enough times and the ball settles at the lowest point, where the error is smallest. That lowest point is your trained model.</p>
+    </div>
+
+    <p>The size of each step is called the <strong>learning rate</strong>. Too large and you overshoot the bottom and bounce around. Too small and training takes forever. Choosing a good learning rate is one of the most important practical decisions in machine learning.</p>
+
+    <h2>Parameters vs hyperparameters</h2>
+
+    <p>There are two kinds of numbers in a machine learning model and it is worth being clear about the difference because the terms come up constantly.</p>
+
+    <div class="concept-compare">
+      <div class="cc-card">
+        <div class="cc-head cc-params">Parameters</div>
+        <div class="cc-body">
+          <div class="cc-example">w1, w2, b</div>
+          <div class="cc-desc">The numbers the model learns during training. They start random and get adjusted through gradient descent. You never set these yourself. The model finds them.</div>
+        </div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-head cc-hyper">Hyperparameters</div>
+        <div class="cc-body">
+          <div class="cc-example blue">learning_rate, epochs, n_trees</div>
+          <div class="cc-desc">The settings you choose before training starts. How fast should the model learn? How many trees in the forest? These are not learned; they are decisions you make.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">A useful way to remember it</div>
+      <p>Parameters are what the model learns. Hyperparameters are what you decide before learning begins. A chef does not choose how the dish tastes while eating it. They choose the recipe, the oven temperature and the cooking time before the dish goes in. Those choices are the hyperparameters. What comes out is shaped by the parameters the process discovers.</p>
+    </div>
+
+    <h2>Your first model in Scikit-learn</h2>
+
+    <p>All of this theory becomes much more concrete once you see the loop in code. Scikit-learn makes this remarkably clean. Here is a full machine learning pipeline in about 10 lines.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-tag">The full ML loop in Scikit-learn</span></div>
+      <div class="code-body"><pre><span class="py-kw">from</span> sklearn.linear_model <span class="py-kw">import</span> LinearRegression
+<span class="py-kw">from</span> sklearn.model_selection <span class="py-kw">import</span> train_test_split
+<span class="py-kw">from</span> sklearn.metrics <span class="py-kw">import</span> mean_squared_error
+<span class="py-kw">import</span> numpy <span class="py-kw">as</span> np
+
+<span class="py-cm"># 1. Prepare your features and label</span>
+X = df[[<span class="py-str">'size'</span>, <span class="py-str">'bedrooms'</span>, <span class="py-str">'location_score'</span>]]
+y = df[<span class="py-str">'price'</span>]
+
+<span class="py-cm"># 2. Split into training and test sets</span>
+X_train, X_test, y_train, y_test = <span class="py-fn">train_test_split</span>(
+    X, y, test_size=<span class="py-num">0.2</span>, random_state=<span class="py-num">42</span>)
+
+<span class="py-cm"># 3. Create the model (a hyperparameter choice: which model?)</span>
+model = <span class="py-fn">LinearRegression</span>()
+
+<span class="py-cm"># 4. Train: the loop runs inside here</span>
+model.<span class="py-fn">fit</span>(X_train, y_train)
+
+<span class="py-cm"># 5. Predict on unseen data</span>
+predictions = model.<span class="py-fn">predict</span>(X_test)
+
+<span class="py-cm"># 6. Measure the error</span>
+error = <span class="py-fn">mean_squared_error</span>(y_test, predictions)
+<span class="py-fn">print</span>(<span class="py-str">f"Mean squared error: </span>{error:.2f}<span class="py-str">"</span>)</pre></div>
+    </div>
+
+    <p>Notice that you never write the learning loop yourself. <code>model.fit()</code> runs the entire gradient descent process for you. Scikit-learn handles all the maths internally. Your job is to prepare clean data, choose a sensible model, and then evaluate whether the result is good enough.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Think of it this way</div>
+      <p>Calling <code>model.fit()</code> is like hiring an experienced chef and handing them a recipe book full of examples. The chef studies all the examples, figures out the patterns, and develops their own internal skills. You do not watch every step of that process. When they are done, you call <code>model.predict()</code> and they cook you a meal based on everything they learned.</p>
+    </div>
+
+    <h2>What training cannot do</h2>
+
+    <p>It is worth being honest about the limits of this process. The learning loop optimises the model to perform well on its training data. That is not the same as understanding the world. A model that has learned from historical house prices knows nothing about what a house physically is. It knows which numbers tend to go together.</p>
+
+    <p>This is why a model trained on data from one city can perform poorly in another. It has learned the patterns in what it saw, not the underlying rules of reality. Keeping this distinction in mind will save you from over-trusting your models and will help you diagnose problems when they arise.</p>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">What does it mean to learn?</li>
+        <li class="toc-item">The learning loop</li>
+        <li class="toc-item">What the model adjusts</li>
+        <li class="toc-item">Gradient descent</li>
+        <li class="toc-item">Parameters vs hyperparameters</li>
+        <li class="toc-item">Your first model</li>
+        <li class="toc-item">What training cannot do</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">The Hundred-Page Machine Learning Book</div>
+        <div class="book-author">Andriy Burkov · 2019</div>
+        <div class="book-note">The clearest short overview of how machine learning models are built and trained.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">Hands-On Machine Learning</div>
+        <div class="book-author">Aurélien Géron · 2022</div>
+        <div class="book-note">The gold standard practical reference. Covers every algorithm in this phase with real code.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Training</div>
+          <div class="term-def">The process of running the learning loop repeatedly to find good parameter values.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Loss / Error</div>
+          <div class="term-def">A number measuring how wrong the model's predictions are. Lower is better.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Gradient descent</div>
+          <div class="term-def">The algorithm that figures out how to adjust weights to reduce loss.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Learning rate</div>
+          <div class="term-def">How big a step the model takes each time it adjusts. A hyperparameter you choose.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Epoch</div>
+          <div class="term-def">One full pass through the entire training dataset.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Parameters</div>
+          <div class="term-def">The numbers the model learns during training: weights and biases.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Lesson Activity · No code required</div>
+    <div class="act-title">Draw the Loop</div>
+    <div class="act-body">Before you write a single line of ML code, make sure this loop is automatic in your head. This exercise takes 5 minutes and will pay back every time you need to debug a model.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Close this lesson and draw the 5-step machine learning loop from memory. Use your own words for each step, not the labels from this page.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Pick a real-world task: predicting whether a patient has diabetes. Write one sentence for what happens at each of the 5 steps for that specific problem.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">List two parameters (things the model learns) and two hyperparameters (things you decide) for a model predicting diabetes risk. Bring your answers to the live session.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-3-1';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <p class="reflect-eyebrow">Reflect</p>
+    <h2 class="reflect-title">Before you move on</h2>
+    <p class="reflect-sub">No right answers here. These questions are for you.</p>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">When we say a model "learns," what is actually changing inside it during training?</summary>
+        <div class="reflect-a">
+          <p>The model's parameters (weights and biases) are being adjusted. Starting from random values, each training example produces a prediction. The error between that prediction and the correct answer is calculated, and the parameters are nudged slightly in the direction that reduces the error. After millions of such adjustments, the parameters settle into values that work well across the data.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">Name a task where writing explicit rules would be easy, and one where machine learning is clearly the better approach. What makes the difference?</summary>
+        <div class="reflect-a">
+          <p>Calculating a tax bill follows clear rules that can be written out precisely; a rule-based system works fine. Recognising a face in a photo does not: the number of edge cases, lighting conditions, and angles is too vast to enumerate. The key difference is whether the problem has a definable, finite rule set or whether the pattern is too complex and variable to specify by hand.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">Gradient descent finds a minimum by always stepping downhill. What is the risk with this approach, and why does it still work so well in practice?</summary>
+        <div class="reflect-a">
+          <p>The risk is getting stuck in a local minimum, a valley that is not the lowest point globally. In simple examples this is a real problem. In practice, neural networks operate in millions of dimensions, and research suggests that most local minima in high-dimensional spaces are actually close in quality to the global minimum. Techniques like random restarts, momentum, and adaptive learning rates also help escape shallow traps.</p>
+        </div>
+      </details>
+    </div>
+
+  </div>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="../PHASE TWO/LESSON 2.5.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Exploring and Cleaning Real Data</span>
+  </a>
+  <a class="nav-card next" href="LESSON 3.2.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Supervised Learning: Classification</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 3</span>
+  <span class="footer-copy">Lesson 3.1 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

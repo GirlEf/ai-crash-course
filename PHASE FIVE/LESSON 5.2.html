@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 5.2 — Large Language Models: How They Actually Work | AI Crash Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1a2e; --ink-soft: #4a4a6a; --paper: #fafaf7; --surface: #ffffff;
+      --surface-raised: #f4f4f0; --accent: #8c1a5a; --accent-light: #f5d0e8;
+      --accent-dark: #6a1044; --border: #e2e2da; --radius: 10px; --sidebar-w: 260px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lora', Georgia, serif; background: var(--paper); color: var(--ink); line-height: 1.8; display: flex; }
+    #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0%; z-index: 9999; transition: width 0.1s linear; }
+    .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--surface); border-right: 1px solid var(--border); padding: 2rem 1.25rem; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; gap: 2rem; }
+    .sidebar-brand { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+    .sidebar-brand .phase-badge { background: var(--accent); color: #fff; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 99px; font-weight: 600; }
+    .toc-label { font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem; }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.15rem; }
+    .toc-list a { font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); text-decoration: none; padding: 0.3rem 0.6rem; border-radius: 6px; display: block; transition: all 0.2s; border-left: 2px solid transparent; }
+    .toc-list a:hover { color: var(--accent); background: var(--accent-light); }
+    .toc-list a.active { color: var(--accent); font-weight: 600; border-left-color: var(--accent); background: var(--accent-light); }
+    .sidebar-footer { margin-top: auto; font-family: 'Outfit', sans-serif; font-size: 0.75rem; color: var(--ink-soft); padding-top: 1rem; border-top: 1px solid var(--border); }
+    .sidebar-footer a { color: var(--accent); text-decoration: none; }
+    .main { margin-left: var(--sidebar-w); max-width: 820px; width: 100%; padding: 3rem 3rem 6rem; }
+    .lesson-hero { background: linear-gradient(135deg, #1a0010 0%, #3a0828 60%, #5a1040 100%); border-radius: 16px; padding: 3rem; margin-bottom: 3rem; color: #fff; position: relative; overflow: hidden; }
+    .lesson-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 50%, rgba(140,26,90,0.4) 0%, transparent 60%); }
+    .lesson-hero-content { position: relative; z-index: 1; }
+    .lesson-tag { font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #f5d0e8; margin-bottom: 0.75rem; }
+    .lesson-hero h1 { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .lesson-hero p { font-size: 1rem; color: rgba(255,255,255,0.8); max-width: 540px; font-family: 'Outfit', sans-serif; }
+    .hero-meta { display: flex; gap: 1.5rem; margin-top: 1.5rem; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+    .lesson-section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+    .lesson-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.55rem; font-weight: 700; color: var(--ink); margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--accent-light); }
+    .lesson-section h3 { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    strong { font-weight: 600; }
+    em { font-style: italic; }
+    .callout { border-left: 4px solid var(--accent); background: var(--accent-light); padding: 1rem 1.25rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 1.5rem 0; font-size: 0.95rem; }
+    .callout.info { border-color: #2a6ab5; background: #e8f0fb; }
+    .callout.warning { border-color: #c07800; background: #fff3d6; }
+    .callout.success { border-color: #2a8c5a; background: #e5f5ed; }
+    .callout-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--accent-dark); }
+    .callout.info .callout-title { color: #1a4a8a; }
+    .callout.warning .callout-title { color: #7a4800; }
+    .callout.success .callout-title { color: #1a6040; }
+    .svg-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
+    .svg-caption { text-align: center; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.75rem; font-style: italic; }
+    .info-grid { display: grid; gap: 1rem; margin: 1.5rem 0; }
+    .info-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .info-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .info-card h4 { font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent-dark); }
+    .info-card p { font-size: 0.88rem; margin: 0; color: var(--ink-soft); }
+    .token-demo { background: #0f1117; border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+    .token-demo .raw-text { color: #c9d1d9; margin-bottom: 1rem; }
+    .token-demo .tokens { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
+    .tok { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.82rem; font-weight: 600; }
+    .tok-1 { background: rgba(140,26,90,0.4); color: #f5d0e8; border: 1px solid rgba(140,26,90,0.6); }
+    .tok-2 { background: rgba(42,107,181,0.4); color: #b8d4f8; border: 1px solid rgba(42,107,181,0.6); }
+    .tok-3 { background: rgba(42,140,90,0.4); color: #a8e4c8; border: 1px solid rgba(42,140,90,0.6); }
+    .tok-4 { background: rgba(181,130,10,0.4); color: #f0e0a8; border: 1px solid rgba(181,130,10,0.6); }
+    .tok-5 { background: rgba(120,80,200,0.4); color: #d0c0f8; border: 1px solid rgba(120,80,200,0.5); }
+    .token-demo .label { font-size: 0.72rem; color: #6272a4; margin-top: 0.3rem; font-style: italic; }
+    .llm-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    .llm-table th { background: var(--ink); color: #fff; font-family: 'Outfit', sans-serif; font-weight: 600; padding: 0.7rem 1rem; text-align: left; font-size: 0.8rem; }
+    .llm-table td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.4; font-family: 'Outfit', sans-serif; }
+    .llm-table tr:last-child td { border-bottom: none; }
+    .llm-table tr:nth-child(even) td { background: var(--surface-raised); }
+    .code-block { background: #0f1117; border-radius: var(--radius); padding: 1.5rem; overflow-x: auto; margin: 1.5rem 0; border: 1px solid #2a2a3a; }
+    .code-block pre { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.7; color: #c9d1d9; }
+    .code-label { font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.4rem; }
+    .py-kw { color: #ff79c6; } .py-fn { color: #50fa7b; } .py-str { color: #f1fa8c; }
+    .py-num { color: #bd93f9; } .py-cm { color: #6272a4; font-style: italic; } .py-op { color: #ff79c6; }
+    .output-block { background: #1a1a2e; border-left: 4px solid var(--accent); padding: 1rem 1.25rem; border-radius: 0 var(--radius) var(--radius) 0; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #a8d8a8; margin-top: -0.5rem; overflow-x: auto; }
+    .takeaway-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+    .takeaway-list li { display: flex; align-items: flex-start; gap: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.92rem; }
+    .takeaway-list li::before { content: '✓'; color: var(--accent); font-weight: 700; font-family: 'Outfit', sans-serif; flex-shrink: 0; }
+    .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .nav-btn { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.9rem; padding: 0.75rem 1.5rem; border-radius: var(--radius); text-decoration: none; transition: all 0.2s; }
+    .nav-btn.prev { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--border); }
+    .nav-btn.next { background: var(--accent); color: #fff; }
+    .nav-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; padding: 2rem 1.25rem 5rem; } .info-grid.cols-2, .info-grid.cols-3 { grid-template-columns: 1fr; } .mobile-toc { display: block; } }
+    .mobile-toc { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 2rem; overflow: hidden; }
+    .mobile-toc summary { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--ink); padding: 0.9rem 1.25rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .mobile-toc summary::-webkit-details-marker { display: none; }
+    .mobile-toc summary::after { content: "▾"; font-size: 0.75rem; color: var(--ink-soft); }
+    details.mobile-toc[open] summary::after { content: "▴"; }
+    .mobile-toc-links { padding: 0.5rem 0 0.75rem; border-top: 1px solid var(--border); }
+    .mobile-toc-links a { display: block; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); text-decoration: none; padding: 0.3rem 1.25rem; }
+    .mobile-toc-links a:hover { color: var(--accent); }
+    /* GOING DEEPER */
+    .deeper-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-top: 2.5rem; }
+    .deeper-eyebrow { font-family: 'Outfit', sans-serif; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem; font-weight: 700; }
+    .deeper-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); margin: 0 0 1.25rem; }
+    .deeper-resources { display: flex; flex-direction: column; gap: 0.75rem; }
+    .deeper-item { display: flex; gap: 1rem; align-items: flex-start; padding: 0.85rem 1rem; background: var(--surface-raised); border-radius: 8px; border: 1px solid var(--border); text-decoration: none; transition: border-color 0.2s; }
+    .deeper-item:hover { border-color: var(--accent); }
+    .deeper-item-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+    .deeper-item-label { font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--ink); display: block; margin-bottom: 2px; }
+    .deeper-item-desc { font-family: 'Outfit', sans-serif; font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5; }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<aside class="sidebar">
+  <a href="../ai_crash_course_pro.html" class="sidebar-brand">
+    <span class="phase-badge">PHASE 5</span> AI in Practice
+  </a>
+  <nav>
+    <div class="toc-label">In this lesson</div>
+    <ul class="toc-list">
+      <li><a href="#what-is-llm" data-section="what-is-llm">What is an LLM?</a></li>
+      <li><a href="#tokens" data-section="tokens">Tokens: The Language of LLMs</a></li>
+      <li><a href="#pretraining" data-section="pretraining">Pre-training at Scale</a></li>
+      <li><a href="#scaling" data-section="scaling">Scaling Laws</a></li>
+      <li><a href="#rlhf" data-section="rlhf">RLHF: From Base to ChatGPT</a></li>
+      <li><a href="#hallucination" data-section="hallucination">Hallucination Explained</a></li>
+      <li><a href="#context" data-section="context">Context Windows</a></li>
+      <li><a href="#landscape" data-section="landscape">The LLM Landscape</a></li>
+      <li><a href="#takeaways" data-section="takeaways">Key Takeaways</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer"><p style="margin-bottom:.5rem;"><a href="../glossary.html" style="color:var(--accent);text-decoration:none;font-size:.75rem;">&#128218; Glossary</a></p>
+    <p>Phase 5 of 5 &middot; Lesson 2 of 5</p>
+    <p style="margin-top:0.4rem"><a href="LESSON 5.3.html">Next: Prompt Engineering &rarr;</a></p>
+  </div>
+</aside>
+
+<main class="main">
+
+  <details class="mobile-toc">
+    <summary>In this lesson</summary>
+    <nav class="mobile-toc-links">
+      <a href="#what-is-llm">What is an LLM?</a>
+      <a href="#tokens">Tokens: The Language of LLMs</a>
+      <a href="#pretraining">Pre-training at Scale</a>
+      <a href="#scaling">Scaling Laws</a>
+      <a href="#rlhf">RLHF: From Base to ChatGPT</a>
+      <a href="#hallucination">Hallucination Explained</a>
+      <a href="#context">Context Windows</a>
+      <a href="#landscape">The LLM Landscape</a>
+      <a href="#takeaways">Key Takeaways</a>
+    </nav>
+  </details>
+
+  <div class="lesson-hero">
+    <div class="lesson-hero-content">
+      <div class="lesson-tag">Phase 5 &middot; Lesson 5.2</div>
+      <h1>Large Language Models: How They Actually Work</h1>
+      <p>What is actually happening inside ChatGPT, Claude, or Gemini? What is a token? Why do these systems hallucinate? And how does training on next-word prediction produce something that can write code, explain science, and hold a conversation?</p>
+      <div class="hero-meta">
+        <span>&#128337; 35 min read</span>
+        <span>&#128202; 3 visualisations</span>
+        <span>&#128187; Python demos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 1 ── -->
+  <section class="lesson-section" id="what-is-llm">
+    <h2>What is a Large Language Model?</h2>
+    <p>A Large Language Model (LLM) is a Transformer-based neural network trained on enormous quantities of text to predict the next token in a sequence. That is the entire training objective. From this deceptively simple task, these models develop a remarkable range of capabilities: they write, summarise, translate, reason, code, and converse.</p>
+    <p>"Large" refers to two things simultaneously: the number of parameters in the model (ranging from billions to trillions) and the volume of training data (ranging from hundreds of billions to trillions of tokens of text). Both scale dimensions matter significantly to performance, and the relationship between scale and capability has been studied carefully.</p>
+    <p>What makes LLMs distinct from earlier language models is the combination of Transformer architecture, massive scale, and a training approach that requires no hand-labelled data at all. The supervision signal comes entirely from the natural structure of text: given the previous words in a sentence, the next word is the label. This means the entire written record of humanity, once digitised, becomes a training dataset.</p>
+    <div class="callout info">
+      <div class="callout-title">These Are Probabilistic Systems</div>
+      <p>LLMs do not "think" in the way humans do, and they do not "look up" answers in a database. At each step, they compute a probability distribution over the entire vocabulary and sample from it. The output you see is a sequence of such samples. This is why the same prompt can produce different outputs on different runs, and it is also why understanding probability and uncertainty is essential for working with these systems responsibly.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2 ── -->
+  <section class="lesson-section" id="tokens">
+    <h2>Tokens: The Language of LLMs</h2>
+    <p>LLMs do not process text character by character or word by word. They process <strong>tokens</strong>: subword units produced by a tokenisation algorithm. A token is roughly 4 characters of English text on average, though this varies significantly by language and content type.</p>
+    <p>The dominant tokenisation method is <strong>Byte-Pair Encoding (BPE)</strong>, introduced by Sennrich, Haddow, and Birch (2016) for machine translation. BPE works by starting with individual characters and iteratively merging the most frequent adjacent pairs until reaching the desired vocabulary size. Common words become single tokens. Rare words are split into recognisable subword pieces. This allows models to handle any text including invented words or misspellings, since any string can be decomposed into the byte-level characters that form the base of the vocabulary.</p>
+
+    <div class="token-demo">
+      <div class="raw-text">Input text: "Convolutional neural networks learn hierarchically."</div>
+      <div style="color:#6272a4;font-size:0.75rem;margin-bottom:0.5rem;">Tokens (each colour = one token):</div>
+      <div class="tokens">
+        <span class="tok tok-1">Conv</span>
+        <span class="tok tok-2">olution</span>
+        <span class="tok tok-3">al</span>
+        <span class="tok tok-4"> neural</span>
+        <span class="tok tok-5"> networks</span>
+        <span class="tok tok-1"> learn</span>
+        <span class="tok tok-2"> hier</span>
+        <span class="tok tok-3">arch</span>
+        <span class="tok tok-4">ically</span>
+        <span class="tok tok-5">.</span>
+      </div>
+      <div class="label">10 tokens for 50 characters. "Convolutional" splits into 3 tokens because it appears rarely as a whole word. "neural" and "networks" are common enough to each be one token.</div>
+    </div>
+
+    <div class="token-demo">
+      <div class="raw-text">Input: "ChatGPT" → Tokens:</div>
+      <div class="tokens">
+        <span class="tok tok-1">Chat</span>
+        <span class="tok tok-2">G</span>
+        <span class="tok tok-3">PT</span>
+      </div>
+      <div class="label">3 tokens. The model did not know "ChatGPT" as a whole word during its vocabulary training (it is a product name), so it splits into familiar substrings.</div>
+    </div>
+
+    <div class="token-demo">
+      <div class="raw-text">Input: "1 + 1 = ?" → Tokens:</div>
+      <div class="tokens">
+        <span class="tok tok-1">1</span>
+        <span class="tok tok-2"> +</span>
+        <span class="tok tok-3"> 1</span>
+        <span class="tok tok-4"> =</span>
+        <span class="tok tok-5"> ?</span>
+      </div>
+      <div class="label">5 tokens. Numbers and symbols are often their own tokens. This means arithmetic is not natural for LLMs — they process digits as discrete symbols, not as numerical values.</div>
+    </div>
+
+    <p>Tokenisation also explains why LLMs can struggle with certain tasks that seem easy to humans. Counting letters in a word is hard because the model sees token-level units, not characters. Arithmetic is hard because numbers are symbol sequences, not magnitudes. Rhyming is hard because the model does not hear sounds, it sees token identities.</p>
+
+    <div class="callout">
+      <div class="callout-title">Vocabulary Size</div>
+      <p>GPT-2 has a vocabulary of 50,257 tokens. GPT-3 and GPT-4 use a similar vocabulary size. BERT uses a WordPiece vocabulary of approximately 30,000 tokens. A larger vocabulary means fewer tokens per sentence (more efficient) but a larger embedding matrix. The vocabulary is fixed after tokenisation training and does not change when the language model itself is trained.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3 ── -->
+  <section class="lesson-section" id="pretraining">
+    <h2>Pre-Training at Scale: The Next-Token Prediction Game</h2>
+    <p>The pre-training objective is called <strong>causal language modelling</strong>: given all previous tokens in a sequence, predict the next one. This is done for every position in every sequence in the training data, simultaneously, using the Transformer decoder architecture with causal masking (as covered in Lesson 4.4).</p>
+
+    <!-- SVG: Pre-training pipeline -->
+    <div class="svg-container">
+      <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;">
+        <text x="340" y="18" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1a1a2e">LLM Pre-Training: Predicting the Next Token</text>
+
+        <!-- Input tokens -->
+        <rect x="10" y="35" width="55" height="36" rx="6" fill="#2a6ab5" opacity="0.85"/>
+        <text x="37" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="white">"The"</text>
+
+        <rect x="73" y="35" width="55" height="36" rx="6" fill="#2a6ab5" opacity="0.85"/>
+        <text x="100" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="white">"cat"</text>
+
+        <rect x="136" y="35" width="55" height="36" rx="6" fill="#2a6ab5" opacity="0.85"/>
+        <text x="163" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="white">"sat"</text>
+
+        <rect x="199" y="35" width="55" height="36" rx="6" fill="#2a6ab5" opacity="0.85"/>
+        <text x="226" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="white">"on"</text>
+
+        <!-- Input label -->
+        <text x="118" y="90" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" fill="#4a4a6a">Input context (all previous tokens)</text>
+
+        <!-- Arrow to model -->
+        <line x1="260" y1="53" x2="295" y2="53" stroke="#8c1a5a" stroke-width="2" marker-end="url(#larr)"/>
+
+        <!-- Model box -->
+        <rect x="295" y="28" width="120" height="50" rx="8" fill="#8c1a5a" opacity="0.85"/>
+        <text x="355" y="49" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" font-weight="700" fill="white">Transformer</text>
+        <text x="355" y="63" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.8)">Decoder-only LLM</text>
+
+        <!-- Arrow to softmax -->
+        <line x1="415" y1="53" x2="450" y2="53" stroke="#8c1a5a" stroke-width="2" marker-end="url(#larr)"/>
+
+        <!-- Softmax / vocab distribution -->
+        <rect x="450" y="25" width="120" height="57" rx="8" fill="#4a3800" opacity="0.85"/>
+        <text x="510" y="47" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Probability over</text>
+        <text x="510" y="60" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">50,000+ tokens</text>
+        <text x="510" y="74" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="rgba(255,255,255,0.7)">"the": 0.42</text>
+
+        <!-- Arrow to target -->
+        <line x1="570" y1="53" x2="605" y2="53" stroke="#8c1a5a" stroke-width="2" marker-end="url(#larr)"/>
+
+        <!-- Target -->
+        <rect x="605" y="35" width="65" height="36" rx="6" fill="#2a8c5a" opacity="0.85"/>
+        <text x="637" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="white">"the"</text>
+
+        <!-- Labels below -->
+        <text x="355" y="107" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" fill="#8c1a5a">Model predicts next token</text>
+        <text x="637" y="107" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" fill="#2a8c5a">True next token</text>
+        <text x="355" y="135" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" fill="#4a4a6a">Loss = cross-entropy between prediction and truth. Backprop updates all parameters.</text>
+        <text x="355" y="148" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" fill="#4a4a6a">Repeat for trillions of tokens across all of training data.</text>
+
+        <defs>
+          <marker id="larr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#8c1a5a"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="svg-caption">At each training step, the model sees a context of previous tokens and predicts the next one. The loss is computed against the actual next token. This process runs across trillions of examples with no human labelling required.</p>
+    </div>
+
+    <p>GPT-3 was trained on approximately 300 billion tokens drawn from Common Crawl (web text), WebText2 (curated web), Books1, Books2, and Wikipedia. GPT-4's training data composition was not publicly disclosed. The key insight of pre-training is that predicting natural language is an enormously information-rich task. To predict the next word in a sentence accurately, you need some model of syntax, semantics, world knowledge, common sense, cause and effect, and much more. The training signal pushes the model to encode all of this implicitly in its parameters.</p>
+
+    <div class="callout warning">
+      <div class="callout-title">Training Cost</div>
+      <p>Training GPT-3 (175 billion parameters) was estimated to cost approximately $4.6 million in compute at 2020 cloud prices (Strubell et al. 2020 methodology applied to GPT-3). GPT-4 scale training is estimated to have cost over $100 million. These numbers explain why only a small number of well-resourced organisations can train frontier LLMs from scratch, and why fine-tuning and transfer learning are so important for everyone else.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4 ── -->
+  <section class="lesson-section" id="scaling">
+    <h2>Scaling Laws: Why Bigger (Often) Means Better</h2>
+    <p>In 2020, a team at OpenAI (Kaplan et al.) published a landmark paper showing that LLM performance on language modelling tasks follows remarkably clean <strong>power law scaling</strong> with model size (parameters), dataset size (tokens), and compute budget. Doubling the model size on the same data improves performance in a predictable, measurable way. This allowed researchers to forecast, before training, how well a model would perform.</p>
+    <p>In 2022, DeepMind researchers (Hoffmann et al., "Training Compute-Optimal Large Language Models," commonly called the <strong>Chinchilla paper</strong>) refined these laws. They found that many existing large models, including GPT-3, were significantly undertrained: they had many parameters but not enough training tokens for those parameters. The optimal strategy, they argued, is to scale parameters and training tokens roughly equally. Chinchilla (70 billion parameters, 1.4 trillion tokens) outperformed GPT-3 (175 billion parameters, 300 billion tokens) on many benchmarks, despite being four times smaller.</p>
+
+    <div class="info-grid cols-2">
+      <div class="info-card">
+        <h4>Emergent Abilities (Wei et al., 2022)</h4>
+        <p>Certain capabilities are absent in smaller models and appear suddenly at larger scales. Few-shot learning, multi-step reasoning, and code generation emerged at GPT-3 scale. These phase transitions were studied by Jason Wei et al. at Google Research in 2022. The emergence is not fully understood theoretically.</p>
+      </div>
+      <div class="info-card">
+        <h4>The Chinchilla Lesson</h4>
+        <p>More parameters are not always better. A smaller model trained on more data can outperform a larger model trained on less data with the same compute budget. This has driven a shift toward training smaller, more thoroughly trained models: LLaMA-3 8B with 15 trillion tokens is more capable than GPT-3 with 175B parameters.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5 ── -->
+  <section class="lesson-section" id="rlhf">
+    <h2>RLHF: From Raw Base Model to Helpful Assistant</h2>
+    <p>A pre-trained language model is extraordinarily knowledgeable, but it is also unruly. Ask it a question and it may respond by generating more questions, writing fiction, continuing the sentence in unexpected directions, or outputting harmful content. It has learned to model all of human text, including text that is unhelpful, dishonest, or dangerous.</p>
+    <p>Converting a base model into a useful, safe assistant requires additional training. The dominant technique is <strong>Reinforcement Learning from Human Feedback (RLHF)</strong>, applied at scale by the InstructGPT paper (Ouyang et al., OpenAI, 2022) and the technology that powers ChatGPT.</p>
+
+    <div class="svg-container">
+      <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;">
+        <text x="340" y="18" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1a1a2e">The RLHF Pipeline: Base Model to ChatGPT</text>
+
+        <!-- Step 1 -->
+        <rect x="10" y="38" width="150" height="70" rx="8" fill="#2a6ab5" opacity="0.85"/>
+        <text x="85" y="62" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Step 1: SFT</text>
+        <text x="85" y="75" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.85)">Supervised Fine-Tuning</text>
+        <text x="85" y="88" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.75)">Human-written ideal</text>
+        <text x="85" y="99" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.75)">responses as labels</text>
+
+        <line x1="160" y1="73" x2="178" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#rlharr)"/>
+
+        <!-- Step 2 -->
+        <rect x="178" y="38" width="160" height="70" rx="8" fill="#8c1a5a" opacity="0.85"/>
+        <text x="258" y="62" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Step 2: Reward Model</text>
+        <text x="258" y="75" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.85)">Humans rank model outputs</text>
+        <text x="258" y="88" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.75)">Train RM to predict</text>
+        <text x="258" y="99" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.75)">human preference scores</text>
+
+        <line x1="338" y1="73" x2="356" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#rlharr)"/>
+
+        <!-- Step 3 -->
+        <rect x="356" y="38" width="160" height="70" rx="8" fill="#4a1a30" opacity="0.9"/>
+        <text x="436" y="62" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Step 3: RL Fine-Tuning</text>
+        <text x="436" y="75" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="rgba(255,255,255,0.85)">PPO optimises LLM to</text>
+        <text x="436" y="88" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.75)">maximise reward model</text>
+        <text x="436" y="99" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8.5" fill="rgba(255,255,255,0.75)">score + KL penalty</text>
+
+        <line x1="516" y1="73" x2="534" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#rlharr)"/>
+
+        <!-- Output -->
+        <rect x="534" y="50" width="136" height="46" rx="8" fill="#1a6040" opacity="0.85"/>
+        <text x="602" y="72" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Helpful, Harmless,</text>
+        <text x="602" y="86" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Honest Assistant</text>
+
+        <!-- Bottom labels -->
+        <text x="85" y="140" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">~13K high-quality</text>
+        <text x="85" y="152" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">prompt-response pairs</text>
+
+        <text x="258" y="140" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">~33K comparisons</text>
+        <text x="258" y="152" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">by human raters</text>
+
+        <text x="436" y="140" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">KL penalty prevents</text>
+        <text x="436" y="152" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#4a4a6a">drifting from base model</text>
+
+        <text x="340" y="180" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#8c1a5a" font-style="italic">InstructGPT (Ouyang et al., OpenAI, 2022) — the paper behind ChatGPT</text>
+
+        <defs>
+          <marker id="rlharr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#8c1a5a"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="svg-caption">RLHF has three stages. SFT fine-tunes the base model on human-written demonstrations. A reward model is trained on human preference comparisons. Finally, RL (specifically Proximal Policy Optimisation) updates the LLM to generate outputs the reward model scores highly, while a KL divergence penalty keeps it from drifting too far from the base model.</p>
+    </div>
+
+    <p>A simpler alternative to RLHF called <strong>Direct Preference Optimisation (DPO)</strong> was proposed by Rafailov et al. (2023). DPO reframes the RLHF objective as a supervised classification problem, eliminating the need for a separate reward model training stage and the complexity of RL. Many open-source models released since 2023 have used DPO or variants of it.</p>
+
+    <p>Anthropic developed a complementary approach called <strong>Constitutional AI (Bai et al., 2022)</strong>, which uses a set of principles (the "constitution") to guide the model to critique and revise its own outputs. This uses AI feedback (RLAIF) in place of some human feedback, making the process more scalable.</p>
+  </section>
+
+  <!-- ── SECTION 6 ── -->
+  <section class="lesson-section" id="hallucination">
+    <h2>Hallucination: Why LLMs Confidently Say False Things</h2>
+    <p>LLMs sometimes state things that are completely fabricated, with the same tone and apparent confidence they use for accurate information. They cite papers that do not exist, give wrong dates for real events, invent biographical details for real people, and produce code that looks correct but does not run. This phenomenon is called <strong>hallucination</strong>.</p>
+    <p>Understanding why it happens requires revisiting what LLMs actually do. At every step, the model computes a probability distribution over the vocabulary and samples a token. It does not "consult" a database of facts. It generates text that is <strong>consistent with the patterns in its training data</strong>. When asked about something it learned well, those patterns produce accurate-looking and accurate text. When asked about something rare, absent, or contradictory in its training data, those same patterns produce fluent but potentially incorrect text.</p>
+
+    <div class="info-grid cols-2">
+      <div class="info-card" style="border-top:3px solid #c03030;">
+        <h4>Factual Hallucination</h4>
+        <p>Invented facts stated as true: wrong dates, nonexistent citations, incorrect statistics, invented names. The model is not lying. It is generating plausible-sounding text, and that text happens to be factually wrong.</p>
+      </div>
+      <div class="info-card" style="border-top:3px solid #c07800;">
+        <h4>Reasoning Errors</h4>
+        <p>The model produces a confident chain of reasoning that contains a logical error. Each step looks plausible given the previous one, but the conclusion is wrong. This is especially dangerous because it is harder to spot than a simple factual error.</p>
+      </div>
+      <div class="info-card" style="border-top:3px solid var(--accent);">
+        <h4>Sycophantic Hallucination</h4>
+        <p>When a user suggests an incorrect answer, models fine-tuned with RLHF sometimes agree because agreement was rewarded during training. The model prioritises pleasing the human over accuracy. Studies have documented this pattern across multiple major LLMs.</p>
+      </div>
+      <div class="info-card" style="border-top:3px solid #2a6ab5;">
+        <h4>Knowledge Cutoff Errors</h4>
+        <p>Models have a training cutoff date. Events, papers, people, or products that appeared after the cutoff are unknown. When asked about them, the model either states uncertainty (good) or generates plausible-sounding but fabricated information (bad).</p>
+      </div>
+    </div>
+
+    <h3>Mitigation: Retrieval-Augmented Generation (RAG)</h3>
+    <p>The most widely deployed technical solution is <strong>Retrieval-Augmented Generation (RAG)</strong>, introduced by Lewis et al. (Facebook AI Research, 2020). Instead of generating answers purely from the model's parametric memory, RAG first retrieves relevant documents from an external knowledge base (a database, the web, a document collection) and includes them in the model's context. The model then generates its answer grounded in the retrieved evidence.</p>
+    <p>This does not eliminate hallucination entirely, but it gives the model accurate, up-to-date source material to work from, and it makes verification easier because the sources can be cited. The search systems used by ChatGPT, Bing Chat (Copilot), and Perplexity AI all use versions of this approach.</p>
+    <div class="callout warning">
+      <div class="callout-title">The Practical Rule</div>
+      <p>Never rely on an LLM as the sole source for factual claims, particularly for consequential decisions in medicine, law, finance, or safety-critical applications. Treat LLM output as a knowledgeable first draft that requires verification. The fluency and confidence of the output is not correlated with its accuracy.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 7 ── -->
+  <section class="lesson-section" id="context">
+    <h2>Context Windows and "Memory"</h2>
+    <p>A <strong>context window</strong> is the maximum number of tokens the model can process in a single forward pass, including both the input (your prompt, any retrieved documents, conversation history) and the output (the response). Anything outside the context window is simply not seen by the model. LLMs have no persistent memory between separate conversations unless it is explicitly engineered.</p>
+
+    <table class="llm-table">
+      <thead>
+        <tr><th>Model</th><th>Context Window</th><th>Approximate pages of text</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>GPT-3 (2020)</td><td>4,096 tokens</td><td>~3 pages</td></tr>
+        <tr><td>GPT-4 (2023)</td><td>8,192 / 32,768 / 128,000 tokens</td><td>~6 / 25 / 96 pages</td></tr>
+        <tr><td>Claude 3 / 3.5 (2024)</td><td>200,000 tokens</td><td>~150 pages</td></tr>
+        <tr><td>Gemini 1.5 Pro (2024)</td><td>1,000,000 tokens</td><td>~750 pages or ~1 hour of video</td></tr>
+        <tr><td>GPT-4o (2024)</td><td>128,000 tokens</td><td>~96 pages</td></tr>
+      </tbody>
+    </table>
+
+    <p>The computational cost of the Transformer's attention mechanism scales quadratically with sequence length (O(n²)), which is why very long context windows are technically challenging and expensive. Research into more efficient attention mechanisms (sparse attention, linear attention, state-space models like Mamba) is active precisely because context length is an important capability bottleneck.</p>
+
+    <div class="callout info">
+      <div class="callout-title">"Lost in the Middle" Problem</div>
+      <p>A 2023 study by Liu et al. found that LLMs tend to perform best when relevant information appears at the beginning or end of a long context, and significantly worse when it appears in the middle. Simply having a long context window does not mean the model uses all of it equally. When building RAG or document Q&A systems, placing the most relevant retrieved content near the end of the prompt (just before the question) tends to improve results.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 8 ── -->
+  <section class="lesson-section" id="landscape">
+    <h2>The LLM Landscape</h2>
+    <p>As of mid-2025, the LLM landscape consists of a small number of frontier closed-source models and a growing ecosystem of high-quality open-weight models.</p>
+
+    <table class="llm-table">
+      <thead>
+        <tr><th>Organisation</th><th>Notable Models</th><th>Access</th><th>Key Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>OpenAI</strong></td>
+          <td>GPT-3 (2020), GPT-4 (2023), GPT-4o (2024)</td>
+          <td>API / ChatGPT</td>
+          <td>GPT-3 established LLMs. GPT-4 is multimodal (text + images). GPT-4o is faster and cheaper.</td>
+        </tr>
+        <tr>
+          <td><strong>Anthropic</strong></td>
+          <td>Claude 1 (2023), Claude 2 (2023), Claude 3 / 3.5 (2024)</td>
+          <td>API / Claude.ai</td>
+          <td>Emphasis on safety and Constitutional AI. Claude 3 Opus matched or exceeded GPT-4 on many benchmarks. 200K context window.</td>
+        </tr>
+        <tr>
+          <td><strong>Google DeepMind</strong></td>
+          <td>PaLM (2022), Gemini 1.0/1.5 (2023-2024)</td>
+          <td>API / Bard / Gemini app</td>
+          <td>Gemini 1.5 Pro introduced 1M token context window. Gemini Ultra 1.0 first model claimed to exceed human expert scores on MMLU benchmark.</td>
+        </tr>
+        <tr>
+          <td><strong>Meta</strong></td>
+          <td>LLaMA (2023), LLaMA 2 (2023), LLaMA 3 (2024)</td>
+          <td>Open weights (free for research and commercial use)</td>
+          <td>The open-weight models that democratised LLM development. LLaMA 3 70B is competitive with many closed-source models.</td>
+        </tr>
+        <tr>
+          <td><strong>Mistral AI</strong></td>
+          <td>Mistral 7B (2023), Mixtral 8x7B (2023)</td>
+          <td>Open weights</td>
+          <td>French startup. Mistral 7B punched well above its weight class. Mixtral introduced sparse Mixture-of-Experts architecture for efficient large-scale inference.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout success">
+      <div class="callout-title">The Open vs Closed Model Debate</div>
+      <p>Open-weight models (where the model weights are publicly released) enable researchers, students, and small companies to run and fine-tune LLMs without paying API costs or sharing data with a provider. They enable inspection, auditing, and customisation. The trade-off is that open weights can also be fine-tuned to remove safety guardrails. Meta, Mistral, and others have argued that the research and economic benefits of openness outweigh the risks. OpenAI and Anthropic have argued the opposite for their most capable models. This debate is ongoing and consequential.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 9 ── -->
+  <section class="lesson-section" id="takeaways">
+    <h2>Key Takeaways</h2>
+    <ul class="takeaway-list">
+      <li>LLMs are Transformer decoder networks trained to predict the next token in a sequence. The entire training objective is self-supervised: no human labels are needed, only large quantities of text.</li>
+      <li>Tokens are subword units produced by Byte-Pair Encoding. One token is roughly 4 English characters. "ChatGPT" is 3 tokens. This tokenisation explains why LLMs struggle with character-level tasks and arithmetic.</li>
+      <li>Pre-training on next-token prediction forces models to learn grammar, world knowledge, reasoning patterns, and common sense implicitly, because all of these are needed to predict language well.</li>
+      <li>Scaling laws (Kaplan et al., 2020; Chinchilla / Hoffmann et al., 2022) show that LLM performance follows power laws with model size, data size, and compute. Optimal training scales parameters and tokens roughly equally.</li>
+      <li>RLHF (Ouyang et al., 2022) converts a capable but unruly base model into a helpful, harmless assistant through three stages: SFT on human demonstrations, reward model training on preference comparisons, and RL fine-tuning to maximise reward.</li>
+      <li>Hallucination occurs because LLMs generate statistically likely text, not because they "know" facts. They do not consult a database. When patterns from training are absent or contradictory, fluent but false text results. RAG mitigates this by grounding generation in retrieved documents.</li>
+      <li>Context windows range from 4K tokens (early GPT-3) to 1 million tokens (Gemini 1.5 Pro). Anything outside the context window is invisible to the model. LLMs have no persistent memory between conversations by default.</li>
+      <li>The LLM landscape divides into closed-source frontier models (GPT-4, Claude 3.5, Gemini) and open-weight models (LLaMA 3, Mistral). Open models enable research, auditing, and fine-tuning at no cost.</li>
+    </ul>
+    <div class="callout info" style="margin-top:2rem;">
+      <div class="callout-title">Coming Up: Prompt Engineering</div>
+      <p>In Lesson 5.3, you will learn how to communicate effectively with LLMs. Zero-shot prompting, few-shot examples, chain-of-thought reasoning, system prompts, and temperature control are all practical skills that can dramatically change the quality of outputs you get from these models.</p>
+    </div>
+  </section>
+
+  <!-- Practice Notebook -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:2rem 0;padding:1.25rem 1.5rem;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.1);border-radius:8px;">
+    <div>
+      <div style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code in Google Colab</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">RAG from scratch, embeddings, GPT-2 generation &middot; Free GPU &middot; No setup</div>
+    </div>
+    <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-5.2-llm-rag.ipynb" target="_blank" rel="noopener">
+      <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+    </a>
+  </div>
+
+  <div class="deeper-block">
+    <p class="deeper-eyebrow">Going Deeper</p>
+    <h2 class="deeper-title">Want to understand LLMs at a deeper level? Start here.</h2>
+    <div class="deeper-resources">
+      <a class="deeper-item" href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">🎨</span>
+        <div>
+          <span class="deeper-item-label">The Illustrated Transformer — Jay Alammar</span>
+          <span class="deeper-item-desc">The clearest visual explanation of how attention mechanisms work, step by step. If you read one thing after this lesson, make it this.</span>
+        </div>
+      </a>
+      <a class="deeper-item" href="https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">🛡️</span>
+        <div>
+          <span class="deeper-item-label">Constitutional AI — Anthropic Research</span>
+          <span class="deeper-item-desc">How alignment researchers teach models to refuse harmful requests using a set of principles. The technique behind Claude's safety training.</span>
+        </div>
+      </a>
+      <a class="deeper-item" href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">📄</span>
+        <div>
+          <span class="deeper-item-label">Attention Is All You Need — Vaswani et al. (2017)</span>
+          <span class="deeper-item-desc">The original Transformer paper. Read at least the abstract and introduction. You now have enough context to understand what they were solving and why it mattered.</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <a href="LESSON 5.1.html" class="nav-btn prev">&#8592; 5.1 AI Ethics</a>
+    <a href="LESSON 5.3.html" class="nav-btn next">5.3 Prompt Engineering &#8594;</a>
+  </div>
+</main>
+
+<script>
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    bar.style.width = doc.scrollHeight > doc.clientHeight ? (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%' : '0%';
+  });
+  const sections = document.querySelectorAll('.lesson-section');
+  const links = document.querySelectorAll('.toc-list a');
+  sections.forEach(s => new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { const id = e.target.id; links.forEach(a => a.classList.toggle('active', a.dataset.section === id)); } });
+  }, { rootMargin: '-15% 0px -70% 0px' }).observe(s));
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

@@ -1,0 +1,587 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.5: Overfitting and Generalisation - AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #2a8c5a;
+  --accent-soft: rgba(42,140,90,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --blue: #1a6bc8;
+  --red: #b83c12;
+  --red-soft: rgba(184,60,18,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(42,140,90,0.25); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* THREE FIT COMPARISON */
+.fit-compare { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); overflow: hidden; margin: 36px 0; }
+.fit-col { padding: 0; border-right: 1px solid var(--border); }
+.fit-col:last-child { border-right: none; }
+.fit-head { padding: 14px 16px 12px; font-family: var(--ui); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.fit-head.underfit { background: rgba(26,107,200,0.1); color: var(--blue); }
+.fit-head.goodfit { background: rgba(42,140,90,0.1); color: var(--accent); }
+.fit-head.overfit { background: rgba(184,60,18,0.1); color: var(--red); }
+.fit-svg-wrap { padding: 16px; background: var(--ink); }
+.fit-desc { padding: 14px 16px; background: var(--paper2); }
+.fit-desc p { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 0; }
+.fit-verdict { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 8px; }
+.fit-verdict.underfit { color: var(--blue); }
+.fit-verdict.goodfit { color: var(--accent); }
+.fit-verdict.overfit { color: var(--red); }
+
+/* BIAS-VARIANCE VISUAL */
+.bv-visual { margin: 36px 0; background: var(--paper2); border: 1px solid var(--border); padding: 24px 28px; }
+.bv-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 16px; }
+.bv-caption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 14px; line-height: 1.65; }
+
+/* FIX CARDS */
+.fix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 32px 0; }
+.fix-card { border: 1px solid var(--border); padding: 18px 16px; background: var(--paper2); }
+.fix-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.fix-tag.overfit { color: var(--red); }
+.fix-tag.underfit { color: var(--blue); }
+.fix-title { font-family: var(--ui); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.fix-desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* CODE BLOCK */
+.code-block { background: #1e1e2e; margin: 28px 0; overflow: hidden; }
+.code-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.code-tag { font-family: var(--mono); font-size: 10px; color: rgba(42,140,90,0.9); letter-spacing: 0.06em; }
+.code-body { padding: 20px 18px; overflow-x: auto; }
+.code-body pre { font-family: var(--mono); font-size: 13px; line-height: 1.75; color: #cdd6f4; white-space: pre; }
+.py-kw { color: #cba6f7; }
+.py-fn { color: #89b4fa; }
+.py-str { color: #a6e3a1; }
+.py-num { color: #fab387; }
+.py-cm { color: #6c7086; }
+.py-op { color: #89dceb; }
+
+/* OUTPUT */
+.output-block { background: var(--paper3); border-left: 3px solid var(--accent); padding: 14px 18px; margin: -8px 0 28px; font-family: var(--mono); font-size: 13px; color: var(--ink); line-height: 1.7; }
+.output-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-family: var(--mono); }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .fit-compare { grid-template-columns: 1fr; }
+  .fix-grid { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 3.5</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">13 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 3: Machine Learning</span>
+    <span class="lesson-num-tag">Lesson 5 of 6</span>
+  </div>
+  <h1 class="lesson-title">Overfitting, Underfitting<br><em>and Generalisation</em></h1>
+  <p class="lesson-intro">A model that scores 99% on training data and 60% on real data is useless. A model that scores 65% on both is genuinely valuable. This lesson is about understanding why that gap exists and how to close it.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>What generalisation means and why it is the real goal</div>
+    <div class="obj-item"><div class="obj-dot"></div>The difference between underfitting and overfitting</div>
+    <div class="obj-item"><div class="obj-dot"></div>The bias-variance tradeoff explained plainly</div>
+    <div class="obj-item"><div class="obj-dot"></div>Techniques to prevent overfitting</div>
+    <div class="obj-item"><div class="obj-dot"></div>How cross-validation gives a more honest evaluation</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2 id="the-real-goal">The real goal is never accuracy on training data</h2>
+
+    <p>When you train a machine learning model, you optimise its performance on the data you showed it. But that is not actually what you care about. You care about what the model does on data it has never seen. Will it work on tomorrow's emails? On next month's customer transactions? On medical images from a different hospital?</p>
+
+    <p>That ability to perform well on new, unseen data is called <strong>generalisation</strong>. It is the actual goal. Training accuracy is just a proxy metric, and a misleading one if you are not careful.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Analogy</div>
+      <p>Imagine a student preparing for an exam by memorising the exact questions from last year's past papers, word for word. They ace the practice papers. But the real exam has different questions covering the same material. The memoriser fails while the student who actually understood the concepts does fine. Overfitting is the machine learning equivalent of that kind of memorising.</p>
+    </div>
+
+    <p>This is why you always split your data into a training set and a test set before you start. The test set is data the model never sees during training. It is your honest proxy for how the model will perform in the real world. You train on the training set. You evaluate on the test set. You never use the test set to make decisions about your model. The moment you do, it is no longer an honest measure of generalisation.</p>
+
+    <h2 id="under-over">Underfitting and overfitting</h2>
+
+    <p>Most problems in machine learning sit on a spectrum between two failure modes. On one end, the model is too simple. On the other, it is too complex.</p>
+
+    <div class="fit-compare">
+      <div class="fit-col">
+        <div class="fit-head underfit">Underfitting</div>
+        <div class="fit-svg-wrap">
+          <svg viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <!-- Data points forming a curve -->
+            <circle cx="20" cy="95" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="40" cy="70" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="60" cy="50" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="80" cy="40" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="100" cy="45" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="120" cy="60" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="140" cy="80" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="160" cy="100" r="4" fill="rgba(255,255,255,0.6)"/>
+            <!-- Straight line (too simple) -->
+            <line x1="15" y1="85" x2="165" y2="55" stroke="#1a6bc8" stroke-width="2.5"/>
+            <text x="90" y="114" text-anchor="middle" font-size="10" fill="#1a6bc8" font-family="Outfit,sans-serif">Too simple</text>
+          </svg>
+        </div>
+        <div class="fit-desc">
+          <p>Model is too simple to capture the real pattern. It misses obvious structure in the training data and performs poorly on both training and test data.</p>
+          <div class="fit-verdict underfit">High bias · Low variance</div>
+        </div>
+      </div>
+      <div class="fit-col">
+        <div class="fit-head goodfit">Good fit</div>
+        <div class="fit-svg-wrap">
+          <svg viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <circle cx="20" cy="95" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="40" cy="70" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="60" cy="50" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="80" cy="40" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="100" cy="45" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="120" cy="60" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="140" cy="80" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="160" cy="100" r="4" fill="rgba(255,255,255,0.6)"/>
+            <!-- Smooth curve following the general shape -->
+            <path d="M15 98 Q50 42 90 38 Q130 42 165 102" fill="none" stroke="#2a8c5a" stroke-width="2.5"/>
+            <text x="90" y="114" text-anchor="middle" font-size="10" fill="#2a8c5a" font-family="Outfit,sans-serif">Just right</text>
+          </svg>
+        </div>
+        <div class="fit-desc">
+          <p>Model captures the true underlying pattern without getting distracted by noise. Works well on training data and generalises to new data.</p>
+          <div class="fit-verdict goodfit">Balanced bias · Balanced variance</div>
+        </div>
+      </div>
+      <div class="fit-col">
+        <div class="fit-head overfit">Overfitting</div>
+        <div class="fit-svg-wrap">
+          <svg viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <circle cx="20" cy="95" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="40" cy="70" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="60" cy="50" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="80" cy="40" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="100" cy="45" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="120" cy="60" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="140" cy="80" r="4" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="160" cy="100" r="4" fill="rgba(255,255,255,0.6)"/>
+            <!-- Wiggly curve hitting every point -->
+            <path d="M15 97 C25 95 30 55 40 70 C50 85 55 30 60 50 C65 68 72 18 80 40 C88 60 95 55 100 45 C105 35 115 35 120 60 C125 82 130 95 140 80 C148 68 158 108 165 100" fill="none" stroke="#b83c12" stroke-width="2.5"/>
+            <text x="90" y="114" text-anchor="middle" font-size="10" fill="#b83c12" font-family="Outfit,sans-serif">Memorising noise</text>
+          </svg>
+        </div>
+        <div class="fit-desc">
+          <p>Model is too complex and follows the training data perfectly, including its noise and random quirks. Fails badly on new data it hasn't seen before.</p>
+          <div class="fit-verdict overfit">Low bias · High variance</div>
+        </div>
+      </div>
+    </div>
+
+    <p>Underfitting is usually obvious and easy to fix: your model is too simple, so you make it more complex. Add more features, use a deeper tree, try a more powerful algorithm. The challenge is that fixing underfitting tends to move you toward overfitting, and vice versa. Finding the right point in between is what model development is really about.</p>
+
+    <h2 id="bias-variance">The bias-variance tradeoff</h2>
+
+    <p>Every model has two sources of error: bias and variance. These two tend to pull in opposite directions, and understanding them helps you diagnose problems and choose solutions.</p>
+
+    <p><strong>Bias</strong> is systematic error from wrong assumptions. A linear model trying to fit a curved pattern will always be off, no matter how much data you give it. It is biased toward straight lines. More data won't fix this; you need a more flexible model.</p>
+
+    <p><strong>Variance</strong> is sensitivity to the specific training data. A highly flexible model that follows every wiggle in the training data will produce very different results if you retrain it on a slightly different sample. It is unstable. It has memorised quirks that don't generalise.</p>
+
+    <div class="bv-visual">
+      <div class="bv-label">Bias-variance tradeoff: error as model complexity grows</div>
+      <svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Outfit',sans-serif;">
+        <!-- Axes -->
+        <line x1="60" y1="200" x2="460" y2="200" stroke="#9c9488" stroke-width="1.5"/>
+        <line x1="60" y1="200" x2="60" y2="20" stroke="#9c9488" stroke-width="1.5"/>
+        <text x="260" y="228" text-anchor="middle" font-size="11" fill="#6e6559">Model complexity</text>
+        <text x="18" y="115" text-anchor="middle" font-size="11" fill="#6e6559" transform="rotate(-90 18 115)">Error</text>
+
+        <!-- Low complexity (left) / High complexity (right) labels -->
+        <text x="80" y="218" font-size="10" fill="#9c9488">Low</text>
+        <text x="420" y="218" font-size="10" fill="#9c9488">High</text>
+
+        <!-- Bias curve: high at left, drops then flattens -->
+        <path d="M70 40 Q150 60 230 110 Q310 145 440 160" fill="none" stroke="#1a6bc8" stroke-width="2" stroke-dasharray="6,3"/>
+
+        <!-- Variance curve: low at left, rises steeply at right -->
+        <path d="M70 180 Q180 175 260 155 Q340 130 440 48" fill="none" stroke="#b83c12" stroke-width="2" stroke-dasharray="6,3"/>
+
+        <!-- Total error curve: U-shaped -->
+        <path d="M70 95 Q140 80 220 72 Q280 70 340 90 Q400 120 440 155" fill="none" stroke="#1a1814" stroke-width="2.5"/>
+
+        <!-- Sweet spot vertical line -->
+        <line x1="240" y1="68" x2="240" y2="200" stroke="#2a8c5a" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <circle cx="240" cy="68" r="5" fill="#2a8c5a"/>
+        <rect x="198" y="36" width="84" height="22" rx="3" fill="#2a8c5a"/>
+        <text x="240" y="50" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">Sweet spot</text>
+
+        <!-- Labels -->
+        <text x="95" y="56" font-size="11" fill="#1a6bc8">High bias</text>
+        <text x="400" y="65" font-size="11" fill="#b83c12">High variance</text>
+
+        <!-- Legend -->
+        <line x1="290" y1="185" x2="315" y2="185" stroke="#1a6bc8" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="320" y="189" font-size="11" fill="#6e6559">Bias</text>
+        <line x1="290" y1="200" x2="315" y2="200" stroke="#b83c12" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="320" y="204" font-size="11" fill="#6e6559">Variance</text>
+        <line x1="352" y1="185" x2="377" y2="185" stroke="#1a1814" stroke-width="2.5"/>
+        <text x="382" y="189" font-size="11" fill="#6e6559">Total error</text>
+      </svg>
+      <p class="bv-caption">As model complexity increases, bias (blue) decreases but variance (red) increases. Total error (black) is minimised at the sweet spot where neither dominates. The goal is to find a model complex enough to capture the pattern, but not so complex that it memorises the noise.</p>
+    </div>
+
+    <h2 id="fixes">How to fix overfitting</h2>
+
+    <p>Overfitting is by far the more common problem in practice, because modern models are powerful enough to memorise any finite dataset if you let them. Here are the main weapons against it.</p>
+
+    <div class="fix-grid">
+      <div class="fix-card">
+        <div class="fix-tag overfit">Fixes overfitting</div>
+        <div class="fix-title">Get more training data</div>
+        <div class="fix-desc">More data makes it harder to memorise. With 10,000 diverse examples, the model is forced to find genuine patterns. This is the most reliable fix when it is available.</div>
+      </div>
+      <div class="fix-card">
+        <div class="fix-tag overfit">Fixes overfitting</div>
+        <div class="fix-title">Reduce model complexity</div>
+        <div class="fix-desc">Limit tree depth, reduce the number of features, use fewer layers. Give the model less room to memorise noise. Start simple and add complexity only when you have evidence it helps.</div>
+      </div>
+      <div class="fix-card">
+        <div class="fix-tag overfit">Fixes overfitting</div>
+        <div class="fix-title">Regularisation</div>
+        <div class="fix-desc">Techniques like L1 and L2 regularisation penalise large parameter values during training, forcing the model to spread its "confidence" and preventing it from assigning huge weights to noise features.</div>
+      </div>
+      <div class="fix-card">
+        <div class="fix-tag overfit">Fixes overfitting</div>
+        <div class="fix-title">Dropout (neural networks)</div>
+        <div class="fix-desc">During training, randomly switch off a fraction of neurons. This prevents co-adaptation between neurons and forces the network to learn redundant representations that generalise better.</div>
+      </div>
+      <div class="fix-card">
+        <div class="fix-tag underfit">Fixes underfitting</div>
+        <div class="fix-title">Increase model complexity</div>
+        <div class="fix-desc">Add more features, increase tree depth, add layers to a neural network, or switch to a more powerful algorithm class. The model simply doesn't have enough capacity to capture the pattern.</div>
+      </div>
+      <div class="fix-card">
+        <div class="fix-tag underfit">Fixes underfitting</div>
+        <div class="fix-title">Feature engineering</div>
+        <div class="fix-desc">Create new, more informative features from existing ones. Add polynomial terms, interaction terms, or domain-specific transformations. Better features can compensate for a simpler model.</div>
+      </div>
+    </div>
+
+    <h2 id="cross-validation">Cross-validation: a more honest evaluation</h2>
+
+    <p>When your dataset is small, a single train-test split can be noisy. If you happen to put all the easy examples in the test set, your accuracy looks great but means nothing. Cross-validation solves this by rotating which data gets used for testing.</p>
+
+    <p>In k-fold cross-validation, you split the data into k equal parts (folds). You train on k-1 folds and test on the remaining one. You repeat this k times, each time using a different fold as the test set. You average the results across all k rounds. This gives you a much more reliable estimate of generalisation performance with no data wasted.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Python</span>
+        <span class="code-tag">cross_validation.py</span>
+      </div>
+      <div class="code-body"><pre><span class="py-kw">from</span> sklearn.datasets <span class="py-kw">import</span> <span class="py-fn">load_iris</span>
+<span class="py-kw">from</span> sklearn.tree <span class="py-kw">import</span> <span class="py-fn">DecisionTreeClassifier</span>
+<span class="py-kw">from</span> sklearn.model_selection <span class="py-kw">import</span> <span class="py-fn">cross_val_score</span>
+<span class="py-kw">import</span> numpy <span class="py-kw">as</span> np
+
+X, y = <span class="py-fn">load_iris</span>(return_X_y=<span class="py-fn">True</span>)
+
+<span class="py-cm"># Compare three models: shallow, medium, and deep trees</span>
+<span class="py-kw">for</span> depth <span class="py-kw">in</span> [<span class="py-num">1</span>, <span class="py-num">4</span>, <span class="py-num">20</span>]:
+    model = <span class="py-fn">DecisionTreeClassifier</span>(max_depth=depth, random_state=<span class="py-num">42</span>)
+    scores = <span class="py-fn">cross_val_score</span>(model, X, y, cv=<span class="py-num">5</span>)
+    <span class="py-fn">print</span>(
+        <span class="py-fn">f</span><span class="py-str">"Depth {depth:&lt;3} | "</span>
+        <span class="py-fn">f</span><span class="py-str">"CV accuracy: {scores.mean():.3f} (+/- {scores.std():.3f})"</span>
+    )</pre>
+      </div>
+    </div>
+
+    <div class="output-block">
+      <div class="output-label">Output</div>
+      Depth 1   | CV accuracy: 0.673 (+/- 0.036)  &nbsp;← underfitting<br>
+      Depth 4   | CV accuracy: 0.953 (+/- 0.022)  &nbsp;← good fit<br>
+      Depth 20  | CV accuracy: 0.940 (+/- 0.038)  &nbsp;← slightly overfitting
+    </div>
+
+    <p>Notice that depth 20 is actually slightly worse than depth 4 on average, and more variable (higher standard deviation). The model at depth 20 is overfitting. Depth 4 finds the sweet spot for this dataset. Cross-validation makes this visible in a way that a single train-test split often cannot.</p>
+
+    <div class="callout">
+      <div class="callout-label">The golden rule of evaluation</div>
+      <p>Never touch your test set until you have finished making all decisions about your model. Every time you check test performance and then change something, the test set leaks information into your development process. It is no longer an honest measure of generalisation. If you need to tune hyperparameters, use a separate validation set or cross-validation on the training data only. The test set is a one-shot, final-answer measure.</p>
+    </div>
+
+    <div class="pullquote">
+      <p>"The most important skill in machine learning is resisting the urge to keep checking your test score."</p>
+      <cite>A principle learned repeatedly, the hard way</cite>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list" id="toc">
+        <li class="toc-item" data-target="the-real-goal">The real goal</li>
+        <li class="toc-item" data-target="under-over">Underfitting and overfitting</li>
+        <li class="toc-item" data-target="bias-variance">Bias-variance tradeoff</li>
+        <li class="toc-item" data-target="fixes">Fixes for overfitting</li>
+        <li class="toc-item" data-target="cross-validation">Cross-validation</li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">generalisation</div>
+          <div class="term-def">A model's ability to perform well on new, unseen data it was not trained on. This is the actual goal of ML.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">overfitting</div>
+          <div class="term-def">Model performs well on training data but poorly on test data. It has memorised the training set including its noise.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">underfitting</div>
+          <div class="term-def">Model is too simple to capture the real pattern. It performs poorly on both training and test data.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">regularisation</div>
+          <div class="term-def">Techniques that penalise model complexity during training to prevent overfitting. L1 and L2 are the most common.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">cross-validation</div>
+          <div class="term-def">Rotating which data is used for testing across multiple rounds to get a more reliable estimate of generalisation performance.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Go deeper</div>
+      <div class="book-card">
+        <div class="book-title">The Hundred-Page Machine Learning Book</div>
+        <div class="book-author">Andriy Burkov</div>
+        <div class="book-note">Chapter 4 covers regularisation and the bias-variance tradeoff with clear, concise mathematics that beginners can follow.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">fast.ai Practical Deep Learning</div>
+        <div class="book-author">Jeremy Howard</div>
+        <div class="book-note">Lesson 1 addresses overfitting in a highly practical way. The course's philosophy of starting with real problems makes it excellent.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Hands-on activity</div>
+    <h2 class="act-title">Watch overfitting happen in real time</h2>
+    <p class="act-body">You are going to deliberately overfit a model and then observe the training accuracy and validation accuracy diverge as the model memorises the training data. Then you will apply regularisation and watch the gap close.</p>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Open the Lesson 3.5 Colab notebook. Load the breast cancer dataset from Scikit-learn and split it 80/20.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Train a DecisionTreeClassifier for max_depth values from 1 to 25. Record both train accuracy and test accuracy for each depth. Plot both curves on the same graph.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Identify the point where training accuracy keeps rising but test accuracy starts to fall. That is the onset of overfitting. Which depth is optimal?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">04</span>
+        <span class="step-text">Run 5-fold cross-validation for each depth instead of a single split. Does the cross-validated optimal depth match what you found with the single split?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">05</span>
+        <span class="step-text">Try RandomForestClassifier at the same complexity levels. Random forests use ensembling to reduce variance. Does the training-test gap look different compared to a single tree?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-3-5';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<div style="max-width:860px;margin:0 auto;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(26,24,20,0.1);">
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code live in Google Colab</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">All examples + challenge exercises &middot; Free GPU included &middot; No setup required</div>
+  </div>
+  <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-3.5-overfitting.ipynb" target="_blank" rel="noopener" style="flex-shrink:0;">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+  </a>
+</div>
+
+<div class="nav-section">
+  <a class="nav-card prev" href="LESSON 3.4.html">
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Unsupervised Learning: Clustering</span>
+    <span class="nav-arrow">←</span>
+  </a>
+  <a class="nav-card next" href="LESSON 3.6.html">
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Evaluation Metrics: How Good is Your Model?</span>
+    <span class="nav-arrow">→</span>
+  </a>
+</div>
+
+<footer>
+  <span class="footer-course">AI Crash Course</span>
+  <span class="footer-copy">Phase 3 · Lesson 3.5 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
+});
+const items = document.querySelectorAll('.toc-item');
+const targets = Array.from(items).map(i => document.getElementById(i.dataset.target)).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      items.forEach(i => i.classList.remove('active'));
+      const active = document.querySelector(`.toc-item[data-target="${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+targets.forEach(t => observer.observe(t));
+</script>
+</body>
+</html>

@@ -1,0 +1,616 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.2: Training Deep Networks - AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #b5820a;
+  --accent-soft: rgba(181,130,10,0.08);
+  --accent-border: rgba(181,130,10,0.25);
+  --green: #2a8c5a;
+  --blue: #1a6bc8;
+  --red: #b83c12;
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 18px; line-height: 1.85; min-height: 100vh; }
+
+.reading-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+.topbar { background: var(--ink); padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header { max-width: 860px; margin: 0 auto; padding: 72px 40px 56px; border-bottom: 1px solid var(--border); animation: fadeUp 0.5s 0.05s both; }
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-border); padding: 5px 12px; }
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar { max-width: 860px; margin: 0 auto; padding: 32px 40px; background: var(--paper2); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; animation: fadeUp 0.5s 0.15s both; }
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: var(--max) 1fr; gap: 0; padding: 0 40px; align-items: start; animation: fadeUp 0.5s 0.25s both; }
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--accent-soft); border: 1px solid var(--accent-border); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* BACKPROP VISUAL */
+.backprop-visual { margin: 36px 0; background: var(--ink); padding: 28px; }
+.bp-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.bp-caption { font-family: var(--ui); font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 14px; line-height: 1.65; }
+
+/* OPTIMISER COMPARE */
+.optimiser-table { width: 100%; border-collapse: collapse; margin: 32px 0; }
+.optimiser-table th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2); padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--border2); background: var(--paper2); }
+.optimiser-table td { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 12px 14px; border-bottom: 1px solid var(--border); line-height: 1.5; vertical-align: top; }
+.optimiser-table tr:last-child td { border-bottom: none; }
+.optimiser-table td:first-child { font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 500; }
+
+/* TRAINING CURVE VISUAL */
+.training-curve { margin: 36px 0; background: var(--paper2); border: 1px solid var(--border); padding: 24px 28px; }
+.tc-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 16px; }
+.tc-caption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 14px; line-height: 1.65; }
+
+/* REGULARISATION CARDS */
+.reg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 32px 0; }
+.reg-card { border: 1px solid var(--border); background: var(--paper2); padding: 18px 16px; }
+.reg-title { font-family: var(--ui); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reg-how { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.04em; }
+.reg-desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* CODE BLOCK */
+.code-block { background: #1e1e2e; margin: 28px 0; overflow: hidden; }
+.code-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.code-tag { font-family: var(--mono); font-size: 10px; color: rgba(181,130,10,0.9); letter-spacing: 0.06em; }
+.code-body { padding: 20px 18px; overflow-x: auto; }
+.code-body pre { font-family: var(--mono); font-size: 13px; line-height: 1.75; color: #cdd6f4; white-space: pre; }
+.py-kw { color: #cba6f7; }
+.py-fn { color: #89b4fa; }
+.py-str { color: #a6e3a1; }
+.py-num { color: #fab387; }
+.py-cm { color: #6c7086; }
+.py-op { color: #89dceb; }
+
+/* OUTPUT */
+.output-block { background: var(--paper3); border-left: 3px solid var(--accent); padding: 14px 18px; margin: -8px 0 28px; font-family: var(--mono); font-size: 13px; color: var(--ink); line-height: 1.7; }
+.output-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-family: var(--mono); }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .reg-grid { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 4.2</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">14 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 4: Neural Networks</span>
+    <span class="lesson-num-tag">Lesson 2 of 5</span>
+  </div>
+  <h1 class="lesson-title">Training Deep Networks:<br><em>Backpropagation</em></h1>
+  <p class="lesson-intro">You know what a neural network looks like. Now you need to understand how it actually learns. The answer is backpropagation: an algorithm that computes how to adjust every weight in the network to reduce the prediction error.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>What backpropagation computes and why it works</div>
+    <div class="obj-item"><div class="obj-dot"></div>The vanishing gradient problem explained</div>
+    <div class="obj-item"><div class="obj-dot"></div>Loss functions and how to pick the right one</div>
+    <div class="obj-item"><div class="obj-dot"></div>Optimisers: SGD, Momentum, Adam</div>
+    <div class="obj-item"><div class="obj-dot"></div>Regularisation for neural networks: Dropout and Batch Norm</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2 id="the-problem">The problem: how do you train 10 million parameters?</h2>
+
+    <p>In Lesson 4.1 you built a network with three layers. That small network already had thousands of individual weight parameters. Real-world networks today have millions or billions. You cannot adjust each weight by hand or by trial and error. You need an algorithm that can figure out exactly how to nudge every single parameter to make the network better.</p>
+
+    <p>That algorithm is <strong>backpropagation</strong>, short for "backward propagation of errors." It was popularised in a landmark 1986 paper by David Rumelhart, Geoffrey Hinton, and Ronald Williams published in the journal Nature. While the mathematical ideas had been developed independently by others in the preceding years, the 1986 paper made the algorithm accessible and demonstrated that it could teach hidden layers to form useful internal representations, which settled a long-standing debate about whether multi-layer networks could be trained at all.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Analogy</div>
+      <p>A chef makes a dish and it tastes wrong. To fix it, the chef needs to know which ingredient was the problem and by how much. Backpropagation does exactly this for neural networks. After a bad prediction, it works backwards through every layer and calculates how much each weight contributed to the error. Then it adjusts each weight in the direction that reduces that contribution. It assigns blame precisely and efficiently.</p>
+    </div>
+
+    <h2 id="how-backprop-works">How backpropagation works</h2>
+
+    <p>Backpropagation has two phases. First, the <strong>forward pass</strong>: data flows forward through the network and a prediction is made. Second, the <strong>backward pass</strong>: the error is computed, and then it is propagated backwards through the network layer by layer, updating weights along the way.</p>
+
+    <div class="backprop-visual">
+      <div class="bp-label">Forward pass then backward pass: the two phases of training</div>
+      <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Outfit',sans-serif;">
+        <!-- Nodes -->
+        <circle cx="60" cy="90" r="22" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <circle cx="180" cy="60" r="22" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.4)" stroke-width="1.5"/>
+        <circle cx="180" cy="120" r="22" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.4)" stroke-width="1.5"/>
+        <circle cx="300" cy="60" r="22" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.4)" stroke-width="1.5"/>
+        <circle cx="300" cy="120" r="22" fill="rgba(181,130,10,0.12)" stroke="rgba(181,130,10,0.4)" stroke-width="1.5"/>
+        <circle cx="420" cy="90" r="22" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+        <!-- Loss box -->
+        <rect x="454" y="72" width="40" height="36" rx="3" fill="rgba(184,60,18,0.15)" stroke="rgba(184,60,18,0.5)" stroke-width="1.5"/>
+        <text x="474" y="87" text-anchor="middle" font-size="9" fill="rgba(184,60,18,0.8)" font-family="JetBrains Mono,monospace">Loss</text>
+        <text x="474" y="100" text-anchor="middle" font-size="9" fill="rgba(184,60,18,0.8)" font-family="JetBrains Mono,monospace">L(ŷ,y)</text>
+
+        <!-- Forward pass arrows (gold) -->
+        <line x1="82" y1="82" x2="158" y2="65" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="82" y1="98" x2="158" y2="115" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="202" y1="65" x2="278" y2="62" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="202" y1="75" x2="278" y2="112" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="202" y1="108" x2="278" y2="68" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="202" y1="120" x2="278" y2="122" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="322" y1="68" x2="398" y2="85" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="322" y1="115" x2="398" y2="97" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <line x1="442" y1="90" x2="452" y2="90" stroke="rgba(181,130,10,0.6)" stroke-width="1.5" marker-end="url(#arrowF)"/>
+        <defs><marker id="arrowF" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(181,130,10,0.6)"/></marker></defs>
+
+        <!-- Backward pass arrows (red, underneath, dashed) -->
+        <line x1="452" y1="94" x2="443" y2="95" stroke="rgba(184,60,18,0.7)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowB)"/>
+        <line x1="398" y1="97" x2="322" y2="118" stroke="rgba(184,60,18,0.5)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arrowB)"/>
+        <line x1="278" y1="68" x2="203" y2="63" stroke="rgba(184,60,18,0.5)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arrowB)"/>
+        <line x1="158" y1="65" x2="83" y2="83" stroke="rgba(184,60,18,0.5)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arrowB)"/>
+        <defs><marker id="arrowB" markerWidth="5" markerHeight="5" refX="2" refY="2.5" orient="auto"><path d="M5,0 L0,2.5 L5,5 Z" fill="rgba(184,60,18,0.6)"/></marker></defs>
+
+        <!-- Labels -->
+        <text x="250" y="170" text-anchor="middle" font-size="11" fill="rgba(181,130,10,0.7)" font-family="Outfit,sans-serif">Forward pass (prediction)</text>
+        <text x="250" y="155" text-anchor="middle" font-size="11" fill="rgba(184,60,18,0.7)" font-family="Outfit,sans-serif">Backward pass (error signal)</text>
+        <text x="60" y="16" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">INPUT</text>
+        <text x="420" y="16" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace">OUTPUT</text>
+      </svg>
+      <p class="bp-caption">The forward pass produces a prediction (gold arrows). The loss function compares that prediction to the true label and outputs a single error number. The backward pass (dashed red) flows that error gradient back through every layer, computing how much each weight should change. Every weight gets updated by a tiny amount in the direction that reduces the error.</p>
+    </div>
+
+    <p>The mathematics of backpropagation relies on the chain rule from calculus. For each weight, you compute: "if I increase this weight by a tiny amount, how much does the overall loss change?" This rate of change is the <strong>gradient</strong>. You then move the weight slightly in the direction that decreases the loss. You do not need to know the calculus to use neural networks, but understanding that gradients are the mechanism of learning is important for diagnosing problems.</p>
+
+    <h2 id="vanishing-gradient">The vanishing gradient problem</h2>
+
+    <p>When networks become very deep, a serious problem emerges: gradients can become vanishingly small as they travel backwards through many layers. Each layer multiplies the gradient by the derivative of its activation function. For sigmoid and tanh activations, this derivative is at most 0.25. Multiply a small number by 0.25 twenty times and it becomes essentially zero.</p>
+
+    <p>When gradients vanish, the weights in the early layers of the network receive almost no signal. They barely update. The network struggles to learn anything in its first layers. This was the key reason that very deep networks were considered impractical for much of the 1990s and 2000s.</p>
+
+    <p>Three developments largely solved the vanishing gradient problem:</p>
+
+    <p><strong>1. ReLU activation:</strong> For positive inputs, the derivative of ReLU is exactly 1. No shrinkage. Signals can propagate back through many layers without fading, making deep networks trainable.</p>
+
+    <p><strong>2. Residual connections (ResNets, 2015):</strong> Kaiming He and colleagues at Microsoft Research introduced "skip connections" that let the gradient bypass entire blocks of layers. A residual connection adds the input of a block directly to its output: output = F(x) + x. This gives the gradient a shortcut path that avoids the problem entirely. ResNets enabled networks 100 or more layers deep to train successfully.</p>
+
+    <p><strong>3. Better weight initialisation:</strong> Initialising weights with the wrong scale can cause gradients to explode or vanish even before training begins. Methods like He initialisation (for ReLU networks) and Glorot/Xavier initialisation (for tanh networks) set the starting scale of weights so that signals are preserved as they pass through the network.</p>
+
+    <h2 id="loss-functions">Loss functions: measuring what the network gets wrong</h2>
+
+    <p>Before backpropagation can compute any gradients, it needs a number to differentiate: the loss. The loss function converts the difference between prediction and truth into a single number that can be minimised. Choosing the right loss function for your problem is not optional.</p>
+
+    <table class="optimiser-table">
+      <tr>
+        <th>Problem type</th>
+        <th>Loss function</th>
+        <th>Why</th>
+      </tr>
+      <tr>
+        <td>Binary classification</td>
+        <td>Binary cross-entropy</td>
+        <td>Measures the gap between a predicted probability and a 0/1 label. The natural choice when your output is a sigmoid probability.</td>
+      </tr>
+      <tr>
+        <td>Multi-class classification</td>
+        <td>Categorical cross-entropy</td>
+        <td>Generalises binary cross-entropy to multiple classes. Used with a softmax output layer. Each class gets a probability and the loss rewards high probability on the correct class.</td>
+      </tr>
+      <tr>
+        <td>Regression</td>
+        <td>Mean Squared Error (MSE)</td>
+        <td>Penalises large errors more heavily than small ones. The standard choice for continuous outputs. Use Mean Absolute Error if large outliers should be treated more gently.</td>
+      </tr>
+    </table>
+
+    <h2 id="optimisers">Optimisers: how to descend the gradient</h2>
+
+    <p>Knowing the gradient tells you which direction to move each weight. The optimiser decides how far to move and how. Vanilla gradient descent (updating all weights once per pass through the entire dataset) is rarely used in deep learning because it is too slow and can get stuck.</p>
+
+    <table class="optimiser-table">
+      <tr>
+        <th>Optimiser</th>
+        <th>Key idea</th>
+        <th>When to use</th>
+      </tr>
+      <tr>
+        <td>SGD</td>
+        <td>Update weights after each mini-batch. Faster than full-batch gradient descent but noisier. Adding momentum smooths the updates and helps escape local minima.</td>
+        <td>When you want fine-grained control and are willing to tune the learning rate manually. Often best for CNNs with a careful schedule.</td>
+      </tr>
+      <tr>
+        <td>Adam</td>
+        <td>Adapts the learning rate for each parameter individually, using estimates of the first and second moments of the gradient. Introduced by Kingma and Ba in 2014.</td>
+        <td>The default starting choice for most networks. Works well with little tuning. Slightly higher memory use than SGD.</td>
+      </tr>
+      <tr>
+        <td>AdamW</td>
+        <td>Adam with decoupled weight decay regularisation. Fixes a subtle issue in how Adam applies L2 regularisation.</td>
+        <td>The default for training large language models and transformers. Generally preferred over Adam when regularisation matters.</td>
+      </tr>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">Learning rate: the most important hyperparameter</div>
+      <p>The learning rate controls how large each weight update step is. Too large and the updates overshoot the minimum and the loss oscillates or diverges. Too small and training takes an impractically long time. A common practical approach is to start with a moderate learning rate and then reduce it (using a learning rate schedule) as training progresses. The Keras default learning rate for Adam is 0.001, which is a reasonable starting point for most problems.</p>
+    </div>
+
+    <h2 id="training-curve">Reading the training curve</h2>
+
+    <p>When you train a neural network, Keras tracks the loss on both the training set and the validation set at each epoch. Plotting these two curves over time is the single most useful diagnostic tool in deep learning. The shape of the curves tells you exactly what is happening.</p>
+
+    <div class="training-curve">
+      <div class="tc-label">Training vs validation loss: three patterns</div>
+      <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Outfit',sans-serif;">
+        <!-- Shared axes -->
+        <text x="83" y="14" text-anchor="middle" font-size="9" fill="#9c9488" font-family="JetBrains Mono,monospace">Underfitting</text>
+        <text x="250" y="14" text-anchor="middle" font-size="9" fill="#2a8c5a" font-family="JetBrains Mono,monospace">Good fit</text>
+        <text x="417" y="14" text-anchor="middle" font-size="9" fill="#b83c12" font-family="JetBrains Mono,monospace">Overfitting</text>
+
+        <!-- Dividers -->
+        <line x1="167" y1="20" x2="167" y2="190" stroke="#e8e1d4" stroke-width="1"/>
+        <line x1="334" y1="20" x2="334" y2="190" stroke="#e8e1d4" stroke-width="1"/>
+
+        <!-- === Underfitting panel === -->
+        <!-- Both loss curves stay high and flat -->
+        <path d="M 20 50 Q 80 80 147 90" fill="none" stroke="#1a6bc8" stroke-width="2"/>
+        <path d="M 20 60 Q 80 88 147 97" fill="none" stroke="#b83c12" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="83" y="120" text-anchor="middle" font-size="9" fill="#6e6559">Both curves high.</text>
+        <text x="83" y="133" text-anchor="middle" font-size="9" fill="#6e6559">Model too simple</text>
+        <text x="83" y="146" text-anchor="middle" font-size="9" fill="#6e6559">or training too short.</text>
+
+        <!-- === Good fit panel === -->
+        <path d="M 185 50 Q 230 70 315 90" fill="none" stroke="#1a6bc8" stroke-width="2"/>
+        <path d="M 185 55 Q 230 78 315 95" fill="none" stroke="#b83c12" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="250" y="120" text-anchor="middle" font-size="9" fill="#6e6559">Both curves falling</text>
+        <text x="250" y="133" text-anchor="middle" font-size="9" fill="#6e6559">together and levelling</text>
+        <text x="250" y="146" text-anchor="middle" font-size="9" fill="#6e6559">at similar low values.</text>
+
+        <!-- === Overfitting panel === -->
+        <!-- Train keeps dropping, val starts rising -->
+        <path d="M 352 50 Q 390 65 480 80" fill="none" stroke="#1a6bc8" stroke-width="2"/>
+        <path d="M 352 55 Q 385 68 410 75 Q 440 78 480 100" fill="none" stroke="#b83c12" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="417" y="120" text-anchor="middle" font-size="9" fill="#6e6559">Train still falling.</text>
+        <text x="417" y="133" text-anchor="middle" font-size="9" fill="#6e6559">Val loss rises. Model</text>
+        <text x="417" y="146" text-anchor="middle" font-size="9" fill="#6e6559">memorising training data.</text>
+
+        <!-- Legend -->
+        <line x1="30" y1="175" x2="55" y2="175" stroke="#1a6bc8" stroke-width="2"/>
+        <text x="60" y="179" font-size="10" fill="#6e6559">Training loss</text>
+        <line x1="150" y1="175" x2="175" y2="175" stroke="#b83c12" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="180" y="179" font-size="10" fill="#6e6559">Validation loss</text>
+      </svg>
+      <p class="tc-caption">Plot both curves after every training run. If they diverge (training keeps improving while validation worsens), you are overfitting. Stop training earlier or add regularisation. If both stay high, your model lacks capacity or needs more training time.</p>
+    </div>
+
+    <h2 id="regularisation">Regularisation: preventing overfitting in neural networks</h2>
+
+    <p>Deep networks have enormous capacity. Left unconstrained on a small dataset, they will memorise training examples rather than learning generalisable patterns. Two regularisation techniques are standard practice in neural networks.</p>
+
+    <div class="reg-grid">
+      <div class="reg-card">
+        <div class="reg-title">Dropout</div>
+        <div class="reg-how">Proposed by Srivastava et al., 2014</div>
+        <div class="reg-desc">During each training step, randomly set a fraction of neurons to zero. Typical rates are 20-50%. This prevents neurons from co-adapting and forces the network to learn redundant, more robust representations. At inference time, all neurons are active but their outputs are scaled down by the dropout rate.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-title">Batch Normalisation</div>
+        <div class="reg-how">Proposed by Ioffe and Szegedy, 2015</div>
+        <div class="reg-desc">Normalises the output of each layer (zero mean, unit variance) within each mini-batch during training. Stabilises training, allows higher learning rates, and has a mild regularisation effect. Batch normalisation is now standard in almost every deep network architecture and is applied before or after the activation function.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-title">Early Stopping</div>
+        <div class="reg-how">Monitor validation loss each epoch</div>
+        <div class="reg-desc">Stop training when the validation loss stops improving (or begins to worsen). This prevents the model from continuing to fit the training data after it has already reached peak generalisation. Keras provides a built-in EarlyStopping callback for this.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-title">L2 Weight Decay</div>
+        <div class="reg-how">Penalise large weights in the loss</div>
+        <div class="reg-desc">Adds a penalty term to the loss that grows with the size of the weights. This discourages the network from placing extreme importance on any single feature. Sometimes called "weight decay" or "L2 regularisation" and controlled by a small constant (typically 0.0001 to 0.01).</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Python</span>
+        <span class="code-tag">training_with_callbacks.py</span>
+      </div>
+      <div class="code-body"><pre><span class="py-kw">from</span> tensorflow.keras <span class="py-kw">import</span> layers, callbacks
+<span class="py-kw">import</span> tensorflow <span class="py-kw">as</span> tf
+
+model = tf.keras.<span class="py-fn">Sequential</span>([
+    layers.<span class="py-fn">Dense</span>(<span class="py-num">128</span>, activation=<span class="py-str">'relu'</span>),
+    layers.<span class="py-fn">BatchNormalization</span>(),        <span class="py-cm"># normalise layer outputs</span>
+    layers.<span class="py-fn">Dropout</span>(<span class="py-num">0.3</span>),               <span class="py-cm"># randomly zero 30% of neurons</span>
+    layers.<span class="py-fn">Dense</span>(<span class="py-num">64</span>,  activation=<span class="py-str">'relu'</span>),
+    layers.<span class="py-fn">BatchNormalization</span>(),
+    layers.<span class="py-fn">Dropout</span>(<span class="py-num">0.3</span>),
+    layers.<span class="py-fn">Dense</span>(<span class="py-num">1</span>,   activation=<span class="py-str">'sigmoid'</span>)
+])
+
+model.<span class="py-fn">compile</span>(optimizer=<span class="py-str">'adam'</span>, loss=<span class="py-str">'binary_crossentropy'</span>, metrics=[<span class="py-str">'accuracy'</span>])
+
+<span class="py-cm"># Early stopping: stop if val_loss doesn't improve for 10 epochs</span>
+early_stop = callbacks.<span class="py-fn">EarlyStopping</span>(
+    monitor=<span class="py-str">'val_loss'</span>,
+    patience=<span class="py-num">10</span>,
+    restore_best_weights=<span class="py-fn">True</span>   <span class="py-cm"># revert to the best epoch when stopping</span>
+)
+
+history = model.<span class="py-fn">fit</span>(
+    X_train, y_train,
+    epochs=<span class="py-num">200</span>,
+    batch_size=<span class="py-num">32</span>,
+    validation_split=<span class="py-num">0.15</span>,
+    callbacks=[early_stop],
+    verbose=<span class="py-num">0</span>
+)
+
+<span class="py-fn">print</span>(<span class="py-fn">f</span><span class="py-str">"Stopped at epoch {len(history.history['loss'])}"</span>)</pre>
+      </div>
+    </div>
+
+    <p>With <strong>restore_best_weights=True</strong> in the EarlyStopping callback, Keras automatically reverts the model to its best state before the validation loss started worsening. You ask it to train for 200 epochs but it might stop at epoch 47, having found the best generalisation well before the end.</p>
+
+    <div class="pullquote">
+      <p>"The practical utility of the various tricks used in training neural nets is often underestimated. Choosing good activations, initialisations, and optimisers matters as much as choosing the architecture."</p>
+      <cite>Andrej Karpathy, Stanford CS231n lecture notes (widely read AI teaching resource)</cite>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list" id="toc">
+        <li class="toc-item" data-target="the-problem">The training problem</li>
+        <li class="toc-item" data-target="how-backprop-works">How backprop works</li>
+        <li class="toc-item" data-target="vanishing-gradient">Vanishing gradients</li>
+        <li class="toc-item" data-target="loss-functions">Loss functions</li>
+        <li class="toc-item" data-target="optimisers">Optimisers</li>
+        <li class="toc-item" data-target="training-curve">Training curves</li>
+        <li class="toc-item" data-target="regularisation">Regularisation</li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">backpropagation</div>
+          <div class="term-def">Algorithm that computes gradients for every weight by flowing error signals backwards through the network using the chain rule.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">gradient</div>
+          <div class="term-def">The rate of change of the loss with respect to a weight. Points in the direction of steepest increase; training moves in the opposite direction.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">vanishing gradient</div>
+          <div class="term-def">When gradients become extremely small in early layers of deep networks, causing those layers to learn very slowly or not at all.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Adam</div>
+          <div class="term-def">Adaptive Moment Estimation. A widely used optimiser that adapts the learning rate per parameter. The standard starting choice.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Dropout</div>
+          <div class="term-def">Randomly zeroing a fraction of neurons during training to prevent overfitting. Proposed by Srivastava et al., 2014.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">early stopping</div>
+          <div class="term-def">Halting training when validation loss stops improving, to prevent the model from memorising training data.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Go deeper</div>
+      <div class="book-card">
+        <div class="book-title">CS231n: Convolutional Neural Networks for Visual Recognition</div>
+        <div class="book-author">Stanford University (free online)</div>
+        <div class="book-note">Andrej Karpathy's lecture notes are among the best freely available explanations of training dynamics, backprop, and regularisation.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">Dive into Deep Learning</div>
+        <div class="book-author">Zhang, Lipton, Li, Smola</div>
+        <div class="book-note">Free at d2l.ai. Interactive Jupyter notebooks alongside every explanation. Excellent coverage of optimisers and training techniques.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Hands-on activity</div>
+    <h2 class="act-title">Watch your network learn: plot the training curve</h2>
+    <p class="act-body">Training a network blindly and hoping accuracy improves is not good practice. In this activity you will visualise training in real time, diagnose the overfitting/underfitting state of your model, and use callbacks to train smarter.</p>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Open the Lesson 4.2 Colab notebook. Train the network for 100 epochs without early stopping and save the history object.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Plot training loss and validation loss on the same graph. At what epoch does validation loss start to rise? That is your overfitting point.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Add Dropout(0.4) after each hidden layer. Retrain and re-plot. Does the gap between training and validation loss decrease?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">04</span>
+        <span class="step-text">Add the EarlyStopping callback with patience=10. How many epochs did the model actually train for? Is the final accuracy better or worse than the 100-epoch version?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">05</span>
+        <span class="step-text">Try changing the learning rate from 0.001 to 0.01 and then to 0.0001. Plot all three training curves together. How does learning rate affect the shape of the curve and the final result?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-4-2';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<div style="max-width:860px;margin:0 auto;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(26,24,20,0.1);">
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Practice Notebook</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;line-height:1.3;">Run this lesson's code live in Google Colab</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">All examples + challenge exercises &middot; Free GPU included &middot; No setup required</div>
+  </div>
+  <a href="https://colab.research.google.com/github/GirlEf/ai-crash-course/blob/main/notebooks/lesson-4.2-neural-network.ipynb" target="_blank" rel="noopener" style="flex-shrink:0;">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="height:30px;display:block;">
+  </a>
+</div>
+
+<div class="nav-section">
+  <a class="nav-card prev" href="LESSON 4.1.html">
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">Neural Networks: The Building Blocks</span>
+    <span class="nav-arrow">←</span>
+  </a>
+  <a class="nav-card next" href="LESSON 4.3.html">
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Convolutional Neural Networks</span>
+    <span class="nav-arrow">→</span>
+  </a>
+</div>
+
+<footer>
+  <span class="footer-course">AI Crash Course</span>
+  <span class="footer-copy">Phase 4 · Lesson 4.2 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
+});
+const items = document.querySelectorAll('.toc-item');
+const targets = Array.from(items).map(i => document.getElementById(i.dataset.target)).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      items.forEach(i => i.classList.remove('active'));
+      const active = document.querySelector(`.toc-item[data-target="${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+targets.forEach(t => observer.observe(t));
+</script>
+</body>
+</html>

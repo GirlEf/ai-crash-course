@@ -1,0 +1,636 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 5.1 — AI Ethics: Bias, Fairness and Accountability | AI Crash Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --ink-soft: #4a4a6a;
+      --paper: #fafaf7;
+      --surface: #ffffff;
+      --surface-raised: #f4f4f0;
+      --accent: #8c1a5a;
+      --accent-light: #f5d0e8;
+      --accent-dark: #6a1044;
+      --border: #e2e2da;
+      --success: #2a8c5a;
+      --radius: 10px;
+      --sidebar-w: 260px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lora', Georgia, serif; background: var(--paper); color: var(--ink); line-height: 1.8; display: flex; }
+    #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0%; z-index: 9999; transition: width 0.1s linear; }
+    .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--surface); border-right: 1px solid var(--border); padding: 2rem 1.25rem; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; gap: 2rem; }
+    .sidebar-brand { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+    .sidebar-brand .phase-badge { background: var(--accent); color: #fff; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 99px; font-weight: 600; letter-spacing: 0.05em; }
+    .toc-label { font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem; }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.15rem; }
+    .toc-list a { font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); text-decoration: none; padding: 0.3rem 0.6rem; border-radius: 6px; display: block; transition: all 0.2s; border-left: 2px solid transparent; }
+    .toc-list a:hover { color: var(--accent); background: var(--accent-light); }
+    .toc-list a.active { color: var(--accent); font-weight: 600; border-left-color: var(--accent); background: var(--accent-light); }
+    .sidebar-footer { margin-top: auto; font-family: 'Outfit', sans-serif; font-size: 0.75rem; color: var(--ink-soft); padding-top: 1rem; border-top: 1px solid var(--border); }
+    .sidebar-footer a { color: var(--accent); text-decoration: none; }
+    .main { margin-left: var(--sidebar-w); max-width: 820px; width: 100%; padding: 3rem 3rem 6rem; }
+    .lesson-hero { background: linear-gradient(135deg, #1a0010 0%, #3a0828 60%, #5a1040 100%); border-radius: 16px; padding: 3rem; margin-bottom: 3rem; color: #fff; position: relative; overflow: hidden; }
+    .lesson-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 50%, rgba(140,26,90,0.4) 0%, transparent 60%); }
+    .lesson-hero-content { position: relative; z-index: 1; }
+    .lesson-tag { font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #f5d0e8; margin-bottom: 0.75rem; }
+    .lesson-hero h1 { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .lesson-hero p { font-size: 1rem; color: rgba(255,255,255,0.8); max-width: 540px; font-family: 'Outfit', sans-serif; }
+    .hero-meta { display: flex; gap: 1.5rem; margin-top: 1.5rem; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+    .lesson-section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+    .lesson-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.55rem; font-weight: 700; color: var(--ink); margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--accent-light); }
+    .lesson-section h3 { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    strong { font-weight: 600; }
+    em { font-style: italic; }
+    .callout { border-left: 4px solid var(--accent); background: var(--accent-light); padding: 1rem 1.25rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 1.5rem 0; font-size: 0.95rem; }
+    .callout.info { border-color: #2a6ab5; background: #e8f0fb; }
+    .callout.warning { border-color: #c07800; background: #fff3d6; }
+    .callout.danger { border-color: #c03030; background: #fff0f0; }
+    .callout-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--accent-dark); }
+    .callout.info .callout-title { color: #1a4a8a; }
+    .callout.warning .callout-title { color: #7a4800; }
+    .callout.danger .callout-title { color: #a01818; }
+    .svg-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
+    .svg-caption { text-align: center; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.75rem; font-style: italic; }
+    .info-grid { display: grid; gap: 1rem; margin: 1.5rem 0; }
+    .info-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .info-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .info-card h4 { font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent-dark); }
+    .info-card p { font-size: 0.88rem; margin: 0; color: var(--ink-soft); }
+    .case-study { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.25rem 0; border-top: 4px solid var(--accent); }
+    .case-study .cs-label { font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+    .case-study h4 { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .case-study p { font-size: 0.9rem; margin-bottom: 0.6rem; }
+    .case-study p:last-child { margin-bottom: 0; }
+    .case-study .cs-lesson { background: var(--accent-light); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-style: italic; margin-top: 0.75rem; }
+    .fairness-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.88rem; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    .fairness-table th { background: var(--ink); color: #fff; font-family: 'Outfit', sans-serif; font-weight: 600; padding: 0.7rem 1rem; text-align: left; font-size: 0.82rem; }
+    .fairness-table td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .fairness-table tr:last-child td { border-bottom: none; }
+    .fairness-table tr:nth-child(even) td { background: var(--surface-raised); }
+    .practitioner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+    .practitioner-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; gap: 0.75rem; align-items: flex-start; }
+    .practitioner-card .pnum { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--accent-light); min-width: 36px; }
+    .practitioner-card h4 { font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .practitioner-card p { font-size: 0.85rem; margin: 0; color: var(--ink-soft); }
+    .takeaway-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+    .takeaway-list li { display: flex; align-items: flex-start; gap: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.92rem; }
+    .takeaway-list li::before { content: '✓'; color: var(--accent); font-weight: 700; font-family: 'Outfit', sans-serif; flex-shrink: 0; }
+    .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .nav-btn { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.9rem; padding: 0.75rem 1.5rem; border-radius: var(--radius); text-decoration: none; transition: all 0.2s; }
+    .nav-btn.prev { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--border); }
+    .nav-btn.next { background: var(--accent); color: #fff; }
+    .nav-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .reading-list { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+    .reading-item { display: flex; gap: 0.75rem; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
+    .reading-item .ri-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .reading-item .ri-title { font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--ink); }
+    .reading-item .ri-sub { font-family: 'Outfit', sans-serif; font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.1rem; }
+    @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; padding: 2rem 1.25rem 5rem; } .info-grid.cols-2, .info-grid.cols-3, .practitioner-grid { grid-template-columns: 1fr; } .mobile-toc { display: block; } }
+    .mobile-toc { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 2rem; overflow: hidden; }
+    .mobile-toc summary { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--ink); padding: 0.9rem 1.25rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .mobile-toc summary::-webkit-details-marker { display: none; }
+    .mobile-toc summary::after { content: "▾"; font-size: 0.75rem; color: var(--ink-soft); }
+    details.mobile-toc[open] summary::after { content: "▴"; }
+    .mobile-toc-links { padding: 0.5rem 0 0.75rem; border-top: 1px solid var(--border); }
+    .mobile-toc-links a { display: block; font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); text-decoration: none; padding: 0.3rem 1.25rem; }
+    .mobile-toc-links a:hover { color: var(--accent); }
+    /* GOING DEEPER */
+    .deeper-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-top: 2.5rem; }
+    .deeper-eyebrow { font-family: 'Outfit', sans-serif; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem; font-weight: 700; }
+    .deeper-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); margin: 0 0 1.25rem; }
+    .deeper-resources { display: flex; flex-direction: column; gap: 0.75rem; }
+    .deeper-item { display: flex; gap: 1rem; align-items: flex-start; padding: 0.85rem 1rem; background: var(--surface-raised); border-radius: 8px; border: 1px solid var(--border); text-decoration: none; transition: border-color 0.2s; }
+    .deeper-item:hover { border-color: var(--accent); }
+    .deeper-item-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+    .deeper-item-text { flex: 1; }
+    .deeper-item-label { font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--ink); display: block; margin-bottom: 2px; }
+    .deeper-item-desc { font-family: 'Outfit', sans-serif; font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5; }
+    /* REFLECT SECTION */
+    .reflect-block { background: var(--accent-light); border: 1px solid rgba(140,26,90,0.15); border-left: 4px solid var(--accent); border-radius: 12px; padding: 2rem 2rem 1.25rem; margin-top: 2.5rem; margin-bottom: 0; }
+    .reflect-eyebrow { font-family: 'Outfit', sans-serif; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; font-weight: 700; }
+    .reflect-title { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--ink); margin: 0 0 0.3rem; }
+    .reflect-sub { font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--ink-soft); margin: 0 0 1.5rem; }
+    .reflect-card { border-top: 1px solid rgba(140,26,90,0.12); padding: 1rem 0; }
+    .reflect-card:last-child { border-bottom: 1px solid rgba(140,26,90,0.12); }
+    .reflect-q { font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--ink); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+    .reflect-q::-webkit-details-marker { display: none; }
+    .reflect-q::after { content: "+"; font-size: 1.1rem; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+    details[open] .reflect-q::after { content: "−"; }
+    .reflect-a { padding: 0.75rem 0 0.25rem; }
+    .reflect-a p { font-family: 'Lora', Georgia, serif; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.75; margin: 0; }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<aside class="sidebar">
+  <a href="../ai_crash_course_pro.html" class="sidebar-brand">
+    <span class="phase-badge">PHASE 5</span> AI in Practice
+  </a>
+  <nav>
+    <div class="toc-label">In this lesson</div>
+    <ul class="toc-list">
+      <li><a href="#why-ethics" data-section="why-ethics">Why AI Ethics Matters</a></li>
+      <li><a href="#bias-sources" data-section="bias-sources">Where Bias Comes From</a></li>
+      <li><a href="#case-studies" data-section="case-studies">Real Case Studies</a></li>
+      <li><a href="#fairness" data-section="fairness">Fairness is Not One Thing</a></li>
+      <li><a href="#explainability" data-section="explainability">Explainability</a></li>
+      <li><a href="#regulation" data-section="regulation">Regulation and Governance</a></li>
+      <li><a href="#practitioner" data-section="practitioner">What You Can Do</a></li>
+      <li><a href="#takeaways" data-section="takeaways">Key Takeaways</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer"><p style="margin-bottom:.5rem;"><a href="../glossary.html" style="color:var(--accent);text-decoration:none;font-size:.75rem;">&#128218; Glossary</a></p>
+    <p>Phase 5 of 5 &middot; Lesson 1 of 5</p>
+    <p style="margin-top:0.4rem"><a href="LESSON 5.2.html">Next: Large Language Models &rarr;</a></p>
+  </div>
+</aside>
+
+<main class="main">
+
+  <details class="mobile-toc">
+    <summary>In this lesson</summary>
+    <nav class="mobile-toc-links">
+      <a href="#why-ethics">Why AI Ethics Matters</a>
+      <a href="#bias-sources">Where Bias Comes From</a>
+      <a href="#case-studies">Real Case Studies</a>
+      <a href="#fairness">Fairness is Not One Thing</a>
+      <a href="#explainability">Explainability</a>
+      <a href="#regulation">Regulation and Governance</a>
+      <a href="#practitioner">What You Can Do</a>
+      <a href="#takeaways">Key Takeaways</a>
+    </nav>
+  </details>
+
+  <div class="lesson-hero">
+    <div class="lesson-hero-content">
+      <div class="lesson-tag">Phase 5 &middot; Lesson 5.1</div>
+      <h1>AI Ethics: Bias, Fairness and Accountability</h1>
+      <p>The most technically impressive AI system can still cause serious harm. Understanding where things go wrong and why is now a core responsibility for every AI practitioner.</p>
+      <div class="hero-meta">
+        <span>&#128337; 35 min read</span>
+        <span>&#9878; 4 real case studies</span>
+        <span>&#9878; No code required</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 1 ── -->
+  <section class="lesson-section" id="why-ethics">
+    <h2>Why AI Ethics Matters Now</h2>
+    <p>For much of its early history, AI was a research discipline with limited real-world reach. That has changed dramatically. AI systems now decide who receives a loan, who is flagged as a flight risk in court, whose job application advances, and which patients are prioritised for additional medical care. When these systems fail or discriminate, the consequences are not abstract. They are experienced by real people.</p>
+    <p>The field of AI ethics is not about making AI "nice." It is about ensuring that the power of these systems is exercised responsibly, that harms are identified before deployment rather than discovered after, and that the people most affected by AI decisions have meaningful recourse when things go wrong.</p>
+    <p>This is not a soft skill or an optional extra. It is increasingly a legal requirement, a professional expectation, and a practical necessity for building systems that people will actually trust and use.</p>
+    <div class="callout warning">
+      <div class="callout-title">A Common Misconception</div>
+      <p>Many people assume that because an AI system is trained on data rather than programmed with human prejudices, it must be objective. This is wrong. Data is generated by human societies, and human societies carry historical inequalities. A model trained on biased data learns those biases. Automation does not neutralise discrimination. In some cases, it amplifies it and makes it harder to challenge.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2 ── -->
+  <section class="lesson-section" id="bias-sources">
+    <h2>Where Bias Comes From</h2>
+    <p>Bias in AI systems does not usually arise from malicious intent. It enters the pipeline in several distinct, often invisible ways. Understanding where it enters is the first step to addressing it.</p>
+
+    <!-- Bias pipeline SVG -->
+    <div class="svg-container">
+      <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:0 auto;">
+        <text x="350" y="20" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1a1a2e">The Bias Pipeline: Where Bias Enters AI Systems</text>
+
+        <!-- Block 1: Data Collection -->
+        <rect x="10" y="38" width="118" height="70" rx="8" fill="#8c1a5a" opacity="0.85"/>
+        <text x="69" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Data</text>
+        <text x="69" y="81" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Collection</text>
+        <text x="69" y="98" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Historical bias</text>
+        <text x="69" y="109" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Underrepresentation</text>
+
+        <line x1="128" y1="73" x2="146" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#parr)"/>
+
+        <!-- Block 2: Labelling -->
+        <rect x="146" y="38" width="118" height="70" rx="8" fill="#7a1050" opacity="0.85"/>
+        <text x="205" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Labelling</text>
+        <text x="205" y="81" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">&amp; Annotation</text>
+        <text x="205" y="98" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Annotator bias</text>
+        <text x="205" y="109" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Measurement error</text>
+
+        <line x1="264" y1="73" x2="282" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#parr)"/>
+
+        <!-- Block 3: Model Training -->
+        <rect x="282" y="38" width="118" height="70" rx="8" fill="#6a0840" opacity="0.85"/>
+        <text x="341" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Model</text>
+        <text x="341" y="81" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Training</text>
+        <text x="341" y="98" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Objective mismatch</text>
+        <text x="341" y="109" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Proxy discrimination</text>
+
+        <line x1="400" y1="73" x2="418" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#parr)"/>
+
+        <!-- Block 4: Evaluation -->
+        <rect x="418" y="38" width="118" height="70" rx="8" fill="#5a0632" opacity="0.85"/>
+        <text x="477" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Evaluation</text>
+        <text x="477" y="81" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">&amp; Testing</text>
+        <text x="477" y="98" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Non-representative</text>
+        <text x="477" y="109" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">benchmarks</text>
+
+        <line x1="536" y1="73" x2="554" y2="73" stroke="#8c1a5a" stroke-width="2" marker-end="url(#parr)"/>
+
+        <!-- Block 5: Deployment -->
+        <rect x="554" y="38" width="136" height="70" rx="8" fill="#3a0420" opacity="0.9"/>
+        <text x="622" y="68" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">Deployment</text>
+        <text x="622" y="81" text-anchor="middle" font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="white">&amp; Feedback</text>
+        <text x="622" y="98" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Context drift</text>
+        <text x="622" y="109" text-anchor="middle" font-family="Outfit,sans-serif" font-size="8" fill="rgba(255,255,255,0.75)">Feedback loops</text>
+
+        <!-- Feedback loop arrow -->
+        <path d="M 690 73 Q 700 150 350 155 Q 0 160 10 73" fill="none" stroke="#8c1a5a" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5"/>
+        <text x="350" y="182" text-anchor="middle" font-family="Outfit,sans-serif" font-size="9" fill="#8c1a5a" opacity="0.7">Biased outputs become future training data, amplifying the original bias</text>
+
+        <defs>
+          <marker id="parr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#8c1a5a"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="svg-caption">Bias can enter at every stage of the AI pipeline. Addressing it at deployment alone is too late. Rigorous checks are needed at each step, with particular attention to the feedback loop that can compound errors over time.</p>
+    </div>
+
+    <div class="info-grid cols-2">
+      <div class="info-card">
+        <h4>Historical Bias</h4>
+        <p>The world has not always been fair. Training on historical records encodes historical inequalities. A hiring model trained on past hiring decisions inherits the biases of past hiring managers.</p>
+      </div>
+      <div class="info-card">
+        <h4>Representation Bias</h4>
+        <p>When training data underrepresents certain groups (women in STEM datasets, darker skin tones in medical imaging), the model performs worse for those groups.</p>
+      </div>
+      <div class="info-card">
+        <h4>Measurement Bias</h4>
+        <p>The variables used to measure a concept may not measure it equally across groups. Using healthcare cost as a proxy for healthcare need systematically underestimates the needs of groups who historically received less care.</p>
+      </div>
+      <div class="info-card">
+        <h4>Feedback Loop Bias</h4>
+        <p>A predictive policing model directs more patrols to certain neighbourhoods, leading to more arrests there, which generates more data confirming the model's predictions. The bias becomes self-reinforcing.</p>
+      </div>
+      <div class="info-card">
+        <h4>Aggregation Bias</h4>
+        <p>Training a single model on a diverse population can obscure important subgroup differences. A medical model trained on combined data may perform well on average but fail for specific demographic groups.</p>
+      </div>
+      <div class="info-card">
+        <h4>Deployment Bias</h4>
+        <p>A model is used in a context it was not designed for. A risk score developed for one country's legal system is applied in another with very different social conditions and base rates.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3 ── -->
+  <section class="lesson-section" id="case-studies">
+    <h2>Real Case Studies</h2>
+    <p>Examining specific documented cases is essential. Abstract discussions of bias are less instructive than concrete examples of how it has caused real harm.</p>
+
+    <div class="case-study">
+      <div class="cs-label">Case Study 1 &middot; Criminal Justice</div>
+      <h4>COMPAS Recidivism Risk Tool</h4>
+      <p>COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) is a commercial tool used by courts across the United States to predict the likelihood that a defendant will re-offend. In 2016, investigative journalists at ProPublica published an analysis of 7,000 defendants in Broward County, Florida.</p>
+      <p>Their analysis found that the tool was significantly more likely to incorrectly label Black defendants as high risk when they did not go on to re-offend, and more likely to incorrectly label white defendants as low risk when they did. The tool's overall accuracy was similar across racial groups, but the types of errors were distributed very differently.</p>
+      <p>Northpointe, the company behind COMPAS, responded that the tool satisfied a different statistical definition of fairness: that its risk scores meant the same thing regardless of race (that is, a score of 7 corresponded to the same re-offending rate for Black and white defendants). Both claims were true simultaneously. This case launched a now-famous debate in the research community about which mathematical definition of fairness is most appropriate, and whether they can all be satisfied at once when re-offending rates differ between groups.</p>
+      <div class="cs-lesson">The lesson: accuracy parity at the overall level can mask very different error distributions across groups. The choice of which fairness metric to optimise is not a technical question. It is a value judgment that should involve affected communities.</div>
+    </div>
+
+    <div class="case-study">
+      <div class="cs-label">Case Study 2 &middot; Hiring</div>
+      <h4>Amazon's Automated Recruiting Tool</h4>
+      <p>Amazon developed an AI recruiting tool that scored job applicants on a scale of one to five stars. The tool was trained on resumes submitted to Amazon over a ten-year period, a period during which the tech industry was overwhelmingly male. The model learned to penalise resumes containing the word "women's" (as in "women's chess club") and downgraded graduates of all-women's colleges.</p>
+      <p>Amazon's team discovered these issues in 2015, made corrections, but found they could not guarantee the tool would not find other problematic proxies for gender. The project was scrapped in 2018. Reuters reported on the case publicly that year.</p>
+      <div class="cs-lesson">The lesson: even when protected attributes like gender are excluded from training features, a model can learn to use proxies for those attributes. The absence of a sensitive variable in the feature set does not guarantee fairness.</div>
+    </div>
+
+    <div class="case-study">
+      <div class="cs-label">Case Study 3 &middot; Healthcare</div>
+      <h4>Racial Bias in a Medical Care Algorithm</h4>
+      <p>A 2019 study published in <em>Science</em> by Obermeyer et al. analysed a widely deployed commercial algorithm used by US health systems to identify patients who needed extra care management. The algorithm used predicted healthcare costs as a proxy for healthcare need. The researchers found that for the same healthcare cost level, Black patients were significantly sicker than white patients.</p>
+      <p>The root cause was a measurement bias: Black patients historically received less care for the same conditions, so their costs were lower even though their underlying needs were the same. The algorithm interpreted lower costs as lower need, and as a result, at any given risk score threshold, Black patients who were enrolled in care management programmes were considerably sicker than their white counterparts. The authors estimated this reduced the fraction of Black patients receiving additional care by more than half compared to what an unbiased algorithm would have produced.</p>
+      <div class="cs-lesson">The lesson: choosing a proxy variable that seems reasonable (cost as a measure of need) can encode systemic inequalities in a way that is invisible until you specifically look for disparate impact across groups.</div>
+    </div>
+
+    <div class="case-study">
+      <div class="cs-label">Case Study 4 &middot; Computer Vision</div>
+      <h4>Gender Shades: Disparities in Face Analysis</h4>
+      <p>Joy Buolamwini (MIT Media Lab) and Timnit Gebru (Microsoft Research at the time) published "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification" at the 2018 ACM Conference on Fairness, Accountability, and Transparency. The study evaluated three major commercial gender classification systems from IBM, Microsoft, and Face++.</p>
+      <p>Across all three systems, overall accuracy ranged from 93.7% to 99.1%. But when broken down by skin tone and gender together, darker-skinned female subjects were classified correctly only 65.3% to 79.9% of the time. The disparity was intersectional: darker-skinned women fared far worse than lighter-skinned men or either group considered alone. The training datasets used by these systems contained disproportionately more lighter-skinned subjects.</p>
+      <p>After the study's publication, all three companies updated their systems and reported substantially improved performance across demographic groups. The study directly motivated Amazon, IBM, and Microsoft to later pause or limit the sale of facial recognition technology to police departments while accuracy and fairness standards were being debated.</p>
+      <div class="cs-lesson">The lesson: aggregate performance metrics hide subgroup disparities. Intersectional analysis (examining the interaction between multiple identity dimensions) reveals harms that group-by-group analysis can miss.</div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4 ── -->
+  <section class="lesson-section" id="fairness">
+    <h2>Fairness is Not One Thing</h2>
+    <p>The COMPAS case highlighted a genuine mathematical tension. Researchers Chouldechova (2017) and Kleinberg, Mullainathan, and Raghavan (2016) independently proved that several commonly used fairness criteria are mathematically incompatible with each other whenever the positive outcome rate differs between groups. This is sometimes called the <strong>impossibility theorem of fairness</strong>.</p>
+    <p>There is no single correct definition of "fair" that a model can simultaneously satisfy. Different definitions reflect different values, and the choice between them has significant ethical implications.</p>
+
+    <table class="fairness-table">
+      <thead>
+        <tr>
+          <th>Fairness Definition</th>
+          <th>What It Requires</th>
+          <th>When It Prioritises</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Demographic Parity</strong><br><em>(Statistical Parity)</em></td>
+          <td>Equal positive prediction rates across all groups. If 30% of Group A receives a loan, 30% of Group B should too.</td>
+          <td>Equal representation of outcomes across groups, regardless of underlying differences in the predictor variables.</td>
+        </tr>
+        <tr>
+          <td><strong>Equalized Odds</strong></td>
+          <td>Equal true positive rates AND equal false positive rates across groups. The model should be equally accurate for everyone.</td>
+          <td>Equal quality of predictions. If you are incorrectly flagged as high risk, that probability should not depend on your group membership.</td>
+        </tr>
+        <tr>
+          <td><strong>Calibration</strong><br><em>(Predictive Parity)</em></td>
+          <td>A predicted probability of 70% should correspond to a 70% actual outcome rate for all groups. Scores mean the same thing across groups.</td>
+          <td>Consistency of interpretation across groups. This is what Northpointe argued COMPAS satisfied.</td>
+        </tr>
+        <tr>
+          <td><strong>Individual Fairness</strong></td>
+          <td>Similar individuals should receive similar predictions, regardless of group membership.</td>
+          <td>Treating each person based on their own features rather than their demographic group average.</td>
+        </tr>
+        <tr>
+          <td><strong>Counterfactual Fairness</strong></td>
+          <td>Would the prediction change if the individual's protected attribute changed, all else being equal?</td>
+          <td>Causal reasoning about how the model uses protected attributes or their proxies.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-title">The Core Tension</div>
+      <p>When the base rates of an outcome differ between groups (for example, if recidivism rates differ between demographic groups for historical reasons), you cannot simultaneously satisfy calibration and equalized false positive rates. You must choose. This is not a technical problem that better algorithms will solve. It is a societal question about which type of error is more acceptable, and who bears the cost of being wrong. The answer should come from democratic deliberation and input from affected communities, not from engineers optimising a loss function.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5 ── -->
+  <section class="lesson-section" id="explainability">
+    <h2>Explainability and Accountability</h2>
+    <p>When an AI system makes a decision that affects someone's life, that person has a legitimate interest in understanding why. This is not just a philosophical point. The EU's General Data Protection Regulation (GDPR) includes provisions granting individuals rights related to automated decision-making, requiring that decisions be explainable in meaningful terms.</p>
+
+    <h3>Interpretable Models vs Post-Hoc Explanations</h3>
+    <p>Some models are inherently interpretable. A logistic regression or a shallow decision tree can be read directly by a human expert. The model's reasoning is transparent by design. Cynthia Rudin (Duke University) has argued forcefully, particularly in a 2019 paper in <em>Nature Machine Intelligence</em>, that in high-stakes domains (criminal justice, medical diagnosis, credit lending), we should prefer inherently interpretable models over complex black boxes with post-hoc explanations, because post-hoc explanations are approximations that may not accurately represent what the model actually computed.</p>
+    <p>Deep neural networks are not inherently interpretable. Their reasoning is distributed across millions of parameters. To explain them, researchers have developed post-hoc explanation methods:</p>
+
+    <div class="info-grid cols-2">
+      <div class="info-card">
+        <h4>SHAP (2017)</h4>
+        <p>SHapley Additive exPlanations, developed by Lundberg and Lee. Uses game theory (Shapley values from cooperative game theory) to assign each input feature a contribution score for a specific prediction. Theoretically grounded and consistent.</p>
+      </div>
+      <div class="info-card">
+        <h4>LIME (2016)</h4>
+        <p>Local Interpretable Model-agnostic Explanations, by Ribeiro, Singh, and Guestrin. Approximates the complex model locally around a specific prediction using a simple linear model. Intuitive but the local approximation may not always be faithful.</p>
+      </div>
+      <div class="info-card">
+        <h4>Grad-CAM (2017)</h4>
+        <p>Gradient-weighted Class Activation Mapping, by Selvaraju et al. For image classification CNNs, produces a heatmap showing which regions of the image most influenced the prediction. Widely used in medical imaging to verify model reasoning.</p>
+      </div>
+      <div class="info-card">
+        <h4>Attention Visualisation</h4>
+        <p>For Transformer models, plotting attention weights shows which tokens a model focused on when generating an output. Useful but research has shown attention weights do not always correspond to what actually drives predictions.</p>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-title">An Important Caveat on Explanations</div>
+      <p>Post-hoc explanations are approximations, not ground truth. A SHAP explanation tells you how a simplified model accounts for the prediction, not necessarily how the actual model computed it. Using these tools uncritically, or communicating them to users as if they were definitive, can create a false sense of transparency. Explanations are a starting point for scrutiny, not a substitute for it.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6 ── -->
+  <section class="lesson-section" id="regulation">
+    <h2>Regulation and Governance</h2>
+    <p>Governments and international bodies have begun to respond to the risks of AI with regulatory frameworks. Understanding the landscape is becoming an important part of AI practice, particularly for anyone building systems that will be deployed commercially.</p>
+
+    <div class="info-grid cols-2">
+      <div class="info-card" style="border-top: 3px solid var(--accent);">
+        <h4>EU AI Act (2024)</h4>
+        <p>The world's first comprehensive AI law, entering into force August 2024. It takes a risk-based approach: systems are classified by risk level (unacceptable, high, limited, minimal). High-risk systems (credit scoring, recruitment, critical infrastructure) face strict obligations including conformity assessments, transparency requirements, and human oversight mandates. AI systems that pose unacceptable risks (social scoring by governments, real-time remote biometric surveillance in public) are banned.</p>
+      </div>
+      <div class="info-card" style="border-top: 3px solid #2a6ab5;">
+        <h4>EU GDPR (2018)</h4>
+        <p>While not AI-specific, the General Data Protection Regulation contains provisions directly relevant to AI: Article 22 gives individuals the right not to be subject to solely automated decisions with significant effects, and the right to a meaningful explanation. It also requires data minimisation, purpose limitation, and privacy by design. GDPR applies to any organisation processing data of EU residents.</p>
+      </div>
+      <div class="info-card" style="border-top: 3px solid #2a8c5a;">
+        <h4>UNESCO Recommendation (2021)</h4>
+        <p>The first global standard on AI ethics, adopted by all 193 UNESCO member states. It covers human rights, transparency, accountability, fairness, environmental sustainability, and gender equality in AI. It is non-binding but represents the broadest international consensus on AI ethics principles.</p>
+      </div>
+      <div class="info-card" style="border-top: 3px solid #b5820a;">
+        <h4>US Executive Order on AI (2023)</h4>
+        <p>Signed October 2023, it directed federal agencies to establish standards for AI safety and security, protect privacy, promote equity and civil rights, and support workers affected by AI. It required developers of powerful AI systems to share safety test results with the government. The Biden-era order was partially rescinded in early 2025, reflecting ongoing policy debates about AI governance in the US.</p>
+      </div>
+    </div>
+
+    <p>Beyond government regulation, voluntary frameworks have emerged from the research community. Model Cards (proposed by Timnit Gebru, Margaret Mitchell et al. in 2018) are structured documentation forms for ML models that disclose performance characteristics across demographic subgroups. Datasheets for Datasets (Gebru et al., 2021) provide an analogous framework for documenting training data. These tools have been widely adopted by major AI labs as part of responsible release practices.</p>
+  </section>
+
+  <!-- ── SECTION 7 ── -->
+  <section class="lesson-section" id="practitioner">
+    <h2>What You Can Do as an AI Practitioner</h2>
+    <p>Ethics is not only for policymakers and researchers. Every person who builds, deploys, or recommends AI systems has a responsibility to consider these issues. Here are concrete steps you can take at each stage of an AI project.</p>
+
+    <div class="practitioner-grid">
+      <div class="practitioner-card">
+        <div class="pnum">01</div>
+        <div>
+          <h4>Audit your training data</h4>
+          <p>Before training, examine the demographic composition of your dataset. Ask: who is represented? Who is not? What are the base rates of the outcome variable across subgroups? Document your findings.</p>
+        </div>
+      </div>
+      <div class="practitioner-card">
+        <div class="pnum">02</div>
+        <div>
+          <h4>Disaggregate your evaluation metrics</h4>
+          <p>Never report only overall accuracy. Compute precision, recall, and F1 separately for each demographic subgroup relevant to your deployment context. Disparities that aggregate metrics hide become visible this way.</p>
+        </div>
+      </div>
+      <div class="practitioner-card">
+        <div class="pnum">03</div>
+        <div>
+          <h4>Question your proxy variables</h4>
+          <p>Ask whether the variable you are using to measure the concept you care about actually measures it equally across groups. If it does not, consider whether an alternative measurement is available.</p>
+        </div>
+      </div>
+      <div class="practitioner-card">
+        <div class="pnum">04</div>
+        <div>
+          <h4>Involve affected communities</h4>
+          <p>The people most likely to be impacted by your system should have input into its design, evaluation, and deployment conditions. This is not just ethical. It is also practically useful for identifying failure modes.</p>
+        </div>
+      </div>
+      <div class="practitioner-card">
+        <div class="pnum">05</div>
+        <div>
+          <h4>Document your models</h4>
+          <p>Use a structured format like a Model Card to record what your model was trained on, what it was evaluated on, its intended use cases, its known limitations, and its performance across demographic groups.</p>
+        </div>
+      </div>
+      <div class="practitioner-card">
+        <div class="pnum">06</div>
+        <div>
+          <h4>Design for human oversight</h4>
+          <p>For high-stakes decisions, build in meaningful human review rather than full automation. Ensure that humans in the loop have sufficient information, time, and authority to actually override the system when needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Further Reading</h3>
+    <div class="reading-list">
+      <div class="reading-item">
+        <div class="ri-icon">&#128218;</div>
+        <div>
+          <div class="ri-title">Weapons of Math Destruction — Cathy O'Neil (2016)</div>
+          <div class="ri-sub">Accessible, well-documented survey of how algorithms cause harm in education, finance, policing, and more. Essential reading for any AI practitioner.</div>
+        </div>
+      </div>
+      <div class="reading-item">
+        <div class="ri-icon">&#128218;</div>
+        <div>
+          <div class="ri-title">Algorithms of Oppression — Safiya Umoja Noble (2018)</div>
+          <div class="ri-sub">Examines how search engine results can reflect and reinforce racial and gender bias, with broader lessons for AI fairness.</div>
+        </div>
+      </div>
+      <div class="reading-item">
+        <div class="ri-icon">&#128218;</div>
+        <div>
+          <div class="ri-title">Atlas of AI — Kate Crawford (2021)</div>
+          <div class="ri-sub">Examines the material, political, and environmental costs of AI systems. Broadens the ethical lens beyond algorithmic fairness to include labour, power, and extraction.</div>
+        </div>
+      </div>
+      <div class="reading-item">
+        <div class="ri-icon">&#128196;</div>
+        <div>
+          <div class="ri-title">"Gender Shades" — Buolamwini and Gebru (FAccT 2018)</div>
+          <div class="ri-sub">The original paper documenting intersectional disparities in commercial face analysis systems. Freely available online.</div>
+        </div>
+      </div>
+      <div class="reading-item">
+        <div class="ri-icon">&#128196;</div>
+        <div>
+          <div class="ri-title">"Dissecting Racial Bias in an Algorithm Used to Manage Health" — Obermeyer et al. (Science, 2019)</div>
+          <div class="ri-sub">The healthcare cost proxy study. A model paper for how to audit an algorithm for disparate impact.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 8 ── -->
+  <section class="lesson-section" id="takeaways">
+    <h2>Key Takeaways</h2>
+    <ul class="takeaway-list">
+      <li>AI systems trained on historical data inherit historical inequalities. Automation does not eliminate bias. In some cases it amplifies and obscures it.</li>
+      <li>Bias enters the pipeline at multiple points: data collection, labelling, model training, evaluation, and deployment. It must be addressed at every stage, not just at the end.</li>
+      <li>The COMPAS, Amazon hiring, healthcare cost proxy, and Gender Shades cases are documented, peer-reviewed examples of algorithmic harm. They are not edge cases. They are illustrations of systematic risks in routine AI deployment.</li>
+      <li>There is no single definition of fairness. Demographic parity, equalized odds, and calibration are mathematically incompatible when base rates differ. Choosing between them is a value judgment, not a technical optimisation problem.</li>
+      <li>Post-hoc explainability tools (SHAP, LIME, Grad-CAM) are useful but imperfect approximations. In high-stakes settings, inherently interpretable models may be more appropriate than black boxes with explanations.</li>
+      <li>The EU AI Act (2024) is the world's first comprehensive AI law. It classifies AI systems by risk level and imposes significant obligations on high-risk applications. Regulatory knowledge is becoming a professional requirement.</li>
+      <li>Practical steps for ethical AI practice include disaggregating evaluation metrics by subgroup, questioning proxy variables, involving affected communities in design, documenting models with structured formats like Model Cards, and designing meaningful human oversight into high-stakes systems.</li>
+    </ul>
+
+    <div class="callout info" style="margin-top:2rem;">
+      <div class="callout-title">Coming Up: Large Language Models</div>
+      <p>In Lesson 5.2, you will go inside ChatGPT, Claude, and similar systems. How are they actually trained? What are tokens? What does it mean for a model to "hallucinate"? Why do these systems sometimes confidently say things that are completely false? And how do they scale to hundreds of billions of parameters?</p>
+    </div>
+  </section>
+
+  <div class="deeper-block">
+    <p class="deeper-eyebrow">Going Deeper</p>
+    <h2 class="deeper-title">Want to go further on AI Ethics? Start here.</h2>
+    <div class="deeper-resources">
+      <a class="deeper-item" href="https://ainowinstitute.org/reports" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">📋</span>
+        <span class="deeper-item-text">
+          <span class="deeper-item-label">AI Now Institute Annual Report</span>
+          <span class="deeper-item-desc">The most credible annual audit of real-world AI harms, with policy recommendations. Published by researchers at NYU.</span>
+        </span>
+      </a>
+      <a class="deeper-item" href="http://gendershades.org" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">🔬</span>
+        <span class="deeper-item-text">
+          <span class="deeper-item-label">Gender Shades — Joy Buolamwini and Timnit Gebru</span>
+          <span class="deeper-item-desc">The landmark study that proved commercial facial recognition discriminates by gender and skin tone. Read the summary and watch the TED talk.</span>
+        </span>
+      </a>
+      <a class="deeper-item" href="https://iapp.org/resources/article/eu-ai-act-explained/" target="_blank" rel="noopener">
+        <span class="deeper-item-icon">⚖️</span>
+        <span class="deeper-item-text">
+          <span class="deeper-item-label">The EU AI Act Explained (IAPP)</span>
+          <span class="deeper-item-desc">Plain-language breakdown of the world's first binding AI regulation, which came into force in 2024. Understand what it requires and who it affects.</span>
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <div class="reflect-block">
+    <p class="reflect-eyebrow">Reflect</p>
+    <h2 class="reflect-title">Before you move on</h2>
+    <p class="reflect-sub">No right answers here. These questions are for you.</p>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">A facial recognition system achieves 95% accuracy overall but only 73% accuracy on darker-skinned women. The company says the system is "highly accurate." What is wrong with that claim?</summary>
+        <div class="reflect-a">
+          <p>Aggregate accuracy hides unequal harm. A system that works well for the majority group and poorly for a minority can still report impressive headline numbers. The people most likely to be wrongly identified are already among the most vulnerable. Ethical evaluation requires disaggregating performance by demographic group, not just reporting a single score.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">A hospital AI recommends denying a patient's insurance claim. The AI is a black box. Who is responsible if the decision turns out to be wrong?</summary>
+        <div class="reflect-a">
+          <p>Responsibility does not disappear because a machine made the recommendation. The hospital that deployed the system, the company that built it, and the clinician who accepted the output without scrutiny all bear some degree of accountability. AI does not create a responsibility vacuum; it redistributes it in ways institutions must think carefully about before deployment.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="reflect-card">
+      <details>
+        <summary class="reflect-q">A highly accurate medical AI is also completely uninterpretable. A less accurate model can explain every decision in plain language. Which would you deploy in a hospital, and why?</summary>
+        <div class="reflect-a">
+          <p>There is no single right answer, and that is the point. A black-box model may save more lives on average, but its errors are invisible and impossible to contest. An interpretable model allows clinicians to catch mistakes, builds trust, and supports patient rights. Many jurisdictions require explainability for high-stakes decisions. The tradeoff is real, and the right choice depends on context, stakes, and who bears the consequences of error.</p>
+        </div>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <a href="../PHASE FOUR/LESSON 4.5.html" class="nav-btn prev">&#8592; 4.5 Transfer Learning</a>
+    <a href="LESSON 5.2.html" class="nav-btn next">5.2 Large Language Models &#8594;</a>
+  </div>
+</main>
+
+<script>
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    bar.style.width = doc.scrollHeight > doc.clientHeight ? (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%' : '0%';
+  });
+  const sections = document.querySelectorAll('.lesson-section');
+  const links = document.querySelectorAll('.toc-list a');
+  new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { const id = e.target.id; links.forEach(a => a.classList.toggle('active', a.dataset.section === id)); } });
+  }, { rootMargin: '-15% 0px -70% 0px' }).observe ? sections.forEach(s => new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { const id = e.target.id; links.forEach(a => a.classList.toggle('active', a.dataset.section === id)); } }); }, { rootMargin: '-15% 0px -70% 0px' }).observe(s)) : null;
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

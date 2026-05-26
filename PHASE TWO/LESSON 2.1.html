@@ -1,0 +1,679 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.1: What is Data? — AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --paper: #faf8f3;
+  --paper2: #f2ede3;
+  --paper3: #e8e1d4;
+  --accent: #1a6bc8;
+  --accent-soft: rgba(26,107,200,0.08);
+  --gold: #9a7a2e;
+  --gold-soft: rgba(154,122,46,0.1);
+  --green: #1e6e45;
+  --green-soft: rgba(30,110,69,0.08);
+  --muted: #6e6559;
+  --muted2: #9c9488;
+  --border: rgba(26,24,20,0.1);
+  --border2: rgba(26,24,20,0.18);
+  --serif: 'Lora', Georgia, serif;
+  --ui: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max: 720px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.85;
+  min-height: 100vh;
+}
+
+.reading-progress {
+  position: fixed; top: 0; left: 0;
+  height: 3px; background: var(--accent);
+  z-index: 200; width: 0%;
+  transition: width 0.1s linear;
+}
+
+.topbar {
+  background: var(--ink);
+  padding: 14px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.course-name { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.topbar-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+.lesson-crumb { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.read-time { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+.lesson-header {
+  max-width: 860px; margin: 0 auto;
+  padding: 72px 40px 56px;
+  border-bottom: 1px solid var(--border);
+  animation: fadeUp 0.5s 0.05s both;
+}
+.lesson-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.phase-tag {
+  font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent);
+  background: var(--accent-soft); border: 1px solid rgba(26,107,200,0.25); padding: 5px 12px;
+}
+.lesson-num-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+.lesson-title { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.lesson-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lesson-intro { font-size: 19px; color: var(--muted); line-height: 1.75; max-width: 600px; font-family: var(--ui); font-weight: 300; }
+
+.objectives-bar {
+  max-width: 860px; margin: 0 auto;
+  padding: 32px 40px; background: var(--paper2);
+  border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start;
+  animation: fadeUp 0.5s 0.15s both;
+}
+.obj-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); padding-top: 3px; white-space: nowrap; }
+.obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.obj-item { font-family: var(--ui); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--border2); padding: 6px 14px; display: flex; align-items: center; gap: 7px; }
+.obj-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+.content-wrap {
+  max-width: 860px; margin: 0 auto;
+  display: grid; grid-template-columns: var(--max) 1fr;
+  gap: 0; padding: 0 40px; align-items: start;
+  animation: fadeUp 0.5s 0.25s both;
+}
+.article { padding: 64px 56px 64px 0; border-right: 1px solid var(--border); }
+
+.article h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin: 56px 0 20px; line-height: 1.25; }
+.article h2:first-child { margin-top: 0; }
+.article h3 { font-family: var(--ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 40px 0 14px; }
+.article p { margin-bottom: 24px; color: var(--ink); }
+.article p:last-child { margin-bottom: 0; }
+.article strong { font-weight: 700; }
+
+.pullquote { border-left: 3px solid var(--accent); margin: 40px 0; padding: 4px 0 4px 28px; }
+.pullquote p { font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+.pullquote cite { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted2); font-style: normal; }
+
+.callout { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.25); padding: 24px 28px; margin: 36px 0; }
+.callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+.callout p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+.analogy { background: var(--paper2); border-top: 3px solid var(--ink); padding: 24px 28px; margin: 36px 0; }
+.analogy-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.analogy p { font-family: var(--ui); font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 0; }
+
+/* DATA TYPE CARDS */
+.data-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 32px 0;
+}
+.data-card {
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.data-card-head {
+  padding: 14px 20px;
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.head-structured { background: var(--accent); }
+.head-unstructured { background: var(--green); }
+.data-card-body {
+  padding: 18px 20px;
+  background: var(--paper2);
+}
+.data-card-body p {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.data-card-body p:last-child { margin-bottom: 0; }
+.data-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.data-ex-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  background: var(--paper);
+}
+
+/* TABLE */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 32px 0;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.data-table th {
+  background: var(--ink);
+  color: rgba(255,255,255,0.8);
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.data-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  background: var(--paper);
+}
+.data-table tr:nth-child(even) td { background: var(--paper2); }
+.data-table tr:last-child td { border-bottom: none; }
+
+/* PIXEL GRID */
+.pixel-demo {
+  margin: 32px 0;
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  padding: 24px 28px;
+}
+.pixel-demo-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 16px;
+}
+.pixel-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  max-width: 220px;
+  margin-bottom: 16px;
+}
+.pixel-cell {
+  aspect-ratio: 1;
+  border-radius: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 8px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+.pixel-caption {
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* CONCEPT GRID */
+.concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 32px 0; }
+.concept-card { background: var(--paper2); border: 1px solid var(--border); padding: 20px 20px; }
+.concept-card-head { font-family: var(--ui); font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.concept-icon { width: 28px; height: 28px; background: var(--accent-soft); border: 1px solid rgba(26,107,200,0.2); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.concept-card p { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 0; }
+
+/* SIDEBAR */
+.sidebar { padding: 64px 0 64px 40px; position: sticky; top: 60px; }
+.sidebar-section { margin-bottom: 40px; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-item { font-family: var(--ui); font-size: 13px; color: var(--muted); padding: 5px 0 5px 12px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.toc-item:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+.book-card { background: var(--paper2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.book-title { font-family: var(--serif); font-size: 13px; font-weight: 700; font-style: italic; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.book-author { font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.04em; margin-bottom: 6px; }
+.book-note { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.key-terms { display: flex; flex-direction: column; gap: 8px; }
+.term { padding: 10px 14px; background: var(--paper2); border: 1px solid var(--border); }
+.term-word { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px; }
+.term-def { font-family: var(--ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ACTIVITY */
+.activity-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; border-top: 1px solid var(--border); }
+.activity-inner { background: var(--ink); padding: 40px 44px; color: var(--paper); }
+.act-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.act-title { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.act-body { font-family: var(--ui); font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 28px; max-width: 540px; }
+.act-steps { display: flex; flex-direction: column; gap: 12px; }
+.act-step { display: flex; gap: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); min-width: 24px; padding-top: 2px; letter-spacing: 0.04em; }
+.step-text { font-family: var(--ui); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+
+/* NAV */
+.nav-section { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-card { border: 1px solid var(--border2); padding: 24px 28px; cursor: pointer; transition: background 0.15s; background: var(--paper); display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+.nav-card:hover { background: var(--paper2); }
+.nav-card.next { align-items: flex-end; text-align: right; }
+.nav-direction { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); }
+.nav-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.nav-arrow { font-size: 20px; color: var(--accent); }
+
+footer { background: var(--paper2); border-top: 1px solid var(--border); padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 860px; margin: 0 auto; }
+.footer-course { font-family: var(--ui); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .content-wrap { grid-template-columns: 1fr; padding: 0 28px; }
+  .article { padding: 48px 0; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { padding: 40px 0; position: static; }
+  .lesson-header, .objectives-bar, .activity-section, .nav-section, footer { padding-left: 28px; padding-right: 28px; }
+  .data-type-grid { grid-template-columns: 1fr; }
+  .concept-grid { grid-template-columns: 1fr; }
+  .nav-section { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 20px; }
+  .reflect-section { padding-left: 28px; padding-right: 28px; }
+  .reflect-inner { padding: 28px 24px; }
+}
+/* REFLECT SECTION */
+.reflect-section { max-width: 860px; margin: 0 auto; padding: 0 40px 64px; }
+.reflect-inner { background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.2); border-left: 4px solid var(--gold); padding: 36px 40px; }
+.reflect-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.reflect-title { font-family: var(--ui); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.reflect-subtitle { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.reflect-list { display: flex; flex-direction: column; gap: 8px; }
+.reflect-list details { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; }
+.reflect-list summary { font-family: var(--ui); font-size: 15px; font-weight: 500; color: var(--ink); padding: 14px 18px 14px 48px; cursor: pointer; list-style: none; position: relative; }
+.reflect-list summary::-webkit-details-marker { display: none; }
+.reflect-list summary::before { content: '?'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(154,122,46,0.3); width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; }
+.reflect-list details[open] summary::before { content: '!'; color: var(--accent); background: var(--accent-soft); border-color: rgba(184,60,18,0.3); }
+.reflect-hint { font-family: var(--ui); font-size: 14px; color: var(--muted); padding: 0 18px 14px 48px; line-height: 1.65; }
+@media (max-width: 480px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-sep, .lesson-crumb { display: none; }
+  .topbar > a { display: none; }
+  .course-name { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="progress"></div>
+
+<nav class="topbar">
+  <div class="topbar-left">
+    <a class="course-name" href="../ai_crash_course_pro.html" style="text-decoration:none;color:rgba(255,255,255,0.5);transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&#8592; AI Crash Course</a>
+    <span class="topbar-sep">/</span>
+    <span class="lesson-crumb">Lesson 2.1</span>
+  </div>
+  <a href="../glossary.html" style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;margin-right:16px;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Glossary</a><span class="read-time">11 min read</span>
+</nav>
+
+<header class="lesson-header">
+  <div class="lesson-meta">
+    <span class="phase-tag">Phase 2: Data &amp; Mathematics</span>
+    <span class="lesson-num-tag">Lesson 1 of 5</span>
+  </div>
+  <h1 class="lesson-title">What is Data?<br><em>Structured vs Unstructured</em></h1>
+  <p class="lesson-intro">Before you can build any AI system, you need to understand what it feeds on. Everything an AI knows comes from data. Let us understand exactly what data is, the different forms it takes, and how AI sees all of it as numbers.</p>
+</header>
+
+<div class="objectives-bar">
+  <span class="obj-label">You will learn</span>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-dot"></div>The difference between structured and unstructured data</div>
+    <div class="obj-item"><div class="obj-dot"></div>How AI turns images, text and audio into numbers</div>
+    <div class="obj-item"><div class="obj-dot"></div>What features and labels are in a dataset</div>
+    <div class="obj-item"><div class="obj-dot"></div>How to read and describe any real dataset confidently</div>
+  </div>
+</div>
+
+<div class="content-wrap">
+  <article class="article">
+
+    <h2>Data is the raw material of intelligence</h2>
+
+    <p>Think about how a child learns to recognise a dog. Nobody writes them a manual that says "four legs, fur, barks." Instead, the child sees hundreds of dogs over several years: big ones, small ones, fluffy ones, spotted ones. Over time they build up an internal sense of what makes something a dog. Learning happens through exposure to examples.</p>
+
+    <p>AI works exactly the same way. You cannot just tell an AI model what a cat looks like. You have to show it thousands of photographs of cats. You cannot tell it what spam email sounds like. You have to give it tens of thousands of examples of spam and non-spam email. The examples are the data, and the data is everything.</p>
+
+    <p>This raises the obvious question: what exactly counts as data?</p>
+
+    <div class="pullquote">
+      <p>"In God we trust. All others must bring data."</p>
+      <cite>W. Edwards Deming, statistician and engineer</cite>
+    </div>
+
+    <h2>The two main types of data</h2>
+
+    <p>All data falls into one of two broad categories. Understanding this distinction is one of the first things you need to understand before choosing an AI approach for any problem.</p>
+
+    <div class="data-type-grid">
+      <div class="data-card">
+        <div class="data-card-head head-structured">Structured Data</div>
+        <div class="data-card-body">
+          <p>Organised into rows and columns. Think of a spreadsheet or a database table. Each row is one record, each column is one attribute. It is tidy, labelled, and easy to search. Computers have been handling this kind of data for decades.</p>
+          <div class="data-examples">
+            <span class="data-ex-tag">CSV files</span>
+            <span class="data-ex-tag">SQL databases</span>
+            <span class="data-ex-tag">Excel sheets</span>
+            <span class="data-ex-tag">Sensor readings</span>
+            <span class="data-ex-tag">Transaction records</span>
+          </div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-head head-unstructured">Unstructured Data</div>
+        <div class="data-card-body">
+          <p>Everything that does not fit neatly into rows and columns. The meaning is embedded inside the content itself, not in any predefined schema. It is harder to process but makes up the vast majority of data in the world.</p>
+          <div class="data-examples">
+            <span class="data-ex-tag">Images &amp; photos</span>
+            <span class="data-ex-tag">Audio recordings</span>
+            <span class="data-ex-tag">Video files</span>
+            <span class="data-ex-tag">Emails &amp; text</span>
+            <span class="data-ex-tag">Social media posts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>There is a third category worth knowing: <strong>semi-structured data</strong>. This sits in between. It is not a rigid table, but it does have some organisational tags or markers. JSON files and XML documents are good examples. A product listing in an online store might be semi-structured: it has defined fields like "price" and "category," but the product description is free-form text.</p>
+
+    <div class="callout">
+      <div class="callout-label">Stat worth knowing</div>
+      <p>Estimates suggest that around 80% of all data generated in the world is unstructured. This is why deep learning has become so important. It excels at finding patterns in raw images, audio and text in ways that classical machine learning methods simply cannot match.</p>
+    </div>
+
+    <h2>A structured dataset up close</h2>
+
+    <p>Let us look at a real example. The Titanic dataset, which you will use in your first coding exercise, is a classic structured dataset. Each row represents one passenger. Each column captures one fact about them.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>PassengerId</th>
+          <th>Survived</th>
+          <th>Pclass</th>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Fare</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>0</td><td>3</td><td>Braund, Mr. Owen</td><td>22</td><td>7.25</td></tr>
+        <tr><td>2</td><td>1</td><td>1</td><td>Cumings, Mrs. John</td><td>38</td><td>71.28</td></tr>
+        <tr><td>3</td><td>1</td><td>3</td><td>Heikkinen, Miss. Laina</td><td>26</td><td>7.93</td></tr>
+        <tr><td>4</td><td>1</td><td>1</td><td>Futrelle, Mrs. Jacques</td><td>35</td><td>53.10</td></tr>
+        <tr><td>5</td><td>0</td><td>3</td><td>Allen, Mr. William</td><td>35</td><td>8.05</td></tr>
+      </tbody>
+    </table>
+
+    <p>Notice a few important things. The <strong>Survived</strong> column is 0 or 1, not "yes" or "no." Computers and AI models do not naturally understand words. Everything eventually gets converted to numbers. The <strong>Name</strong> column is technically unstructured text sitting inside a structured table, and that kind of mixed reality is very common in the real world.</p>
+
+    <h2>Features and labels: the vocabulary of ML</h2>
+
+    <p>In machine learning, we have specific names for the different columns of a dataset. Understanding these terms will help you read papers, documentation and code.</p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">📊</div>
+          Features (inputs)
+        </div>
+        <p>The columns that describe the thing you are analysing. In the Titanic dataset: age, ticket class, fare paid, number of siblings on board. These are what the model uses to make its prediction.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">🎯</div>
+          Labels (outputs)
+        </div>
+        <p>The column you are trying to predict. In the Titanic dataset: Survived (0 or 1). In a house price dataset, it would be the actual price. This is the answer the model is learning to produce.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">📦</div>
+          Observations (rows)
+        </div>
+        <p>Each individual record in your dataset. One row equals one observation. One passenger, one house, one transaction. The more observations you have, generally, the better your model can learn.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-head">
+          <div class="concept-icon">🔢</div>
+          Dimensions
+        </div>
+        <p>The number of features in your dataset. A dataset with 10 columns of features is 10-dimensional. High-dimensional data (hundreds or thousands of features) presents its own challenges, which we will encounter later.</p>
+      </div>
+    </div>
+
+    <h2>How AI sees images: everything is numbers</h2>
+
+    <p>Here is something that surprises most beginners. When you look at a photograph of a dog, you see a dog. When an AI model looks at the same photograph, it sees a grid of numbers.</p>
+
+    <p>A digital image is simply a grid of pixels. Each pixel has a colour, and that colour can be represented by three numbers: how much red, how much green and how much blue (the RGB values). Each value runs from 0 to 255. That means a 100 × 100 pixel image is actually a grid of 30,000 numbers (100 × 100 pixels × 3 colour channels).</p>
+
+    <div class="pixel-demo">
+      <div class="pixel-demo-label">8×8 grayscale image. Each cell is a pixel value (0 = black, 255 = white)</div>
+      <div class="pixel-grid" id="pixelGrid"></div>
+      <p class="pixel-caption">The model does not see a picture. It sees a matrix of numbers. Understanding this is the key to understanding how computers process images, faces, X-rays, satellite photos and more.</p>
+    </div>
+
+    <h2>How AI sees text: tokens and numbers</h2>
+
+    <p>Text cannot be fed directly into an AI model either. Before a model can process the sentence "The cat sat on the mat," it needs to be converted into numbers. This process is called <strong>tokenisation</strong>.</p>
+
+    <p>A tokeniser breaks text into chunks called tokens, usually words or parts of words. Each unique token gets assigned a number from a vocabulary list. So "cat" might become 4,823 and "sat" might become 7,112. The sentence becomes a list of numbers, which the model can then do mathematics on.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">Think of it this way</div>
+      <p>Imagine a musician who can only read sheet music, not words. To communicate a story to them, you first have to translate every emotion and event into musical notes. The story is still there, just encoded in a language the musician can work with. AI models require exactly the same kind of translation, converting human-readable content into numbers the model can process.</p>
+    </div>
+
+    <h2>Why data quality matters more than quantity</h2>
+
+    <p>There is a common misconception that AI models simply need more data to get better. More is often better, but only if the data is good. The most important properties of a useful dataset are actually about quality, not size.</p>
+
+    <p><strong>Relevant:</strong> Does the data actually contain signals that relate to the problem you are solving? Customer reviews are not useful data for predicting tomorrow's weather.</p>
+
+    <p><strong>Representative:</strong> Does the dataset reflect the real world it is meant to represent? A model trained only on photos of faces with one skin tone will fail on faces with other skin tones. This is how bias enters AI systems.</p>
+
+    <p><strong>Clean:</strong> Are there missing values, typos, duplicates, or impossible entries? Messy data produces unreliable models. In real AI projects, cleaning and preparing data consistently takes around 70–80% of the total time. You will experience this firsthand in Lesson 2.5.</p>
+
+    <p><strong>Labelled (for supervised learning):</strong> For most machine learning tasks, someone has to label the data. This means a human tells the system which emails are spam, which photos contain cats, which loan applications defaulted. Labelling is expensive, time-consuming, and often underestimated.</p>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">In this lesson</div>
+      <ul class="toc-list">
+        <li class="toc-item">Data is the raw material</li>
+        <li class="toc-item">Two main types of data</li>
+        <li class="toc-item">Structured dataset up close</li>
+        <li class="toc-item">Features and labels</li>
+        <li class="toc-item">Images as numbers</li>
+        <li class="toc-item">Text as numbers</li>
+        <li class="toc-item">Quality vs quantity</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Recommended reading</div>
+      <div class="book-card">
+        <div class="book-title">Naked Statistics</div>
+        <div class="book-author">Charles Wheelan · 2013</div>
+        <div class="book-note">A delightfully readable intro to data and statistics with zero required maths background.</div>
+      </div>
+      <div class="book-card">
+        <div class="book-title">Data Science for Business</div>
+        <div class="book-author">Provost &amp; Fawcett · 2013</div>
+        <div class="book-note">Practical thinking about what data problems actually look like in real organisations.</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Key terms</div>
+      <div class="key-terms">
+        <div class="term">
+          <div class="term-word">Structured data</div>
+          <div class="term-def">Data organised in rows and columns, like a spreadsheet or database table.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Unstructured data</div>
+          <div class="term-def">Data with no predefined format: images, audio, text and video.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Feature</div>
+          <div class="term-def">An input column in a dataset. What the model uses to make predictions.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Label</div>
+          <div class="term-def">The output column. What the model is learning to predict.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">Token</div>
+          <div class="term-def">A chunk of text (word or subword) converted to a number so a model can process it.</div>
+        </div>
+        <div class="term">
+          <div class="term-word">RGB</div>
+          <div class="term-def">Red, Green, Blue: the three numbers that define any pixel's colour in a digital image.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="activity-section">
+  <div class="activity-inner">
+    <div class="act-eyebrow">Lesson Activity · No code required</div>
+    <div class="act-title">Dataset Detective</div>
+    <div class="act-body">This exercise builds the skill of looking at any dataset and immediately understanding its structure. This is something every AI practitioner does before writing a single line of code.</div>
+    <div class="act-steps">
+      <div class="act-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Go to <strong>kaggle.com/datasets</strong> (free account required) and find any dataset that interests you. Sports, music, health, movies. Any topic works.</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Without downloading anything, answer these questions from the preview: How many rows? How many columns? Which columns are features and which might be a label? Are there any missing values visible?</span>
+      </div>
+      <div class="act-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Write a 3-sentence description of the dataset as if explaining it to a colleague. Bring it to the live session. The goal is developing the habit of asking the right questions before touching any data.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px) 0;">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:8px;">Your Notes</div>
+    <div style="font-size:13px;color:#4a453f;margin-bottom:12px;line-height:1.6;">Studying independently? Write your thoughts or answers below. Notes save automatically to your browser.</div>
+    <textarea id="lesson-notes" placeholder="Type your notes here..." style="width:100%;min-height:120px;border:1px solid rgba(10,9,8,0.12);background:#faf7f2;color:#0a0908;font-family:'Syne',sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;resize:vertical;outline:none;display:block;"></textarea>
+    <div id="notes-status" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a746a;margin-top:6px;min-height:14px;"></div>
+  </div>
+  <script>(function(){var KEY='aicc-notes-2-1';var ta=document.getElementById('lesson-notes');var msg=document.getElementById('notes-status');try{var s=localStorage.getItem(KEY);if(s)ta.value=s;}catch(e){}ta.addEventListener('input',function(){try{localStorage.setItem(KEY,ta.value);msg.textContent='Saved';clearTimeout(ta._t);ta._t=setTimeout(function(){msg.textContent='';},2000);}catch(e){}});})();</script>
+</section>
+
+<!-- REFLECT -->
+<section class="reflect-section">
+  <div class="reflect-inner">
+    <div class="reflect-eyebrow">Pause &amp; Reflect</div>
+    <h3 class="reflect-title">Check your understanding</h3>
+    <p class="reflect-subtitle">Click any question to reveal a thinking prompt. There are no wrong answers.</p>
+    <div class="reflect-list">
+      <details>
+        <summary>Your phone's camera stores a photo as a grid of pixel values. Is that structured or unstructured data? What about a voice recording?</summary>
+        <p class="reflect-hint">A photo is a 3D matrix of numbers (height x width x colour channels) — technically structured in memory, but the semantic meaning (a face, a dog, a mountain) is unstructured. A voice recording is a sequence of amplitude values over time — structured as an array, unstructured in meaning. The key insight: computers store everything as numbers; "unstructured" describes meaning, not storage format.</p>
+      </details>
+      <details>
+        <summary>A hospital wants to train an AI to predict patient readmission. What types of data would they need? Which would be structured, and which unstructured?</summary>
+        <p class="reflect-hint">Structured: age, blood pressure readings, lab results (numbers in rows and columns), diagnosis codes, length of stay. Unstructured: doctor's written notes, discharge summaries, X-ray images, audio from consultations. The richest information is often in the unstructured parts — but it is the hardest for AI to process.</p>
+      </details>
+      <details>
+        <summary>Why does AI generally perform better with more data? What are the limits of "more data is always better"?</summary>
+        <p class="reflect-hint">More data exposes the model to more variation, helping it learn patterns that generalise. But the limits are real: more biased data makes the model more biased; more data costs more to store, label, and process; past data may not reflect the future; and after a certain point, returns diminish — a model trained on 100M examples often beats one trained on 1M, but rarely beats 1B by the same margin.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="nav-section">
+  <a class="nav-card prev" href="../PHASE ONE/LESSON 1.4.html">
+    <span class="nav-arrow">←</span>
+    <span class="nav-direction">Previous lesson</span>
+    <span class="nav-title">AI You Already Use Every Day</span>
+  </a>
+  <a class="nav-card next" href="LESSON 2.2.html">
+    <span class="nav-arrow">→</span>
+    <span class="nav-direction">Next lesson</span>
+    <span class="nav-title">Statistics Intuition for AI</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-course">AI Crash Course · Phase 2</span>
+  <span class="footer-copy">Lesson 2.1 of 25 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>
+</footer>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress').style.width = (scrolled * 100) + '%';
+});
+
+// TOC active state
+const headings = document.querySelectorAll('.article h2');
+const tocItems = document.querySelectorAll('.toc-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(headings).indexOf(entry.target);
+      tocItems.forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+headings.forEach(h => observer.observe(h));
+
+// Generate pixel grid
+const grid = document.getElementById('pixelGrid');
+const pixelValues = [
+  12,  28,  50,  80, 100, 120,  90,  60,
+  20,  60, 110, 160, 200, 220, 180, 130,
+  40, 100, 170, 220, 240, 255, 230, 190,
+  50, 130, 200, 240, 255, 255, 245, 210,
+  45, 120, 190, 235, 255, 250, 240, 200,
+  30,  90, 150, 200, 230, 220, 190, 150,
+  15,  50, 100, 150, 180, 170, 140, 100,
+   5,  20,  50,  90, 120, 110,  80,  50
+];
+pixelValues.forEach(v => {
+  const cell = document.createElement('div');
+  cell.className = 'pixel-cell';
+  cell.style.background = `rgb(${v},${v},${v})`;
+  cell.textContent = v;
+  grid.appendChild(cell);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0908'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23c8401a' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 4 Check | AI Crash Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0a0908;--ink2:#4a453f;--paper:#faf7f2;--paper2:#f0ebe0;--accent:#b5820a;--gold:#b5820a;--gold-soft:rgba(181,130,10,0.08);--border:rgba(10,9,8,0.1);--muted:#7a746a;--correct:#2a8c5a;--wrong:#c8401a;--ui:'Syne',sans-serif;--serif:'Playfair Display',Georgia,serif;--mono:'JetBrains Mono',monospace; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);min-height:100vh;}
+.topbar{background:var(--ink);padding:14px 60px;display:flex;justify-content:space-between;align-items:center;}
+.topbar a{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.55);text-decoration:none;letter-spacing:0.06em;transition:color 0.15s;}
+.topbar a:hover{color:#fff;}
+.topbar-badge{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;border:1px solid rgba(181,130,10,0.4);padding:4px 10px;}
+.page{max-width:720px;margin:0 auto;padding:60px 40px 100px;}
+.quiz-header{text-align:center;margin-bottom:56px;}
+.quiz-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.quiz-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.15;margin-bottom:14px;}
+.quiz-title em{color:var(--accent);font-style:italic;}
+.quiz-desc{font-size:14px;color:var(--ink2);line-height:1.7;max-width:440px;margin:0 auto;}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:40px;}
+.quiz-progress-bar{flex:1;height:4px;background:var(--paper2);border-radius:2px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s;width:0%;}
+.quiz-progress-label{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;}
+.question-card{background:#fff;border:1px solid var(--border);padding:36px 40px;margin-bottom:20px;display:none;}
+.question-card.active{display:block;}
+.q-number{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.q-text{font-family:var(--serif);font-size:19px;line-height:1.55;margin-bottom:28px;}
+.options{display:flex;flex-direction:column;gap:10px;}
+.option{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border:1px solid var(--border);background:var(--paper);cursor:pointer;transition:all 0.15s;border-radius:4px;}
+.option:hover{background:var(--paper2);border-color:rgba(10,9,8,0.2);}
+.option.selected{border-color:var(--accent);background:rgba(181,130,10,0.04);}
+.option.correct{border-color:var(--correct);background:rgba(42,140,90,0.06);}
+.option.wrong{border-color:var(--wrong);background:rgba(200,64,26,0.06);}
+.option-letter{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted);min-width:18px;padding-top:1px;flex-shrink:0;}
+.option-text{font-family:var(--ui);font-size:14px;line-height:1.5;}
+.option.correct .option-letter{color:var(--correct);}
+.option.wrong .option-letter{color:var(--wrong);}
+.explanation{margin-top:20px;padding:18px 20px;background:var(--gold-soft);border-left:3px solid var(--gold);display:none;}
+.explanation.show{display:block;}
+.expl-label{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.expl-text{font-size:13px;line-height:1.65;color:var(--ink2);}
+.q-actions{margin-top:24px;display:flex;justify-content:flex-end;gap:12px;}
+.btn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.06em;padding:12px 24px;border:none;cursor:pointer;transition:all 0.15s;text-transform:uppercase;}
+.btn-submit{background:var(--ink);color:#fff;display:none;}
+.btn-submit.show{display:block;}
+.btn-submit:hover{background:var(--accent);}
+.btn-next{background:var(--accent);color:#fff;display:none;}
+.btn-next.show{display:block;}
+.btn-next:hover{opacity:0.88;}
+.score-card{display:none;text-align:center;padding:56px 40px;background:#fff;border:1px solid var(--border);}
+.score-card.show{display:block;}
+.score-icon{font-size:3rem;margin-bottom:1rem;}
+.score-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.score-number{font-family:var(--serif);font-size:64px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;}
+.score-out-of{font-family:var(--ui);font-size:14px;color:var(--muted);margin-bottom:20px;}
+.score-message{font-size:15px;color:var(--ink2);line-height:1.7;max-width:380px;margin:0 auto 36px;}
+.score-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-home{background:var(--ink);color:#fff;text-decoration:none;display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.06em;padding:12px 24px;text-transform:uppercase;transition:background 0.15s;}
+.btn-home:hover{background:var(--accent);}
+.btn-retry{background:transparent;border:1px solid var(--border);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.06em;padding:12px 24px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;}
+.btn-retry:hover{border-color:var(--ink);}
+@media(max-width:600px){.topbar{padding:12px 20px;}.page{padding:40px 20px 80px;}.question-card{padding:24px 20px;}}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="ai_crash_course_pro.html">&#8592; AI Crash Course</a>
+  <span class="topbar-badge">Phase 4 Check</span>
+</nav>
+
+<div class="page">
+  <div class="quiz-header">
+    <div class="quiz-eyebrow">Knowledge Check</div>
+    <h1 class="quiz-title">Phase 4 — <em>Neural Network Architectures</em></h1>
+    <p class="quiz-desc">Four questions on neurons, convolutional networks, attention, and how modern AI systems are built on top of existing ones.</p>
+  </div>
+
+  <div class="quiz-progress">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="prog-fill"></div></div>
+    <span class="quiz-progress-label" id="prog-label">Question 1 of 4</span>
+  </div>
+
+  <div class="question-card active" id="q0">
+    <div class="q-number">Question 1 of 4</div>
+    <p class="q-text">The basic computational unit of a neural network, loosely inspired by the brain, is called what?</p>
+    <div class="options">
+      <div class="option" onclick="select(0,0,false)"><span class="option-letter">A</span><span class="option-text">A layer</span></div>
+      <div class="option" onclick="select(0,1,true)"><span class="option-letter">B</span><span class="option-text">A neuron (also called a node or unit)</span></div>
+      <div class="option" onclick="select(0,2,false)"><span class="option-letter">C</span><span class="option-text">A tensor</span></div>
+      <div class="option" onclick="select(0,3,false)"><span class="option-letter">D</span><span class="option-text">A gradient</span></div>
+    </div>
+    <div class="explanation" id="expl0">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">A neuron (or node) receives numerical inputs, multiplies each by a learned weight, adds a bias value, and passes the result through an activation function. Its output then feeds into neurons in the next layer. This simple operation, stacked in layers and trained with gradient descent across billions of examples, produces the sophisticated behaviour of modern AI models. A tensor is the multi-dimensional array structure used to store data; a gradient is the direction signal used during training.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub0" onclick="submit(0)">Check answer</button>
+      <button class="btn btn-next" id="nxt0" onclick="next(0)">Next question &#8594;</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="q1">
+    <div class="q-number">Question 2 of 4</div>
+    <p class="q-text">Why are Convolutional Neural Networks (CNNs) especially well suited to image tasks?</p>
+    <div class="options">
+      <div class="option" onclick="select(1,0,false)"><span class="option-letter">A</span><span class="option-text">They process all pixel values in a single parallel operation</span></div>
+      <div class="option" onclick="select(1,1,false)"><span class="option-letter">B</span><span class="option-text">They convert images into text before any processing occurs</span></div>
+      <div class="option" onclick="select(1,2,true)"><span class="option-letter">C</span><span class="option-text">They scan images with small learnable filters that detect local patterns like edges and textures</span></div>
+      <div class="option" onclick="select(1,3,false)"><span class="option-letter">D</span><span class="option-text">They use attention to compare every pixel to every other pixel simultaneously</span></div>
+    </div>
+    <div class="explanation" id="expl1">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">CNNs use small learnable filters (kernels) that slide across an image detecting local features. Early layers pick up edges and corners; deeper layers detect textures, shapes, and eventually complex objects like faces. This works because spatial proximity matters in images — nearby pixels tend to be related. It is far more efficient than connecting every pixel to every neuron. Option D describes Vision Transformers (ViTs), a newer architecture that does use attention across image patches.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub1" onclick="submit(1)">Check answer</button>
+      <button class="btn btn-next" id="nxt1" onclick="next(1)">Next question &#8594;</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="q2">
+    <div class="q-number">Question 3 of 4</div>
+    <p class="q-text">The key innovation introduced in the Transformer architecture was what?</p>
+    <div class="options">
+      <div class="option" onclick="select(2,0,false)"><span class="option-letter">A</span><span class="option-text">Using more layers than any model that came before it</span></div>
+      <div class="option" onclick="select(2,1,false)"><span class="option-letter">B</span><span class="option-text">Training on images rather than text sequences</span></div>
+      <div class="option" onclick="select(2,2,true)"><span class="option-letter">C</span><span class="option-text">A self-attention mechanism that lets every position in the input attend to every other position</span></div>
+      <div class="option" onclick="select(2,3,false)"><span class="option-letter">D</span><span class="option-text">Replacing gradient descent with a faster optimisation method</span></div>
+    </div>
+    <div class="explanation" id="expl2">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">Before Transformers, models processed sequences step by step, making it hard to relate words far apart in a sentence. Self-attention lets every position in the input look at every other position simultaneously and decide how much to "attend" to each one. This is how a model knows that "it" in "The animal did not cross the street because it was too tired" refers to "animal" and not "street." That 2017 paper, "Attention Is All You Need," became one of the most cited in AI history and underpins GPT, BERT, and virtually every major language model today.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub2" onclick="submit(2)">Check answer</button>
+      <button class="btn btn-next" id="nxt2" onclick="next(2)">Next question &#8594;</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="q3">
+    <div class="q-number">Question 4 of 4</div>
+    <p class="q-text">Transfer learning is best described as which of the following?</p>
+    <div class="options">
+      <div class="option" onclick="select(3,0,false)"><span class="option-letter">A</span><span class="option-text">Moving a trained model from one server to another without retraining</span></div>
+      <div class="option" onclick="select(3,1,false)"><span class="option-letter">B</span><span class="option-text">Using labelled data from one domain to automatically label data in another</span></div>
+      <div class="option" onclick="select(3,2,false)"><span class="option-letter">C</span><span class="option-text">Retraining a model from scratch whenever the task changes</span></div>
+      <div class="option" onclick="select(3,3,true)"><span class="option-letter">D</span><span class="option-text">Taking a model pre-trained on a large task and adapting it for a specific, smaller one</span></div>
+    </div>
+    <div class="explanation" id="expl3">
+      <div class="expl-label">Explanation</div>
+      <div class="expl-text">Training a model from scratch requires enormous amounts of data and compute. Transfer learning sidesteps this by starting from a model that has already learned rich, general representations from a large dataset (like ImageNet for vision, or a web-scale text corpus for language). You then fine-tune it on your specific task with far less data and compute. This is how most practical AI systems are built today. A medical imaging startup does not train from scratch — it starts from a model already trained on millions of general images and adapts from there.</div>
+    </div>
+    <div class="q-actions">
+      <button class="btn btn-submit" id="sub3" onclick="submit(3)">Check answer</button>
+      <button class="btn btn-next" id="nxt3" onclick="showScore()">See your score &#8594;</button>
+    </div>
+  </div>
+
+  <div class="score-card" id="score-card">
+    <div class="score-icon" id="score-icon">🎉</div>
+    <div class="score-eyebrow">Phase 4 Complete</div>
+    <div class="score-number" id="score-num">4</div>
+    <div class="score-out-of">out of 4</div>
+    <p class="score-message" id="score-msg">Excellent. You can explain the architectures that power most of the AI you encounter — a rare and genuinely useful foundation.</p>
+    <div class="score-actions">
+      <a href="ai_crash_course_pro.html" class="btn-home">&#8592; Back to course</a>
+      <button class="btn-retry" onclick="restart()">Try again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOTAL=4,QUIZ_KEY='aicc-quiz-p4';
+let answers=new Array(TOTAL).fill(null),correct=new Array(TOTAL).fill(null),current=0,score=0;
+function select(q,opt,isCorrect){const card=document.getElementById('q'+q);const opts=card.querySelectorAll('.option');opts.forEach(o=>o.classList.remove('selected'));opts[opt].classList.add('selected');answers[q]=opt;correct[q]=isCorrect;document.getElementById('sub'+q).classList.add('show');}
+function submit(q){const card=document.getElementById('q'+q);const opts=card.querySelectorAll('.option');opts.forEach(o=>{o.style.pointerEvents='none';const fn=o.getAttribute('onclick');if(fn&&fn.includes('true'))o.classList.add('correct');else if(o.classList.contains('selected'))o.classList.add('wrong');});document.getElementById('expl'+q).classList.add('show');document.getElementById('sub'+q).classList.remove('show');document.getElementById('nxt'+q).classList.add('show');if(correct[q])score++;}
+function next(q){document.getElementById('q'+q).classList.remove('active');current=q+1;document.getElementById('q'+current).classList.add('active');const pct=((current)/TOTAL)*100;document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-label').textContent='Question '+(current+1)+' of '+TOTAL;}
+function showScore(){document.getElementById('q3').classList.remove('active');document.getElementById('prog-fill').style.width='100%';document.getElementById('prog-label').textContent='Complete';document.getElementById('score-card').classList.add('show');document.getElementById('score-num').textContent=score;const msgs=['Neural network architectures are complex — revisit Phase 4 before continuing. Understanding CNNs, Transformers, and transfer learning is essential for everything in Phase 5.','Some important architecture concepts need more time. Re-read the explanations and give Phase 4 another look.','Good instincts. Two architecture ideas to revisit — the explanations above point to exactly what to review.','Solid neural network foundations. One concept to sharpen, and you will have the full picture.'];const icons=['📖','💪','👍','🎉'];document.getElementById('score-icon').textContent=icons[score]||'🎉';document.getElementById('score-msg').textContent=msgs[score]||msgs[3];try{localStorage.setItem(QUIZ_KEY,score+'/'+TOTAL);}catch(e){}}
+function restart(){answers=new Array(TOTAL).fill(null);correct=new Array(TOTAL).fill(null);score=0;current=0;document.getElementById('score-card').classList.remove('show');for(let i=0;i<TOTAL;i++){const card=document.getElementById('q'+i);card.classList.remove('active');card.querySelectorAll('.option').forEach(o=>{o.classList.remove('selected','correct','wrong');o.style.pointerEvents='';});const expl=document.getElementById('expl'+i);if(expl)expl.classList.remove('show');document.getElementById('sub'+i).classList.remove('show');document.getElementById('nxt'+i).classList.remove('show');}document.getElementById('q0').classList.add('active');document.getElementById('prog-fill').style.width='0%';document.getElementById('prog-label').textContent='Question 1 of '+TOTAL;}
+</script>
+<footer style="text-align:center;padding:20px 40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.08em;border-top:1px solid rgba(26,24,20,0.08);">&copy; 2026 Abena Fosuaa Gyasi &middot; AI Crash Course &middot; All rights reserved</footer>
+</body>
+</html>

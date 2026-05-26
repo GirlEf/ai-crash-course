@@ -874,6 +874,16 @@ Answer: 2017 (confidence: 0.9961)</pre></div>
     </a>
   </div>
 
+  <div style="margin:2rem 0;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.08);">
+    <div>
+      <div style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9c9488;margin-bottom:6px;">Progress</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:#1a1814;">Done with this lesson?</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:13px;color:#6e6559;margin-top:3px;">Mark it complete to track your progress.</div>
+    </div>
+    <button id="complete-btn" style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:#1a1814;color:#fff;flex-shrink:0;">Mark as Complete</button>
+  </div>
+  <script>(function(){var KEY='aicc-complete-4-4';var btn=document.getElementById('complete-btn');function done(){btn.textContent='Completed ✓';btn.style.background='#2a8c5a';btn.style.cursor='default';}try{if(localStorage.getItem(KEY))done();}catch(e){}btn.addEventListener('click',function(){try{localStorage.setItem(KEY,'1');}catch(e){}done();});})();</script>
+
   <!-- Nav -->
   <div class="nav-buttons">
     <a href="LESSON 4.3.html" class="nav-btn prev">&#8592; 4.3 Convolutional Networks</a>

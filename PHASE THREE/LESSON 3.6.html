@@ -577,6 +577,17 @@ probs = model.<span class="py-fn">predict_proba</span>(X_test)[:, <span class="p
   </a>
 </div>
 
+<section style="max-width:860px;margin:0 auto;padding:32px clamp(20px,5vw,40px);">
+  <div style="border-top:1px solid rgba(10,9,8,0.1);padding-top:28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7a746a;margin-bottom:6px;">Progress</div>
+      <div style="font-size:14px;font-weight:700;color:#0a0908;margin-bottom:4px;">Done with this lesson?</div>
+      <div style="font-size:13px;color:#7a746a;line-height:1.5;">Mark it complete to track your progress.</div>
+    </div>
+    <button id="complete-btn" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:#0a0908;color:#fff;flex-shrink:0;">Mark as Complete</button>
+  </div>
+</section>
+<script>(function(){var KEY='aicc-complete-3-6';var btn=document.getElementById('complete-btn');function done(){btn.textContent='Completed ✓';btn.style.background='#2a8c5a';btn.style.cursor='default';}try{if(localStorage.getItem(KEY))done();}catch(e){}btn.addEventListener('click',function(){try{localStorage.setItem(KEY,'1');}catch(e){}done();});})();</script>
 <footer>
   <span class="footer-course">AI Crash Course</span>
   <span class="footer-copy">Phase 3 · Lesson 3.6 &middot; &copy; 2026 Abena Fosuaa Gyasi</span>

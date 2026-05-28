@@ -1,0 +1,7 @@
+[[redirects]]
+  from = "/"
+  to = "/ai_crash_course_pro.html"
+  status = 200
+
+[build]
+  publish = "."
